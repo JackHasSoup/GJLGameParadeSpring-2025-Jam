@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="EDITOR">
+      <UniqueIdentifier>{0574b09f-436f-45c4-b3ea-5af87c851d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EDITOR\Source">
+      <UniqueIdentifier>{042d88df-8f72-4ed1-ad36-54fea49ea6fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EDITOR\Header">
+      <UniqueIdentifier>{e6e550d1-1477-4606-8f89-6352978e4d93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{9d9ab933-fcd7-4221-a77f-4e9e47eb7eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gameobjects">
+      <UniqueIdentifier>{5308ae43-6205-47cc-b813-4d630f7f51c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Commands">
+      <UniqueIdentifier>{39f3a4af-4e39-4470-b151-476aef858b3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{666029ca-e299-40c1-b6bd-064999f67344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Gameobjects">
+      <UniqueIdentifier>{f50ba91f-2f04-4603-9ba6-63b983eabe7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Commands">
+      <UniqueIdentifier>{8d2c8579-0066-46e9-83c4-1037a17e9484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{a8550a03-b3ba-40a4-a5ac-5f9519e476f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{f2badd73-2c61-4d1a-996c-51af9b66bfe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source">
+      <UniqueIdentifier>{63ee2476-43ba-47a8-aea3-8c6bcf2df055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Audio">
+      <UniqueIdentifier>{5ba9998c-52f0-45a2-a2f0-07b4d26b8442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Game Logic">
+      <UniqueIdentifier>{99980714-30e3-4dd7-9e0f-0afb937fa47a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Math">
+      <UniqueIdentifier>{288100cf-a78f-452a-95df-64297bf40e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Base">
+      <UniqueIdentifier>{81c58fe0-20dc-4b37-a4c8-abb5b9dc831a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Tools">
+      <UniqueIdentifier>{9d6d693a-e894-4d6d-8ca3-cf7204555421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Input">
+      <UniqueIdentifier>{a3990565-f2d0-4d89-9fa8-9c75a235b6eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\UI">
+      <UniqueIdentifier>{a147e403-9065-4857-9a6d-2051374274b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source\Lighting">
+      <UniqueIdentifier>{e8afca9f-4ad1-4cdc-9d2c-43aa5dc41aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header">
+      <UniqueIdentifier>{206e2fd2-1c62-4701-90d2-1f11a1d99787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Audio">
+      <UniqueIdentifier>{6ff8fb20-93e3-4559-9b01-7203c9dacb8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Game Logic">
+      <UniqueIdentifier>{ff6b437e-f4a2-43f0-bcef-21d4014c97d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Math">
+      <UniqueIdentifier>{e0e3c18a-788e-4181-a3db-e99aec485547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Tools">
+      <UniqueIdentifier>{458df5d8-558d-4b46-ab6f-2281d2f31b92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Base">
+      <UniqueIdentifier>{e1293190-f9c2-40fb-bd1b-5602c5748d2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Input">
+      <UniqueIdentifier>{0724303a-814a-4f9a-a2f3-65b1ba4333ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\UI">
+      <UniqueIdentifier>{2e30deaf-a815-4aaf-ad1a-c55a59db811b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header\Lighting">
+      <UniqueIdentifier>{fd919c31-b7f7-4cd0-b6e4-9ae6edf164da}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Collision.cpp">
+      <Filter>Framework\Source\Game Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\GameObject.cpp">
+      <Filter>Framework\Source\Game Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\VectorHelper.cpp">
+      <Filter>Framework\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Scene.cpp">
+      <Filter>Framework\Source\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\GameState.cpp">
+      <Filter>Framework\Source\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\TileMap.cpp">
+      <Filter>Framework\Source\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Animation.cpp">
+      <Filter>Framework\Source\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Input.cpp">
+      <Filter>Framework\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Command.cpp">
+      <Filter>Framework\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Commander.cpp">
+      <Filter>Framework\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Button.cpp">
+      <Filter>Framework\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericCommand.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\KinematicObject.cpp">
+      <Filter>Framework\Source\Game Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="StackedObject.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\PhysicsObject.cpp">
+      <Filter>Framework\Source\Game Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Camera.cpp">
+      <Filter>Framework\Source\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Rand.cpp">
+      <Filter>Framework\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\PhysicsManager.cpp">
+      <Filter>Framework\Source\Game Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DeferredIllumination.cpp">
+      <Filter>Framework\Source\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\AudioManager.cpp">
+      <Filter>Framework\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Sound.cpp">
+      <Filter>Framework\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\AssetManager.cpp">
+      <Filter>Framework\Source\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="EDITOR\EditorScene.cpp">
+      <Filter>EDITOR\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EDITOR\SceneDataLoader.cpp">
+      <Filter>EDITOR\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Framework\VectorHelper.h">
+      <Filter>Framework\Header\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Collision.h">
+      <Filter>Framework\Header\Game Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Animation.h">
+      <Filter>Framework\Header\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\TileMap.h">
+      <Filter>Framework\Header\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\GameState.h">
+      <Filter>Framework\Header\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Scene.h">
+      <Filter>Framework\Header\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\GameObject.h">
+      <Filter>Framework\Header\Game Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Input.h">
+      <Filter>Framework\Header\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Command.h">
+      <Filter>Framework\Header\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Commander.h">
+      <Filter>Framework\Header\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Button.h">
+      <Filter>Framework\Header\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericCommand.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\KinematicObject.h">
+      <Filter>Framework\Header\Game Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="StackedObject.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\PhysicsObject.h">
+      <Filter>Framework\Header\Game Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Camera.h">
+      <Filter>Framework\Header\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Rand.h">
+      <Filter>Framework\Header\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\PhysicsManager.h">
+      <Filter>Framework\Header\Game Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DeferredIllumination.h">
+      <Filter>Framework\Header\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\AudioManager.h">
+      <Filter>Framework\Header\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Sound.h">
+      <Filter>Framework\Header\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\AssetManager.h">
+      <Filter>Framework\Header\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="EDITOR\EditorScene.h">
+      <Filter>EDITOR\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="EDITOR\SceneDataLoader.h">
+      <Filter>EDITOR\Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shadowCaster.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\shadowCaster.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\illuminator.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\illuminator.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\crt.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gb.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\posterise.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\ascii.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gradientOverlay.frag">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

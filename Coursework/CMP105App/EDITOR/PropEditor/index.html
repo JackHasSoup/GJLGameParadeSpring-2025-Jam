@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prop Designer</title>
+    <style>
+        :root {
+            --primary-dark: #7c3f58;
+            --primary-medium: #eb6b6f;
+            --primary-light: #f9a875;
+            --primary-lightest: #fff6d3;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-lightest), #f0f0f0);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .controls-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(124, 63, 88, 0.1);
+            border: 2px solid var(--primary-lightest);
+        }
+
+        .controls-section h3 {
+            margin: 0 0 15px 0;
+            color: var(--primary-dark);
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--primary-lightest);
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-medium);
+        }
+
+        .color-input-group {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--primary-dark);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--primary-lightest);
+            border-radius: 6px;
+        }
+
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+            border: 3px solid var(--primary-dark);
+            background: white;
+            box-shadow: 0 6px 20px rgba(124, 63, 88, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            cursor: crosshair;
+        }
+
+        .export-import-area {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .export-section,
+        .import-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(124, 63, 88, 0.1);
+            border: 2px solid var(--primary-lightest);
+        }
+
+        .export-section h3,
+        .import-section h3 {
+            margin: 0 0 15px 0;
+            color: var(--primary-dark);
+            font-size: 1.2em;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+            border: 2px solid var(--primary-lightest);
+            border-radius: 6px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-medium);
+        }
+
+        button {
+            padding: 10px 20px;
+            background: var(--primary-medium);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 63, 88, 0.3);
+        }
+
+        button.secondary {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        button.secondary:hover {
+            background: var(--primary-medium);
+            color: white;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 14px;
+            color: var(--primary-dark);
+            background: var(--primary-lightest);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .size-display {
+            font-family: 'Courier New', monospace;
+            background: var(--primary-lightest);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Prop Designer</h1>
+        </div>
+
+        <div class="controls-panel">
+            <div class="controls-section">
+                <h3>Shape Properties</h3>
+                <div class="form-group">
+                    <label for="massInput">Mass:</label>
+                    <input type="number" id="massInput" value="100.0" step="0.1" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="drawTypeSelect">Draw Type:</label>
+                    <select id="drawTypeSelect">
+                        <option value="0">RECT (0)</option>
+                        <option value="1">COLLISION (1)</option>
+                        <option value="2">BOTH_RC (2)</option>
+                        <option value="3">BOTH_CR (3)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Shape Colour:</label>
+                    <div class="color-input-group">
+                        <div class="color-preview" id="colorPreview" style="background-color: #eb6b6f;"></div>
+                        <input type="color" id="colorInput" value="#eb6b6f">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Auto-calculated Size:</label>
+                    <div class="size-display" id="sizeDisplay">x: 0.0, y: 0.0</div>
+                </div>
+            </div>
+
+            <div class="controls-section">
+                <h3>Controls</h3>
+                <div class="instructions">
+                    <strong>Instructions:</strong><br>
+                    • Click on the grid to place points<br>
+                    • Drag points to move them<br>
+                    • Press Ctrl+Z to undo last action<br>
+                    • Press Space to export points to JSON<br>
+                    • Points will be connected to form a shape
+                </div>
+                <button onclick="clearPoints()">Clear All Points</button>
+                <button onclick="exportToJSON()">Export JSON</button>
+                <button class="secondary" onclick="importFromJSON()">Import JSON</button>
+                <div class="status" id="status">Click on the grid to start placing points</div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="canvas-container">
+                <canvas id="canvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+
+        <div class="export-import-area">
+            <div class="export-section">
+                <h3>JSON Export:</h3>
+                <textarea id="jsonOutput" placeholder="Exported JSON will appear here..."></textarea>
+            </div>
+
+            <div class="import-section">
+                <h3>JSON Import:</h3>
+                <textarea id="jsonInput" placeholder="Paste JSON here to import..."></textarea>
+                <button onclick="importFromJSON()">Import from Text Area</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class PropDesigner {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.points = [];
+                this.history = [];
+                this.isDragging = false;
+                this.dragPoint = null;
+                this.dragOffset = { x: 0, y: 0 };
+                this.gridSize = 20;
+                this.mass = 100.0;
+                this.drawType = 1;
+                this.color = { r: 235, g: 107, b: 111, a: 255 };
+                this.size = { x: 0.0, y: 0.0 };
+
+                this.init();
+            }
+
+            init() {
+                this.drawGrid();
+                this.setupEventListeners();
+                this.updateStatus();
+                this.updateSize();
+                this.updateColorPreview();
+            }
+
+            setupEventListeners() {
+                // Canvas events
+                this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+                this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+                this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+
+                // Keyboard events
+                document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+
+                // Form events
+                document.getElementById('massInput').addEventListener('input', (e) => {
+                    this.mass = parseFloat(e.target.value) || 0;
+                });
+
+                document.getElementById('drawTypeSelect').addEventListener('change', (e) => {
+                    this.drawType = parseInt(e.target.value);
+                });
+
+                document.getElementById('colorInput').addEventListener('input', (e) => {
+                    this.hexToRgba(e.target.value);
+                    this.updateColorPreview();
+                    this.drawShape();
+                });
+            }
+
+            hexToRgba(hex) {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                this.color = { r, g, b, a: 255 };
+            }
+
+            rgbaToHex(r, g, b) {
+                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+
+            updateColorPreview() {
+                const preview = document.getElementById('colorPreview');
+                preview.style.backgroundColor = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
+            }
+
+            drawGrid() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw grid lines
+                this.ctx.strokeStyle = '#f0f0f0';
+                this.ctx.lineWidth = 1;
+
+                // Vertical lines
+                for (let x = 0; x <= this.canvas.width; x += this.gridSize) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x, this.canvas.height);
+                    this.ctx.stroke();
+                }
+
+                // Horizontal lines
+                for (let y = 0; y <= this.canvas.height; y += this.gridSize) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, y);
+                    this.ctx.lineTo(this.canvas.width, y);
+                    this.ctx.stroke();
+                }
+
+                // Draw axes
+                this.ctx.strokeStyle = '#ddd';
+                this.ctx.lineWidth = 2;
+
+                // X-axis
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, this.canvas.height / 2);
+                this.ctx.lineTo(this.canvas.width, this.canvas.height / 2);
+                this.ctx.stroke();
+
+                // Y-axis
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.canvas.width / 2, 0);
+                this.ctx.lineTo(this.canvas.width / 2, this.canvas.height);
+                this.ctx.stroke();
+            }
+
+            drawShape() {
+                this.drawGrid();
+
+                // Calculate and draw midpoint if we have points
+                let midpoint = null;
+                if (this.points.length > 0) {
+                    midpoint = this.calculateMidpoint();
+
+                    // Draw midpoint as origin
+                    this.ctx.fillStyle = '#7c3f58';
+                    this.ctx.strokeStyle = '#f9a875';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.arc(midpoint.x, midpoint.y, 6, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.stroke();
+
+                    // Draw crosshairs at midpoint
+                    this.ctx.strokeStyle = '#7c3f58';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(midpoint.x - 15, midpoint.y);
+                    this.ctx.lineTo(midpoint.x + 15, midpoint.y);
+                    this.ctx.moveTo(midpoint.x, midpoint.y - 15);
+                    this.ctx.lineTo(midpoint.x, midpoint.y + 15);
+                    this.ctx.stroke();
+
+                    // Label midpoint
+                    this.ctx.fillStyle = '#7c3f58';
+                    this.ctx.font = 'bold 12px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText('(0,0)', midpoint.x, midpoint.y - 25);
+                }
+
+                if (this.points.length < 2) {
+                    // Still draw single point if exists
+                    if (this.points.length === 1) {
+                        this.drawSinglePoint(0, midpoint);
+                    }
+                    return;
+                }
+
+                // Draw the shape connecting all points
+                const fillColor = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0.3)`;
+                const strokeColor = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
+
+                this.ctx.strokeStyle = strokeColor;
+                this.ctx.lineWidth = 3;
+                this.ctx.fillStyle = fillColor;
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.points[0].x, this.points[0].y);
+
+                for (let i = 1; i < this.points.length; i++) {
+                    this.ctx.lineTo(this.points[i].x, this.points[i].y);
+                }
+
+                this.ctx.closePath();
+                this.ctx.fill();
+                this.ctx.stroke();
+
+                // Draw points with coordinates
+                this.points.forEach((point, index) => {
+                    this.drawSinglePoint(index, midpoint);
+                });
+
+                // Draw bounding box
+                if (this.points.length > 0) {
+                    const bounds = this.calculateBounds();
+                    this.ctx.strokeStyle = '#f9a875';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.setLineDash([5, 5]);
+                    this.ctx.strokeRect(
+                        bounds.minX - 5, bounds.minY - 5,
+                        bounds.maxX - bounds.minX + 10, bounds.maxY - bounds.minY + 10
+                    );
+                    this.ctx.setLineDash([]);
+                }
+            }
+
+            drawSinglePoint(index, midpoint) {
+                const point = this.points[index];
+
+                // Draw point
+                this.ctx.fillStyle = '#7c3f58';
+                this.ctx.strokeStyle = '#fff6d3';
+                this.ctx.lineWidth = 3;
+
+                this.ctx.beginPath();
+                this.ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.stroke();
+
+                // Calculate relative coordinates to midpoint
+                let relativeCoords = '(0,0)';
+                if (midpoint) {
+                    const relativeGridCoords = this.convertCanvasToRelativeGrid(point.x, point.y, midpoint);
+                    relativeCoords = `(${relativeGridCoords.x.toFixed(1)},${relativeGridCoords.y.toFixed(1)})`;
+                }
+
+                // Draw point index and coordinates
+                this.ctx.fillStyle = '#fff6d3';
+                this.ctx.font = 'bold 10px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText(`${index}`, point.x, point.y - 18);
+
+                this.ctx.fillStyle = '#7c3f58';
+                this.ctx.font = '9px Arial';
+                this.ctx.fillText(relativeCoords, point.x, point.y - 28);
+            }
+
+            calculateMidpoint() {
+                if (this.points.length === 0) return null;
+
+                let sumX = 0;
+                let sumY = 0;
+
+                for (let point of this.points) {
+                    sumX += point.x;
+                    sumY += point.y;
+                }
+
+                return {
+                    x: sumX / this.points.length,
+                    y: sumY / this.points.length
+                };
+            }
+
+            convertCanvasToRelativeGrid(canvasX, canvasY, midpoint) {
+                // Convert canvas coordinates to grid coordinates relative to midpoint
+                const relativeX = (canvasX - midpoint.x) / this.gridSize;
+                const relativeY = (midpoint.y - canvasY) / this.gridSize; // Flip Y axis
+
+                return { x: relativeX, y: relativeY };
+            }
+
+            calculateBounds() {
+                if (this.points.length === 0) return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+
+                let minX = this.points[0].x;
+                let minY = this.points[0].y;
+                let maxX = this.points[0].x;
+                let maxY = this.points[0].y;
+
+                for (let point of this.points) {
+                    minX = Math.min(minX, point.x);
+                    minY = Math.min(minY, point.y);
+                    maxX = Math.max(maxX, point.x);
+                    maxY = Math.max(maxY, point.y);
+                }
+
+                return { minX, minY, maxX, maxY };
+            }
+
+            updateSize() {
+                if (this.points.length === 0) {
+                    this.size = { x: 0.0, y: 0.0 };
+                } else {
+                    const midpoint = this.calculateMidpoint();
+                    const relativePoints = this.points.map(point =>
+                        this.convertCanvasToRelativeGrid(point.x, point.y, midpoint)
+                    );
+
+                    let minX = relativePoints[0].x;
+                    let minY = relativePoints[0].y;
+                    let maxX = relativePoints[0].x;
+                    let maxY = relativePoints[0].y;
+
+                    for (let point of relativePoints) {
+                        minX = Math.min(minX, point.x);
+                        minY = Math.min(minY, point.y);
+                        maxX = Math.max(maxX, point.x);
+                        maxY = Math.max(maxY, point.y);
+                    }
+
+                    this.size = {
+                        x: Math.abs(maxX - minX),
+                        y: Math.abs(maxY - minY)
+                    };
+                }
+
+                document.getElementById('sizeDisplay').textContent =
+                    `x: ${this.size.x.toFixed(1)}, y: ${this.size.y.toFixed(1)}`;
+            }
+
+            getCanvasCoordinates(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+
+            snapToGrid(x, y) {
+                return {
+                    x: Math.round(x / this.gridSize) * this.gridSize,
+                    y: Math.round(y / this.gridSize) * this.gridSize
+                };
+            }
+
+            findPointAt(x, y) {
+                const threshold = 15;
+                return this.points.find(point =>
+                    Math.abs(point.x - x) < threshold && Math.abs(point.y - y) < threshold
+                );
+            }
+
+            handleCanvasClick(e) {
+                if (this.isDragging) return;
+
+                const coords = this.getCanvasCoordinates(e);
+                const existingPoint = this.findPointAt(coords.x, coords.y);
+
+                if (!existingPoint) {
+                    this.saveState();
+                    const snapped = this.snapToGrid(coords.x, coords.y);
+                    this.points.push(snapped);
+                    this.drawShape();
+                    this.updateStatus();
+                    this.updateSize();
+                }
+            }
+
+            handleMouseDown(e) {
+                const coords = this.getCanvasCoordinates(e);
+                const point = this.findPointAt(coords.x, coords.y);
+
+                if (point) {
+                    this.isDragging = true;
+                    this.dragPoint = point;
+                    this.dragOffset = {
+                        x: coords.x - point.x,
+                        y: coords.y - point.y
+                    };
+                    this.canvas.style.cursor = 'grabbing';
+                    e.preventDefault();
+                }
+            }
+
+            handleMouseMove(e) {
+                const coords = this.getCanvasCoordinates(e);
+
+                if (this.isDragging && this.dragPoint) {
+                    const newX = coords.x - this.dragOffset.x;
+                    const newY = coords.y - this.dragOffset.y;
+                    const snapped = this.snapToGrid(newX, newY);
+
+                    this.dragPoint.x = snapped.x;
+                    this.dragPoint.y = snapped.y;
+
+                    this.drawShape();
+                    this.updateSize();
+                } else {
+                    // Update cursor based on hover
+                    const point = this.findPointAt(coords.x, coords.y);
+                    this.canvas.style.cursor = point ? 'grab' : 'crosshair';
+                }
+            }
+
+            handleMouseUp(e) {
+                if (this.isDragging) {
+                    this.isDragging = false;
+                    this.dragPoint = null;
+                    this.canvas.style.cursor = 'crosshair';
+                }
+            }
+
+            handleKeyDown(e) {
+                if (e.ctrlKey && e.key === 'z') {
+                    e.preventDefault();
+                    this.undo();
+                } else if (e.code === 'Space') {
+                    e.preventDefault();
+                    this.exportToJSON();
+                }
+            }
+
+            saveState() {
+                this.history.push(JSON.parse(JSON.stringify(this.points)));
+                // Keep history limited to 50 states
+                if (this.history.length > 50) {
+                    this.history.shift();
+                }
+            }
+
+            undo() {
+                if (this.history.length > 0) {
+                    this.points = this.history.pop();
+                    this.drawShape();
+                    this.updateStatus();
+                    this.updateSize();
+                }
+            }
+
+            clearPoints() {
+                this.saveState();
+                this.points = [];
+                this.drawGrid();
+                this.updateStatus();
+                this.updateSize();
+            }
+
+            convertToGridCoordinates(canvasX, canvasY) {
+                // Convert canvas coordinates to grid coordinates with origin at center
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                return {
+                    x: (canvasX - centerX) / this.gridSize,
+                    y: (centerY - canvasY) / this.gridSize // Flip Y axis to match typical coordinate system
+                };
+            }
+
+            convertFromGridCoordinates(gridX, gridY) {
+                // Convert grid coordinates back to canvas coordinates
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                return {
+                    x: centerX + (gridX * this.gridSize),
+                    y: centerY - (gridY * this.gridSize) // Flip Y axis back
+                };
+            }
+
+            exportToJSON() {
+                if (this.points.length === 0) {
+                    this.updateStatus('No points to export');
+                    return;
+                }
+
+                const midpoint = this.calculateMidpoint();
+                const relativePoints = this.points.map(point =>
+                    this.convertCanvasToRelativeGrid(point.x, point.y, midpoint)
+                );
+
+                const exportData = {
+                    colour: {
+                        a: this.color.a,
+                        b: this.color.b,
+                        g: this.color.g,
+                        r: this.color.r
+                    },
+                    drawType: this.drawType,
+                    hull: relativePoints,
+                    mass: this.mass,
+                    size: {
+                        x: this.size.x,
+                        y: this.size.y
+                    }
+                };
+
+                const jsonString = JSON.stringify(exportData, null, 4);
+                document.getElementById('jsonOutput').value = jsonString;
+
+                // Copy to clipboard
+                navigator.clipboard.writeText(jsonString).then(() => {
+                    this.updateStatus('JSON exported and copied to clipboard!');
+                }).catch(() => {
+                    this.updateStatus('JSON exported to text area');
+                });
+            }
+
+            importFromJSON() {
+                const jsonText = document.getElementById('jsonInput').value.trim();
+                if (!jsonText) {
+                    this.updateStatus('Please paste JSON data in the import area');
+                    return;
+                }
+
+                try {
+                    const data = JSON.parse(jsonText);
+
+                    // Import hull points
+                    if (data.hull && Array.isArray(data.hull)) {
+                        this.saveState();
+
+                        // First pass: calculate what the midpoint should be in canvas coordinates
+                        // We need to reverse the process - if these are relative coordinates,
+                        // we need to place them and then calculate their midpoint
+
+                        // For import, we'll place points relative to canvas center first
+                        const centerX = this.canvas.width / 2;
+                        const centerY = this.canvas.height / 2;
+
+                        this.points = data.hull.map(point => ({
+                            x: centerX + (point.x * this.gridSize),
+                            y: centerY - (point.y * this.gridSize) // Flip Y axis back
+                        }));
+                    }
+
+                    // Import color
+                    if (data.colour) {
+                        this.color = {
+                            r: data.colour.r || 0,
+                            g: data.colour.g || 0,
+                            b: data.colour.b || 0,
+                            a: data.colour.a || 255
+                        };
+                        const hex = this.rgbaToHex(this.color.r, this.color.g, this.color.b);
+                        document.getElementById('colorInput').value = hex;
+                        this.updateColorPreview();
+                    }
+
+                    // Import mass
+                    if (data.mass !== undefined) {
+                        this.mass = data.mass;
+                        document.getElementById('massInput').value = this.mass;
+                    }
+
+                    // Import drawType
+                    if (data.drawType !== undefined) {
+                        this.drawType = data.drawType;
+                        document.getElementById('drawTypeSelect').value = this.drawType;
+                    }
+
+                    this.drawShape();
+                    this.updateSize();
+                    this.updateStatus('JSON imported successfully!');
+
+                    // Clear import text area
+                    document.getElementById('jsonInput').value = '';
+
+                } catch (error) {
+                    this.updateStatus('Error importing JSON: Invalid format');
+                    console.error('Import error:', error);
+                }
+            }
+
+            updateStatus(message = null) {
+                const status = document.getElementById('status');
+                if (message) {
+                    status.textContent = message;
+                    setTimeout(() => {
+                        this.updateStatus();
+                    }, 3000);
+                } else {
+                    status.textContent = `Points: ${this.points.length} | Mass: ${this.mass} | Ctrl+Z: Undo | Space: Export`;
+                }
+            }
+        }
+
+        // Global functions for buttons
+        let designer;
+
+        function clearPoints() {
+            designer.clearPoints();
+        }
+
+        function exportToJSON() {
+            designer.exportToJSON();
+        }
+
+        function importFromJSON() {
+            designer.importFromJSON();
+        }
+
+        // Initialize the designer when page loads
+        window.addEventListener('load', () => {
+            designer = new PropDesigner();
+        });
+    </script>
+</body>
+
+</html>
