@@ -4,8 +4,9 @@ StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd) : S
 {
 	cam = Camera(midWin, winSize);
 	player = PhysicsObject(midWin, { 50.f, 50.f }, 10.f);
-	enemyStandin = player;
-	enemyStandin.positionReset(midWin + sf::Vector2f(0, -150.f));
+	enemyStandin = BaseEnemy(midWin + sf::Vector2f(0, -150.f), { 50.f, 50.f }, 10.f);
+	enemyStandin.setFillColor(sf::Color::Yellow);
+	enemyStandin.setRotationLock(true);
 	
 	availableActions = {
 		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, -35000.f }); }),//up
@@ -23,6 +24,8 @@ StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd) : S
 void StoredMoveBufferTestScene::update(float dt)
 {
 	//no physMan, no collision irrelevant in this scenario
+	enemyStandin.trackPlayer(&player, actionList, dt);
+
 	player.update(dt);
 	enemyStandin.update(dt);
 	cam.update(dt);

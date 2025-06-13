@@ -2,6 +2,7 @@
 #include "Framework/Scene.h"
 #include "BufferedCommand.h"
 #include "GenericCommand.h"
+#include "BaseEnemy.h"
 
 class StoredMoveBufferTestScene : public Scene
 {
@@ -18,7 +19,8 @@ private:
 	Commander cmndr;
 	Camera cam;
 
-	PhysicsObject player, enemyStandin;
+	PhysicsObject player;
+	BaseEnemy enemyStandin;
 
 	std::vector<BufferedCommand*> availableActions;
 	std::vector<BufferedCommand*> actionList;

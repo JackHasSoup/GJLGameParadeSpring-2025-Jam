@@ -1,6 +1,6 @@
 #include <iostream>
 #include "TestScene.h"
-#include "BaseEnemyTestScene.h"
+#include "StoredMoveBufferTestScene.h"
 #include "EDITOR/EditorScene.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 	// Initialise input and level objects.
 	AudioManager::init();
 	Input::init();
-	BaseEnemyTestScene level(&tex);
+	StoredMoveBufferTestScene level(&tex);
 
 	// Initialise objects for delta time
 	sf::Clock clock;
