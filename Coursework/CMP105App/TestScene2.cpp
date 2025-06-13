@@ -22,7 +22,7 @@ TestScene2::TestScene2(sf::RenderTarget* hwnd) : Scene(hwnd)
 	c1.setPoint(3, { 0, 50 });
 
 	g1 = PhysicsObject(midWin, { 50,50 }, 75);
-	g1.setFillColor(sf::Color::Magenta);
+	g1.setFillColor(sf::Color::Blue);
 	g1.setCollisionShape(c1);
 	g1.setRotationLock(false);
 
@@ -31,6 +31,9 @@ TestScene2::TestScene2(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
+	player = new Player();	
+	//player->setPosition(midWin.x - player->getSize().x/2, midWin.y - player->getSize().y/2);
+
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
@@ -38,11 +41,11 @@ TestScene2::TestScene2(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
 	commander.addPressed(sf::Keyboard::Space, updateText);
-
-	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {g1.accelerate({ 0,-mSpeed }); }));
-	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {g1.accelerate({ 0,mSpeed }); }));
-	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {g1.accelerate({ -mSpeed,0 }); }));
-	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {g1.accelerate({ mSpeed,0 }); }));
+	//changed g1.accelerate to player->accelerate
+	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player->accelerate({ 0,-mSpeed }); }));
+	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player->accelerate({ 0,mSpeed }); }));
+	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player->accelerate({ -mSpeed,0 }); }));
+	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player->accelerate({ mSpeed,0 }); }));
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
@@ -103,6 +106,8 @@ void TestScene2::update(float dt)
 	physMan.update(dt);
 
 	cam.update(dt);
+
+	player->update(dt);
 }
 
 void TestScene2::handleInput(float dt)
@@ -134,7 +139,7 @@ void TestScene2::render()
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
-
+	window->draw(*player);
 
 	lighter.endDraw();
 

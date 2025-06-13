@@ -2,21 +2,15 @@
 
 Player::Player()
 {
-	//sealTexture.loadFromFile("gfx/sealTexture.png"); //Doesn't exist yet
-	setSize(sf::Vector2f(50, 50));
-	setPosition(100, 100);
-
-	//availableActions = {
-	//	new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, -35000.f }); }),//up
-	//	new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, 35000.f }); }),//down
-	//	new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ -35000.f, 0.f }); }),//left
-	//	new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 35000.f, 0.f }); })//right
-	//};
+	sealTexture.loadFromFile("gfx/debugTestSprites/happySeal.png"); //Doesn't exist yet
+	setTexture(&sealTexture);
+	setSize(sf::Vector2f(100, 100));
+	setPosition(0,0);
+	setMass(20);
+	//setFillColor(sf::Color::Red);
 }
 
 Player::~Player()
 {
 
 }
-
-	

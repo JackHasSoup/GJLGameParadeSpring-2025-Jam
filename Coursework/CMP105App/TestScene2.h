@@ -9,6 +9,8 @@
 #include "Framework/Camera.h"
 #include "Framework/DeferredIllumination.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "Player.h"
+
 
 class TestScene2 : public Scene
 {
@@ -43,7 +45,8 @@ protected:
 	sf::Texture* arrow;
 
 	float r = 0;
-	float mSpeed = 350.f;
+	float mSpeed = 500.f;
 	float hue = 0.f;
+	Player* player;
 };
 
