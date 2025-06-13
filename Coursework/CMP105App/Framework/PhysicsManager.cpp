@@ -50,7 +50,7 @@ void PhysicsManager::update(float dt)
 		for (int j = i + 1; j < dynamicObjects.size(); ++j)
 		{
 			//dynamiuc collision uses SAT for more reliable collision detection
-			auto data = Collision::checkEdgeCollision(dynamicObjects[i], dynamicObjects[j]);
+			auto data = Collision::checkSAT(dynamicObjects[i], dynamicObjects[j]);
 			if (data.collision)
 			{
 				const float ratio = 1.f / (dynamicObjects[i]->getMass() + dynamicObjects[j]->getMass());
