@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnotherTestScene.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
     <ClCompile Include="Framework\Animation.cpp" />
