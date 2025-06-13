@@ -169,6 +169,7 @@
     <ClCompile Include="Framework\Commander.cpp" />
     <ClCompile Include="Framework\DeferredIllumination.cpp" />
     <ClCompile Include="Framework\KinematicObject.cpp" />
+    <ClCompile Include="Framework\UIScene.cpp" />
     <ClCompile Include="Framework\PhysicsManager.cpp" />
     <ClCompile Include="Framework\PhysicsObject.cpp" />
     <ClCompile Include="Framework\Rand.cpp" />
@@ -182,6 +183,8 @@
     <ClCompile Include="Framework\VectorHelper.cpp" />
     <ClCompile Include="GenericCommand.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
+    <ClCompile Include="PauseScene.cpp" />
     <ClCompile Include="StackedObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
@@ -197,6 +200,7 @@
     <ClInclude Include="Framework\Commander.h" />
     <ClInclude Include="Framework\DeferredIllumination.h" />
     <ClInclude Include="Framework\KinematicObject.h" />
+    <ClInclude Include="Framework\UIScene.h" />
     <ClInclude Include="Framework\PhysicsManager.h" />
     <ClInclude Include="Framework\PhysicsObject.h" />
     <ClInclude Include="Framework\Rand.h" />
@@ -209,6 +213,8 @@
     <ClInclude Include="Framework\TileMap.h" />
     <ClInclude Include="Framework\VectorHelper.h" />
     <ClInclude Include="GenericCommand.h" />
+    <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="PauseScene.h" />
     <ClInclude Include="StackedObject.h" />
     <ClInclude Include="TestScene.h" />
   </ItemGroup>

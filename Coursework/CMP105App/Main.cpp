@@ -1,5 +1,7 @@
 #include <iostream>
 #include "TestScene.h"
+#include "MenuScene.h"
+#include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
@@ -61,6 +63,9 @@ int main(int argc, char *argv[])
 	Input::init();
 	TestScene level(&tex);
 
+	MenuScene menu(&tex, &window);
+	PauseScene pause(&tex);
+
 	// Initialise objects for delta time
 	sf::Clock clock;
 	float deltaTime;
@@ -101,6 +106,8 @@ int main(int argc, char *argv[])
 		//Process window events
 		Input::handleEvents(&window, &tex);
 
+		GameState::setLastState(GameState::getCurrentState());
+
 		// Calculate delta time. How much time has passed 
 		// since it was last calculated (in seconds) and restart the clock.
 		deltaTime = clock.restart().asSeconds();
@@ -108,13 +115,47 @@ int main(int argc, char *argv[])
 		// Call standard game loop functions (input, update and render)
 		switch (GameState::getCurrentState())
 		{
-		default:
+		case State::MENU: {
+			menu.handleInput(deltaTime);
+			menu.update(deltaTime);
+			menu.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
+		case State::PAUSE: {
+			pause.handleInput(deltaTime);
+			pause.update(deltaTime);
+
+			pause.beginDraw();
+			switch (pause.getPausedState()) { // Render the background image of the scene you paused from
+			case State::LEVEL:
+				level.render();
+			}
+			pause.render();
+
+			window.draw(sprite);
+			window.display();
+			break;
+		}
+		case State::LEVEL: {
 			level.handleInput(deltaTime);
 			level.update(deltaTime);
 			level.render();
 			window.draw(sprite);//USEASCII ? window.draw(sprite, &ascii) : window.draw(sprite);
 			window.display();
 			break;
+		}
+		default:
+			break;
+		}
+
+		if (GameState::getCurrentState() != GameState::getLastState()) { // Call once when a gamestate switches from one to the other
+			switch (GameState::getCurrentState()) {
+			case State::PAUSE:
+				pause.setPausedState(GameState::getLastState());
+				break;
+			}
 		}
 
 		// Update input class, handle pressed keys
