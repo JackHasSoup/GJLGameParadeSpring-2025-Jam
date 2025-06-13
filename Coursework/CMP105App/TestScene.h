@@ -1,13 +1,7 @@
 #pragma once
 #include "Framework/Scene.h"
-#include "Framework/Button.h"
-#include "Framework/Collision.h"
-#include "Framework/PhysicsObject.h"
-#include "Framework/PhysicsManager.h"
 #include "StackedObject.h"
 #include "GenericCommand.h"
-#include "Framework/Camera.h"
-#include "Framework/DeferredIllumination.h"
 #include "EDITOR/SceneDataLoader.h"
 
 class TestScene : public Scene
