@@ -31,6 +31,10 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
+	enemy = BaseEnemy(midWin * 1.2f, { 50, 50 }, 75);
+	enemy.setFillColor(sf::Color::Yellow);
+	enemy.setRotationLock(true);
+
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
@@ -103,6 +107,10 @@ void BaseEnemyTestScene::update(float dt)
 	physMan.update(dt);
 
 	cam.update(dt);
+
+	enemy.update(dt);
+	enemy.trackPlayer(&g1);
+	std::cout << enemy.getPosition().x << " ; " << enemy.getPosition().y << std::endl;
 }
 
 void BaseEnemyTestScene::handleInput(float dt)
@@ -134,6 +142,7 @@ void BaseEnemyTestScene::render()
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
+	window->draw(enemy);
 
 
 	lighter.endDraw();

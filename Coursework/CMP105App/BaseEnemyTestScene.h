@@ -9,6 +9,7 @@
 #include "Framework/Camera.h"
 #include "Framework/DeferredIllumination.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "BaseEnemy.h"
 
 class BaseEnemyTestScene : public Scene
 {
@@ -41,6 +42,8 @@ protected:
 	Light movingLight;
 
 	sf::Texture* arrow;
+
+	BaseEnemy enemy;
 
 	float r = 0;
 	float mSpeed = 350.f;
