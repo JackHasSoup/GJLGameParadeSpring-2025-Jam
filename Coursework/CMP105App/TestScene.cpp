@@ -1,14 +1,14 @@
 #include "TestScene.h"
-//#define DEBUG_COL_POINTS
+#define DEBUG_COL_POINTS
 
 TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
 	font = AssetManager::registerNewFont("arial");
 	font->loadFromFile("./font/arial.ttf");
-	button = Button(midWin, winSize * 0.2f, 24, font, "Hello", true);
+	/*button = Button(midWin, winSize * 0.2f, 24, font, "Hello", true);
 	button.body().setFillColor(sf::Color::Black);
 	button.msg().setFillColor(sf::Color::Cyan);
-	button.SUBSCRIBEA(TestScene, changeText, sf::String("Hello World"));
+	button.SUBSCRIBEA(TestScene, changeText, sf::String("Hello World"));*/
 
 	c1 = sf::ConvexShape(3);
 	c1.setOrigin(25, 25);
@@ -31,28 +31,37 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
+	player = Player(midWin, { 100.f, 100.f }, 20.f);
+	auto cs = sf::ConvexShape(4);
+	cs.setPoint(0, { 0.f, 0.f });
+	cs.setPoint(1, { player.getSize().x, 0.f});
+	cs.setPoint(2, { player.getSize().x, player.getSize().y });
+	cs.setPoint(3, { 0.f, player.getSize().y });
+	player.setCollisionShape(cs);
+
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
 	stackSprite.setOrigin(stackSprite.getSize() / 2.f);
 
-	updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
-	commander.addPressed(sf::Keyboard::Space, updateText);
+	/*updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
+	commander.addPressed(sf::Keyboard::Space, updateText);*/
 
-	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {g1.accelerate({ 0,-mSpeed }); }));
-	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {g1.accelerate({ 0,mSpeed }); }));
-	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {g1.accelerate({ -mSpeed,0 }); }));
-	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {g1.accelerate({ mSpeed,0 }); }));
+	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-mSpeed }); }));
+	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player.accelerate({ 0,mSpeed }); }));
+	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player.accelerate({ -mSpeed,0 }); }));
+	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player.accelerate({ mSpeed,0 }); }));
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
 	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE);}));
 
 	cam = Camera(midWin, winSize);
-	cam.follow(&g1, 0.95f);
+	cam.follow(&player, 0.95f);
 
 	physMan.registerObj(&g1, false);
 	physMan.registerObj(&g2, false);
+	physMan.registerObj(&player, false);
 
 	lighter.setTarget(dynamic_cast<sf::RenderTexture*>(window));
 	lighter.create();
@@ -131,6 +140,7 @@ void TestScene::render()
 
 	lighter.draw(&g1);
 	lighter.draw(&g2);
+	lighter.draw(&player);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());

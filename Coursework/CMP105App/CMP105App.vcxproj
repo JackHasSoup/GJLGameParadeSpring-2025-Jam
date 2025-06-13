@@ -189,7 +189,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="StackedObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
-    <ClCompile Include="TestScene2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CreatureObject.h" />
@@ -222,7 +221,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="StackedObject.h" />
     <ClInclude Include="TestScene.h" />
-    <ClInclude Include="TestScene2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\ascii.frag" />
