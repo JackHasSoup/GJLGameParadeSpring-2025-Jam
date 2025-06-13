@@ -50,7 +50,7 @@ bool Collision::checkBoundingCircle(GameObject *s1, GameObject *s2)
 
 bool Collision::checkSimpleCircle(GameObject *sp1, GameObject *sp2)
 {
-	float minDist = VectorHelper::magnitudeSqrd(sp1->getSize() / 2.f) + VectorHelper::magnitudeSqrd(sp2->getSize() / 2.f);
+	float minDist = VectorHelper::magnitudeSqrd(sp1->getSize() / 1.5f) + VectorHelper::magnitudeSqrd(sp2->getSize() / 1.5f);
 	float dist = VectorHelper::magnitudeSqrd(sp1->getPosition() - sp2->getPosition());
 
 	return minDist > dist;

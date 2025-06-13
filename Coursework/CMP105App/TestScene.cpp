@@ -1,5 +1,5 @@
 #include "TestScene.h"
-#define DEBUG_COL_POINTS
+//#define DEBUG_COL_POINTS
 
 TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
@@ -31,7 +31,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
-	player = Player(midWin, { 100.f, 100.f }, 20.f);
+	player = Player(midWin, { 75.f, 75.f }, 20.f);
 	auto cs = sf::ConvexShape(4);
 	cs.setPoint(0, { 0.f, 0.f });
 	cs.setPoint(1, { player.getSize().x, 0.f});
@@ -159,7 +159,6 @@ void TestScene::render()
 		c.setOutlineColor(sf::Color::Red);
 		c.setOutlineThickness(1.f);
 
-		auto transform = o->getTransform();
 		for (size_t i = 0; i < s.getPointCount(); ++i)
 		{
 			c.setPosition(o->getTransform().transformPoint(s.getPoint(i)) - sf::Vector2f(2.5f, 2.5f));
@@ -167,6 +166,26 @@ void TestScene::render()
 		}
 
 		window->draw(s);
+	}
+	auto s = player.getBaseHull();
+	auto c = sf::CircleShape(5.f);
+	c.setFillColor(sf::Color::Transparent);
+	c.setOutlineColor(sf::Color::Red);
+	c.setOutlineThickness(1.f);
+
+	for (size_t i = 0; i < s.getPointCount(); ++i)
+	{
+		c.setPosition(player.getTransform().transformPoint(s.getPoint(i)) - sf::Vector2f(2.5f, 2.5f));
+		window->draw(c);
+	}
+
+	window->draw(s);
+
+	s = g1.getBaseHull();
+	for (size_t i = 0; i < s.getPointCount(); ++i)
+	{
+		c.setPosition(g1.getTransform().transformPoint(s.getPoint(i)) - sf::Vector2f(2.5f, 2.5f));
+		window->draw(c);
 	}
 #endif // DEBUG_COL_POINTS
 }
