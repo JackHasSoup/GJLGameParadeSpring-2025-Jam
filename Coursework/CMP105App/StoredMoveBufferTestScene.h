@@ -1,6 +1,7 @@
 #pragma once
 #include "Framework/Scene.h"
-#include "GenericCommand.h"
+#include "BufferedCommand.h"
+
 class StoredMoveBufferTestScene : public Scene
 {
 public:
@@ -14,7 +15,10 @@ private:
 	Commander cmndr;
 	Camera cam;
 
-	PhysicsObject p1;
+	PhysicsObject player, enemyStandin;
 
+	std::vector<BufferedCommand*> actionList;
+	int oldestAction;
+	int maxActions = 6; // only for example, can be more/less/determined by difficultt option
 };
 
