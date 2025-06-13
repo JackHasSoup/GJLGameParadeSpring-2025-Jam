@@ -1,16 +1,17 @@
 #include "StoredMoveBufferTestScene.h"
 
-StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd)
+StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
 	cam = Camera(midWin, winSize);
 	player = PhysicsObject(midWin, { 50.f, 50.f }, 10.f);
-	actionList.resize(6);
+	enemyStandin = player;
+	enemyStandin.positionReset(midWin + sf::Vector2f(0, -150.f));
 	
 	availableActions = {
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, -10.f }); }),//up
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, 10.f }); }),//down
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ -10.f, 0.f }); }),//left
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 10.f, 0.f }); })//right
+		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, -35000.f }); }),//up
+		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, 35000.f }); }),//down
+		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ -35000.f, 0.f }); }),//left
+		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 35000.f, 0.f }); })//right
 	};
 
 	cmndr.addPressed(sf::Keyboard::W, new GenericCommand(SUBA(StoredMoveBufferTestScene, executeAndTrack, availableActions[0])));
@@ -21,23 +22,43 @@ StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd)
 
 void StoredMoveBufferTestScene::update(float dt)
 {
+	//no physMan, no collision irrelevant in this scenario
 	player.update(dt);
+	enemyStandin.update(dt);
+	cam.update(dt);
 }
 
 void StoredMoveBufferTestScene::handleInput(float dt)
 {
 	cmndr.handleInput();
+
+	cooldown -= dt;
+	const int size = actionList.size();
+	if (cooldown <= 0.f && size)
+	{
+		cooldown = maxCooldown;
+		actionList[performingAction]->execute(&enemyStandin);
+
+		performingAction = performingAction + 1 >= size ? 0 : performingAction + 1;
+	}
 }
 
 void StoredMoveBufferTestScene::render()
 {
+	window->setView(cam);
 	beginDraw();
 	window->draw(player);
+	window->draw(enemyStandin);
 }
 
 void StoredMoveBufferTestScene::executeAndTrack(BufferedCommand* b)
 {
-	actionList[oldestAction] = b;
-	oldestAction = oldestAction+1 >= maxActions ? 0 : oldestAction+1;
+	const int size = actionList.size();
+	if (size < maxActions)
+		actionList.push_back(b);
+	else
+		actionList[oldestAction] = b;
+	
+	oldestAction = oldestAction+1 >= size ? 0 : oldestAction+1;
 	b->execute();
 }

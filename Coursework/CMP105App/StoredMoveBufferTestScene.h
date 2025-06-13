@@ -24,5 +24,8 @@ private:
 	std::vector<BufferedCommand*> actionList;
 	int oldestAction = 0;
 	int maxActions = 6; // only for example, can be more/less/determined by difficultt option
+	int performingAction = 0;
+
+	float cooldown, maxCooldown = 1.75f;
 };
 
