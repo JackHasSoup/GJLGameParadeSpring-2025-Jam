@@ -158,7 +158,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnotherTestScene.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
     <ClCompile Include="Framework\Animation.cpp" />
@@ -186,6 +185,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="StackedObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="TestScene2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EDITOR\EditorScene.h" />
@@ -214,6 +214,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="StackedObject.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="TestScene2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\ascii.frag" />
