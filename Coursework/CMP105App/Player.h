@@ -22,7 +22,10 @@ public:
 
 
 protected:
-	float health;
+	//TODO: fill these out
+	float health, maxHealth;
+	float speed;
+	float cooldown, maxCooldown;
 	sf::Texture* sealTexture;
 };
 
