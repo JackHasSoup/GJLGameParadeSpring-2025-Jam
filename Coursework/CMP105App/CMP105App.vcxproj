@@ -158,6 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseEnemy.cpp" />
+    <ClCompile Include="BaseEnemyTestScene.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
     <ClCompile Include="Framework\Animation.cpp" />
@@ -186,6 +188,8 @@
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseEnemy.h" />
+    <ClInclude Include="BaseEnemyTestScene.h" />
     <ClInclude Include="EDITOR\EditorScene.h" />
     <ClInclude Include="EDITOR\SceneDataLoader.h" />
     <ClInclude Include="Framework\Animation.h" />

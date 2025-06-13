@@ -176,6 +176,12 @@
     <ClCompile Include="EDITOR\SceneDataLoader.cpp">
       <Filter>EDITOR\Source</Filter>
     </ClCompile>
+    <ClCompile Include="BaseEnemy.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEnemyTestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -252,6 +258,12 @@
     </ClInclude>
     <ClInclude Include="EDITOR\SceneDataLoader.h">
       <Filter>EDITOR\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEnemyTestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEnemy.h">
+      <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
