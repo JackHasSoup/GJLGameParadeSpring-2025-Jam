@@ -31,7 +31,7 @@ TestScene2::TestScene2(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
-	player = new Player();	
+	player = new Player(midWin, {100.f, 100.f}, 20.f);
 	//player->setPosition(midWin.x - player->getSize().x/2, midWin.y - player->getSize().y/2);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });

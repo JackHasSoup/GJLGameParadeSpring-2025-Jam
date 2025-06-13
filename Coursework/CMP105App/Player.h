@@ -1,11 +1,18 @@
 #pragma once
-#include "Framework/PhysicsObject.h"
+#include "CreatureObject.h"
+#include "Framework/AssetManager.h"
 
-class Player : public PhysicsObject
+class Player : public CreatureObject
 {
 public:
-	Player();
+	Player(sf::Vector2f pos, sf::Vector2f size, float mass);
 	~Player();
+
+	virtual void lightAttack() override;
+	virtual void heavyAttack() override;
+	virtual void dodge() override;
+	virtual void parry() override;
+
 	/*float getHealth();
 	void setHealth();
 	void attack1();
@@ -16,6 +23,6 @@ public:
 
 protected:
 	float health;
-	sf::Texture sealTexture;
+	sf::Texture* sealTexture;
 };
 
