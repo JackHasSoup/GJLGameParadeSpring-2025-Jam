@@ -6,6 +6,12 @@
 #include "GameState.h"
 #include "Commander.h"
 #include "AssetManager.h"
+#include "Camera.h"
+#include "DeferredIllumination.h"
+#include "Button.h"
+#include "Collision.h"
+#include "PhysicsObject.h"
+#include "PhysicsManager.h"
 #include <string>
 #include <iostream>
 #define winSize sf::Vector2f(window->getSize().x, window->getSize().y)

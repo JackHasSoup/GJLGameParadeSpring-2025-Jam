@@ -1,0 +1,20 @@
+#pragma once
+#include "Framework/Scene.h"
+#include "GenericCommand.h"
+class StoredMoveBufferTestScene : public Scene
+{
+public:
+	StoredMoveBufferTestScene(sf::RenderTarget* hwnd);
+	~StoredMoveBufferTestScene() {};
+
+	virtual void update(float dt) override;
+	virtual void handleInput(float dt) override;
+	virtual void render() override;
+private:
+	Commander cmndr;
+	Camera cam;
+
+	PhysicsObject p1;
+
+};
+
