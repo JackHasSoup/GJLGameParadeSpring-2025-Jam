@@ -15,6 +15,12 @@ KinematicObject::KinematicObject(sf::Vector2f pos, sf::Vector2f size)
 	setCollisionBox({ {},{getSize()} });
 	setCollider(true);
 
+	collisionShape.setPointCount(4);
+	collisionShape.setPoint(0, {0.f, 0.f});
+	collisionShape.setPoint(1, {size.x, 0.f});
+	collisionShape.setPoint(2, {size.x, size.y});
+	collisionShape.setPoint(3, {0.f, size.y});
+
 	calculateCentre();
 }
 
