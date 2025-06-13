@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CreatureObject.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
     <ClCompile Include="Framework\Animation.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="TestScene2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreatureObject.h" />
     <ClInclude Include="EDITOR\EditorScene.h" />
     <ClInclude Include="EDITOR\SceneDataLoader.h" />
     <ClInclude Include="Framework\Animation.h" />
