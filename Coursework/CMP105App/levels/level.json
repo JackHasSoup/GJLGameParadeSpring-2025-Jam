@@ -44,9 +44,9 @@
         {
             "colour": {
                 "a": 255,
-                "b": 255,
-                "g": 242,
-                "r": 255
+                "b": 120,
+                "g": 255,
+                "r": 192
             },
             "drawType": 1,
             "hull": [
@@ -110,7 +110,7 @@
                 "x": 12.0,
                 "y": 12.0
             },
-            "textureKey": "RockoLargeLight"
+            "textureKey": "RockLargeBlue"
         },
         {
             "colour": {

@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
 	//Create the window
 	float SCALE = 1;
-	sf::VideoMode mode = sf::VideoMode::getDesktopMode();
+	sf::VideoMode mode = sf::VideoMode(1200,640);
 	sf::RenderWindow window(mode, "[WHIMSY ENGINE - GAME]");
 	window.setFramerateLimit(120);
 	window.setActive(true);
@@ -103,11 +103,16 @@ int main(int argc, char *argv[])
 		deltaTime = clock.restart().asSeconds();
 
 		// Call standard game loop functions (input, update and render)
-		level.handleInput(deltaTime);
-		level.update(deltaTime);
-		level.render();
-		USEASCII ? window.draw(sprite, &ascii) : window.draw(sprite);
-		window.display();
+		switch (GameState::getCurrentState())
+		{
+		default:
+			level.handleInput(deltaTime);
+			level.update(deltaTime);
+			level.render();
+			window.draw(sprite);//USEASCII ? window.draw(sprite, &ascii) : window.draw(sprite);
+			window.display();
+			break;
+		}
 
 		// Update input class, handle pressed keys
 		// Must be done last.

@@ -1,5 +1,5 @@
 #include "TestScene.h"
-//#def DEBUG_COL_POINTS
+//#define DEBUG_COL_POINTS
 
 TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
