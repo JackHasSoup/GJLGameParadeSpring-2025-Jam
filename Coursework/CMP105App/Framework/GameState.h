@@ -2,7 +2,7 @@
 #include "SFML\Graphics.hpp"
 
 // Possible states. This enum can be modified to add additional states as required.
-enum class State { MENU, LEVEL, PAUSE, CREDITS };
+enum class State { MENU, PAUSE, WIN, LOSE, LEVEL };
 
 struct CollisionData {
 	bool collision = false;

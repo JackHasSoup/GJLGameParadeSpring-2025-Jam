@@ -1,5 +1,6 @@
 #include <iostream>
 #include "TestScene.h"
+#include "MenuScene.h"
 #include "EDITOR/EditorScene.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
@@ -58,6 +59,8 @@ int main(int argc, char *argv[])
 	Input::init();
 	TestScene level(&tex);
 
+	MenuScene menu(&tex, &window);
+
 	// Initialise objects for delta time
 	sf::Clock clock;
 	float deltaTime;
@@ -105,12 +108,23 @@ int main(int argc, char *argv[])
 		// Call standard game loop functions (input, update and render)
 		switch (GameState::getCurrentState())
 		{
-		default:
+		case State::MENU: {
+			menu.handleInput(deltaTime);
+			menu.update(deltaTime);
+			menu.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
+		case State::LEVEL: {
 			level.handleInput(deltaTime);
 			level.update(deltaTime);
 			level.render();
 			window.draw(sprite);//USEASCII ? window.draw(sprite, &ascii) : window.draw(sprite);
 			window.display();
+			break;
+		}
+		default:
 			break;
 		}
 
