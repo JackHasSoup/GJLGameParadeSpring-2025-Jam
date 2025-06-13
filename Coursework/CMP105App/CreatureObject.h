@@ -12,6 +12,14 @@ public:
 	virtual void dodge() = 0;
 	virtual void parry() = 0;
 
+	virtual void damage(float d) { health -= d; };
+	virtual float getHealth() { return health; };
+	virtual void restoreHealth() { health = maxHealth; };
+
+	virtual void setSpeed(float s) { speed = s; };
 protected:
+	float health, maxHealth;
+	float speed;
+	float cooldown, maxCooldown;
 };
 
