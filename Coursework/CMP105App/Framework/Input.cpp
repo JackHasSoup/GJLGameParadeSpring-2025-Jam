@@ -159,7 +159,7 @@ bool Input::isRightMousePressed()
 	return false;
 }
 
-void Input::handleEvents(sf::RenderWindow* const window)
+void Input::handleEvents(sf::RenderWindow* const window, sf::RenderTexture* tex)
 {
 	sf::Event event;
 	while (window->pollEvent(event))
@@ -171,6 +171,7 @@ void Input::handleEvents(sf::RenderWindow* const window)
 			break;
 		case sf::Event::Resized:
 			window->setView(sf::View(sf::FloatRect(0.f, 0.f, (float)event.size.width, (float)event.size.height)));
+			if (tex) { tex->create((float)event.size.width, (float)event.size.height); }
 			break;
 		case sf::Event::KeyPressed:
 			// update input class

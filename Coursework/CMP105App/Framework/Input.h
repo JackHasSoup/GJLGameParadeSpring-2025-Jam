@@ -44,7 +44,7 @@ public:
 	static bool isRightMouseDown();
 	static bool isRightMousePressed();
 
-	static void handleEvents(sf::RenderWindow* const window);
+	static void handleEvents(sf::RenderWindow* const window, sf::RenderTexture* tex = nullptr);
 	
 private:
 	//array of booleans representing keys (pressed = true, released = false)

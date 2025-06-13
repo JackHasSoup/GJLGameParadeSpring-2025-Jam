@@ -15,7 +15,10 @@ int main(int argc, char *argv[])
 {
 	//Create the window
 	float SCALE = 1;
-	sf::VideoMode mode = sf::VideoMode(1200,640);
+	sf::VideoMode mode = sf::VideoMode(1200, 640);
+	if (!FORCE_EDITOR)
+		mode = sf::VideoMode::getDesktopMode();
+
 	sf::RenderWindow window(mode, "[WHIMSY ENGINE - GAME]");
 	window.setFramerateLimit(120);
 	window.setActive(true);
@@ -99,7 +102,7 @@ int main(int argc, char *argv[])
 	while (window.isOpen())
 	{
 		//Process window events
-		Input::handleEvents(&window);
+		Input::handleEvents(&window, &tex);
 
 		// Calculate delta time. How much time has passed 
 		// since it was last calculated (in seconds) and restart the clock.
