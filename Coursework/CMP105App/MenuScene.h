@@ -9,7 +9,7 @@ public:
 	void render();
 
 private:
-	enum ButtonIndex { Play, Exit };
+	enum ButtonIndex { Play, Exit }; // enum for ease of referring to specific button indexes
 
 	sf::Text titleText;
 

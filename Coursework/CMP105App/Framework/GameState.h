@@ -17,6 +17,10 @@ public:
 	static void setCurrentState(State s);
 	static State getCurrentState();
 
+	static void setLastState(State s);
+	static State getLastState();
+
 protected:
 	static State currentState;
+	static State lastState;
 };

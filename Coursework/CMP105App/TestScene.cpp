@@ -15,7 +15,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	c1.setPoint(0, { 0, 0 });
 	c1.setPoint(1, { 50, 0 });
 	c1.setPoint(2, { 50, 50 });
-	
+
 	c1.setFillColor(sf::Color::Cyan);
 	c2 = c1;
 	c1.setPointCount(4);
@@ -33,19 +33,20 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
-	stackSprite.setSize({64.f,128.f});
+	stackSprite.setSize({ 64.f,128.f });
 	stackSprite.setOrigin(stackSprite.getSize() / 2.f);
 
-	updateText = new GenericCommand(SUBOA(Button,checkInput,button,window));
+	updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
 	commander.addPressed(sf::Keyboard::Space, updateText);
 
-	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {g1.accelerate({0,-mSpeed}); }));
-	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {g1.accelerate({0,mSpeed }); }));
-	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {g1.accelerate({-mSpeed,0}); }));
-	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {g1.accelerate({ mSpeed,0}); }));
+	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {g1.accelerate({ 0,-mSpeed }); }));
+	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {g1.accelerate({ 0,mSpeed }); }));
+	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {g1.accelerate({ -mSpeed,0 }); }));
+	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {g1.accelerate({ mSpeed,0 }); }));
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
-	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE);}));
 
 	cam = Camera(midWin, winSize);
 	cam.follow(&g1, 0.95f);

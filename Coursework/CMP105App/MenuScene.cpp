@@ -1,8 +1,7 @@
 #include "MenuScene.h"
 
-MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd)
+MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIScene(hwnd)
 {
-	window = hwnd;
 	screenWindow = screenHwnd;
 
 	titleText.setCharacterSize(56);
@@ -16,7 +15,7 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd)
 	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.2f, 36, font, "Start", true);
 	buttons[ButtonIndex::Play].body().setFillColor(sf::Color::Black);
 	buttons[ButtonIndex::Play].msg().setFillColor(sf::Color::White);
-	buttons[ButtonIndex::Play].SUBSCRIBEA(MenuScene, changeState, State::LEVEL);
+	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::LEVEL); });
 
 	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{0,winSize.y * 0.3f}, winSize * 0.2f, 36, font, "Exit", true);
 	buttons[ButtonIndex::Exit].body().setFillColor(sf::Color::Black);
