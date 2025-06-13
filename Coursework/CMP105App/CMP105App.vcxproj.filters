@@ -176,6 +176,12 @@
     <ClCompile Include="EDITOR\SceneDataLoader.cpp">
       <Filter>EDITOR\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\UIScene.cpp">
+      <Filter>Framework\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -255,6 +261,12 @@
     </ClInclude>
     <ClInclude Include="EDITOR\SceneDataLoader.h">
       <Filter>EDITOR\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\UIScene.h">
+      <Filter>Framework\Header\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
