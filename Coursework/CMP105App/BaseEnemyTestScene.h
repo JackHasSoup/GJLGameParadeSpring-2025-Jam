@@ -1,14 +1,21 @@
 #pragma once
 #include "Framework/Scene.h"
+#include "Framework/Button.h"
+#include "Framework/Collision.h"
+#include "Framework/PhysicsObject.h"
+#include "Framework/PhysicsManager.h"
 #include "StackedObject.h"
 #include "GenericCommand.h"
+#include "Framework/Camera.h"
+#include "Framework/DeferredIllumination.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "BaseEnemy.h"
 
-class TestScene : public Scene
+class BaseEnemyTestScene : public Scene
 {
 public:
-	TestScene(sf::RenderTarget* hwnd);
-	~TestScene() {};
+	BaseEnemyTestScene(sf::RenderTarget* hwnd);
+	~BaseEnemyTestScene() {};
 
 	virtual void update(float dt) override;
 	virtual void handleInput(float dt) override;
@@ -36,8 +43,9 @@ protected:
 
 	sf::Texture* arrow;
 
-	float r=0;
+	BaseEnemy enemy;
+
+	float r = 0;
 	float mSpeed = 350.f;
 	float hue = 0.f;
 };
-

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -158,6 +158,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BufferedCommand.cpp" />
+    <ClCompile Include="BaseEnemy.cpp" />
+    <ClCompile Include="BaseEnemyTestScene.cpp" />
+    <ClCompile Include="CreatureObject.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
     <ClCompile Include="Framework\Animation.cpp" />
@@ -186,9 +190,14 @@
     <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="PauseScene.cpp" />
     <ClCompile Include="StackedObject.cpp" />
+    <ClCompile Include="StoredMoveBufferTestScene.cpp" />
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BufferedCommand.h" />
+    <ClInclude Include="BaseEnemy.h" />
+    <ClInclude Include="BaseEnemyTestScene.h" />
+    <ClInclude Include="CreatureObject.h" />
     <ClInclude Include="EDITOR\EditorScene.h" />
     <ClInclude Include="EDITOR\SceneDataLoader.h" />
     <ClInclude Include="Framework\Animation.h" />
@@ -216,6 +225,7 @@
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PauseScene.h" />
     <ClInclude Include="StackedObject.h" />
+    <ClInclude Include="StoredMoveBufferTestScene.h" />
     <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <ItemGroup>

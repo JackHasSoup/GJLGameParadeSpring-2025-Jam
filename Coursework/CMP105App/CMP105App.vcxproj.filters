@@ -176,6 +176,18 @@
     <ClCompile Include="EDITOR\SceneDataLoader.cpp">
       <Filter>EDITOR\Source</Filter>
     </ClCompile>
+    <ClCompile Include="StoredMoveBufferTestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferedCommand.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEnemy.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEnemyTestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="Framework\UIScene.cpp">
       <Filter>Framework\Source\UI</Filter>
     </ClCompile>
@@ -258,6 +270,18 @@
     </ClInclude>
     <ClInclude Include="EDITOR\SceneDataLoader.h">
       <Filter>EDITOR\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="StoredMoveBufferTestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferedCommand.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEnemyTestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEnemy.h">
+      <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
     <ClInclude Include="Framework\UIScene.h">
       <Filter>Framework\Header\UI</Filter>
