@@ -50,11 +50,13 @@ void Player::update(float dt)
 {
 	CreatureObject::update(dt);
 
+	cooldown -= dt;
+	invincibleTime -= dt; //decrease the invincible time
+
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
 	}
-	invincibleTime -= dt; //decrease the invincible time
 
 	auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
 	switch (lastAction)
@@ -100,7 +102,10 @@ void Player::update(float dt)
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	lastAction = Action::LIGHT;
+	setCooldown(maxCooldown);
+
 	update(0.f); //update to set the correct frame for the attack
 	for (auto const& c : creatures)
 	{
@@ -153,6 +158,9 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
+	setCooldown(maxCooldown * 1.5f);//longer cooldown for heavy attack
+
 	//don't do attack here, wait to land
 	jumpTime = jumpLength; //reset the jump time for the jump animation
 	creaturesTemp = creatures;
@@ -178,6 +186,9 @@ void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
 
 void Player::dodge()
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
+	setCooldown(maxCooldown * 0.75f); //shorter cooldown for dodge
+
 	sf::Vector2f dir = (sf::Vector2f(0, 1) * (float)Input::isKeyDown(sf::Keyboard::S)) +
 						(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
 						(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
@@ -188,6 +199,9 @@ void Player::dodge()
 
 void Player::parry()
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
+	setCooldown(maxCooldown * 0.35f); //shorter cooldown for parry
+
 	//parry just gives some invincible time
 	invincibleTime = 0.5f; //set the invincible time to 0.5 seconds
 	std::cout << "plyr parry\n";
