@@ -18,6 +18,13 @@ public:
 
 	virtual void setSpeed(float s) { speed = s; };
 	virtual float getSpeed() { return speed; };
+
+	virtual void setCooldown(float c) { cooldown = c; };
+	virtual float getCooldown() { return cooldown; };
+
+	virtual void setMaxCooldown(float mc) { maxCooldown = mc; };
+	virtual float getMaxCooldown() { return maxCooldown; };
+
 protected:
 	float health, maxHealth;
 	float speed;
