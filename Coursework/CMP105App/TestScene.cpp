@@ -128,6 +128,17 @@ void TestScene::update(float dt)
 
 	stackSprite.setRotation(r);
 
+	for (auto& e : enemies)
+	{
+		if (e->isAlive())
+		{
+			if (dynamic_cast<BaseEnemy*>(e))
+			{
+				dynamic_cast<BaseEnemy*>(e)->trackPlayer(&player, actionBuffer, dt);
+			}
+		}
+	}
+
 	physMan.update(dt);
 
 	cam.update(dt);
