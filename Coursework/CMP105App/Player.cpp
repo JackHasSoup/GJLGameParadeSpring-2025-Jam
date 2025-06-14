@@ -25,6 +25,13 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	cs.setPoint(2, { getSize().x, getSize().y });
 	cs.setPoint(3, { 0.f, getSize().y });
 	setCollisionShape(cs);
+
+	for (int i = 0; i < 4; i++)
+	{
+		slap[0].addFrame({ 0, 215 * i, 253, 215 });
+		slap[1].addFrame({ 253, 215 * i, 253, 215 });
+		slap[2].addFrame({ 506, 215 * i, 253, 215 });
+	}
 }
 
 Player::~Player()
@@ -71,7 +78,14 @@ void Player::update(float dt)
 	}
 
 	//if mouse position is left of seal position flip the animation
-	slap[howBloody].setFlipped(mPos.x < getPosition().x);
+	if (VectorHelper::magnitudeSqrd(lastPos - getPosition()) < 0.01f) //if not moving use mouse
+	{
+		slap[howBloody].setFlipped(mPos.x < getPosition().x);
+	}
+	else {
+		slap[howBloody].setFlipped(lastPos.x > getPosition().x);
+	}
+	
 	setTextureRect(slap[howBloody].getCurrentFrame());
 }
 
