@@ -28,9 +28,20 @@ public:
 	virtual void setMaxCooldown(float mc) { maxCooldown = mc; };
 	virtual float getMaxCooldown() { return maxCooldown; };
 
+	virtual void setLightAttackDamage(float d) { lightAttackDamage = d; };
+	virtual float getLightAttackDamage() { return lightAttackDamage; };
+	virtual void setHeavyAttackDamage(float d) { heavyAttackDamage = d; };
+	virtual float getHeavyAttackDamage() { return heavyAttackDamage; };
+	virtual void setLightAttackRange(float r) { lightAttackRange = r; };
+	virtual float getLightAttackRange() { return lightAttackRange; };
+	virtual void setHeavyAttackRange(float r) { heavyAttackRange = r; };
+	virtual float getHeavyAttackRange() { return heavyAttackRange; };
+
 protected:
 	float health, maxHealth;
 	float speed;
 	float cooldown, maxCooldown;
+	float lightAttackDamage, heavyAttackDamage;
+	float lightAttackRange, heavyAttackRange; //range is the coeficient of the size of the attack check box for melee attacks, the projectile range for ranged attacks
 };
 

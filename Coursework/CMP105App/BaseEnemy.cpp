@@ -22,6 +22,7 @@ void BaseEnemy::parry()
 }
 
 void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
+	if (!isAlive())return;
 	cooldown -= dt;
 	direction = sf::Vector2f(player->getPosition().x - getPosition().x, player->getPosition().y - getPosition().y);
 	directionNorm = VectorHelper::normalise(direction);
@@ -35,5 +36,14 @@ void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 
 		actionBuffer[actionBufferIndex]->execute(this, { player });
 		actionBufferIndex = actionBufferIndex + 1 >= size ? 0 : actionBufferIndex + 1;
+	}
+}
+
+void BaseEnemy::damage(float d)
+{
+	CreatureObject::damage(d);
+	if (health <= 0)
+	{
+		setAlive(false);
 	}
 }

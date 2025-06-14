@@ -16,6 +16,10 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	speed = 350.f;
 	health = 100.f;
 	maxHealth = 100.f;
+	lightAttackDamage = 10.f;
+	heavyAttackDamage = 25.f;
+	lightAttackRange = 1.f;
+	heavyAttackDamage = 2.5f;
 
 	setDrawType(drawType::RECT);
 
@@ -91,12 +95,104 @@ void Player::update(float dt)
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
 {
-	std::cout << "plyr light\n";
 	lastAction = Action::LIGHT;
+	update(0.f); //update to set the correct frame for the attack
+	for (auto const& c : creatures)
+	{
+		//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
+		sf::FloatRect attackBox;
+		if (slap[howBloody].getCurrentFrame().width != 0) //if the frame is valid
+		{
+			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
+
+			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
+			if (mPos.y < getPosition().y - getOrigin().y)
+			{
+				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+				attackBox.top -= attackBox.height / 2.f;
+			}
+			else if (mPos.y > getPosition().y + getOrigin().y)
+			{
+				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+				attackBox.top += attackBox.height / 2.f;
+			}
+			else {
+				attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
+				if (slap[howBloody].getFlipped()) //if the player is facing left
+				{
+					attackBox.left -= attackBox.width / 2.f;
+				}
+				else {
+					attackBox.left += attackBox.width / 2.f;
+				}
+			}
+
+			//check if the attack box intersects the creature's collision shape
+			if (c->getCollisionShape().getGlobalBounds().intersects(attackBox))
+			{
+				c->damage(lightAttackDamage);
+				std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
+				c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+			}
+			else {
+				std::cout << "plyr miss\n"; //missed
+			}
+		}
+		else {
+			std::cout << "return\n";
+			return; //no valid frame, no attack
+		}
+	}
+	std::cout << "plyr light\n";
 }
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	//TEMP: heavy attack is just more powerfull light attack
+	for (auto const& c : creatures)
+	{
+		//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
+		sf::FloatRect attackBox;
+		if (slap[howBloody].getCurrentFrame().width != 0) //if the frame is valid
+		{
+			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
+			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
+			if (mPos.y < getPosition().y - getOrigin().y)
+			{
+				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
+				attackBox.top -= attackBox.height / 2.f;
+			}
+			else if (mPos.y > getPosition().y + getOrigin().y)
+			{
+				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
+				attackBox.top += attackBox.height / 2.f;
+			}
+			else {
+				attackBox.width *= heavyAttackRange; //increase the width of the attack box for heavy attack
+				if (slap[howBloody].getFlipped()) //if the player is facing left
+				{
+					attackBox.left -= attackBox.width / 2.f;
+				}
+				else {
+					attackBox.left += attackBox.width / 2.f;
+				}
+			}
+	
+			//check if the attack box intersects the creature's collision shape
+			if (c->getCollisionShape().getGlobalBounds().intersects(attackBox))
+			{
+				c->damage(heavyAttackDamage);
+				std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
+				c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+			}
+			else {
+				std::cout << "plyr miss\n"; //missed
+			}
+		}
+		else {
+			return; //no valid frame, no attack
+		}
+	}
 	std::cout << "plyr heavy\n";
 	lastAction = Action::HEAVY;
 }

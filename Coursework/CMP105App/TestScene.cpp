@@ -98,6 +98,19 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	{
 		lighter.addLight(light);
 	}
+
+	//load some generic enemies around the screen
+	for (int i = 0; i < 5; ++i)
+	{
+		auto* e = new BaseEnemy(midWin + sf::Vector2f(rand() % 1000 - 500, rand() % 1000 - 500), { 50.f,50.f }, 20.f);
+		e->setFillColor(sf::Color::Red);
+		e->setCollisionShape(cR);
+		e->setRotationLock(true);
+		e->makeSquareCollisionShape();
+		e->setAlive(true);
+		enemies.push_back(e);
+		physMan.registerObj(e, false);
+	}
 }
 
 void TestScene::update(float dt)
@@ -155,6 +168,12 @@ void TestScene::render()
 		lighter.draw(o);
 	}
 
+	//draw enemies with lighter
+	for (auto& e : enemies)
+	{
+		if(e->isAlive())lighter.draw(e);
+	}
+
 	lighter.draw(&g1);
 	lighter.draw(&g2);
 	lighter.draw(&player);
@@ -165,7 +184,6 @@ void TestScene::render()
 
 
 	lighter.endDraw();
-
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
 #ifdef DEBUG_COL_POINTS
 	for (auto& o : sceneObjects)
@@ -225,5 +243,5 @@ void TestScene::executeAndTrack(BufferedCommand* b)
 		actionBuffer[oldestAction] = b;
 
 	oldestAction = oldestAction + 1 >= size ? 0 : oldestAction + 1;
-	b->execute(nullptr, {});
+	b->execute(nullptr, enemies);
 }

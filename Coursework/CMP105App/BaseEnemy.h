@@ -16,6 +16,7 @@ public:
 	virtual void parry() override;
 
 	void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
+	void damage(float d) override;
 protected:
 	sf::Vector2f direction, directionNorm;
 	float speed = 200.f;

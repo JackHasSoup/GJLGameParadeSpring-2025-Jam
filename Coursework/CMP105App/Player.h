@@ -23,9 +23,9 @@ public:
 	void attack2();
 	void attack3();*/
 	//probably add more attacks and rename them
-
 	virtual void damage(float d) override;
 protected:
+	
 	int howBloody = 0;
 	Animation slap[3]; //1-normal, 2-bloody, 3-very bloody (normal, side, down, up)
 	Action lastAction = Action::NONE;
