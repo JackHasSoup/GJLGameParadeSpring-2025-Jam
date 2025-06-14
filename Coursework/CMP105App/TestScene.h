@@ -2,8 +2,10 @@
 #include "Framework/Scene.h"
 #include "StackedObject.h"
 #include "GenericCommand.h"
+#include "BufferedCommand.h"
 #include "EDITOR/SceneDataLoader.h"
 #include "Player.h"
+#include "BaseEnemy.h"
 
 
 class TestScene : public Scene
@@ -42,5 +44,15 @@ protected:
 	float mSpeed = 350.f;
 	float hue = 0.f;
 	Player player;
+
+	std::vector<CreatureObject*> enemies;
+
+	//action buffer
+	std::vector<BufferedCommand*> availableActions;
+	std::vector<BufferedCommand*> actionBuffer;
+	int oldestAction = 0;
+	int maxActBufferSize = 8;
+
+	void executeAndTrack(BufferedCommand* b);
 };
 

@@ -110,7 +110,7 @@ void BaseEnemyTestScene::update(float dt)
 
 	cam.update(dt);
 
-	enemy.trackPlayer(&g1, {}, dt);
+	//enemy.trackPlayer(&g1, {}, dt);
 	//std::cout << enemy.getPosition().x << " ; " << enemy.getPosition().y << std::endl;
 }
 

@@ -75,3 +75,24 @@ void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		break;
 	}
 }
+
+void GameObject::makeSquareCollisionShape()
+{
+	collisionShape = sf::ConvexShape(4);
+	collisionShape.setPointCount(4);
+	collisionShape.setPoint(0, { 0.f, 0.f });
+	collisionShape.setPoint(1, { getSize().x, 0.f });
+	collisionShape.setPoint(2, { getSize().x, getSize().y });
+	collisionShape.setPoint(3, { 0.f, getSize().y });
+	baseHull = collisionShape;
+}
+
+void GameObject::makeCentredSquareCollisionShape()
+{
+	collisionShape = sf::ConvexShape(4);
+	collisionShape.setPoint(0, sf::Vector2f(-getSize().x / 2.f, -getSize().y / 2.f));
+	collisionShape.setPoint(1, sf::Vector2f(getSize().x / 2.f, -getSize().y / 2.f));
+	collisionShape.setPoint(2, sf::Vector2f(getSize().x / 2.f, getSize().y / 2.f));
+	collisionShape.setPoint(3, sf::Vector2f(-getSize().x / 2.f, getSize().y / 2.f));
+	baseHull = collisionShape;
+}

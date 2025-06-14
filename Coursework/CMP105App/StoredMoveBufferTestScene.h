@@ -19,7 +19,7 @@ private:
 	Commander cmndr;
 	Camera cam;
 
-	PhysicsObject player;
+	BaseEnemy player;
 	BaseEnemy enemyStandin;
 
 	std::vector<BufferedCommand*> availableActions;

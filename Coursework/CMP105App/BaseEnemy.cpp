@@ -5,11 +5,12 @@ BaseEnemy::BaseEnemy(sf::Vector2f pos, sf::Vector2f size, float mass) : Creature
 
 }
 
-void BaseEnemy::lightAttack()
+void BaseEnemy::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	std::cout << "Enemy light attack\n";
 }
 
-void BaseEnemy::heavyAttack()
+void BaseEnemy::heavyAttack(std::vector<CreatureObject*> creatures)
 {
 }
 
@@ -21,7 +22,8 @@ void BaseEnemy::parry()
 {
 }
 
-void BaseEnemy::trackPlayer(PhysicsObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
+void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
+	if (!isAlive())return;
 	cooldown -= dt;
 	direction = sf::Vector2f(player->getPosition().x - getPosition().x, player->getPosition().y - getPosition().y);
 	directionNorm = VectorHelper::normalise(direction);
@@ -33,7 +35,16 @@ void BaseEnemy::trackPlayer(PhysicsObject* player, std::vector<BufferedCommand*>
 	else if(cooldown <= 0.f && size) {
 		cooldown = maxCooldown;
 
-		actionBuffer[actionBufferIndex]->execute(this);
+		actionBuffer[actionBufferIndex]->execute(this, { player });
 		actionBufferIndex = actionBufferIndex + 1 >= size ? 0 : actionBufferIndex + 1;
+	}
+}
+
+void BaseEnemy::damage(float d)
+{
+	CreatureObject::damage(d);
+	if (health <= 0)
+	{
+		setAlive(false);
 	}
 }

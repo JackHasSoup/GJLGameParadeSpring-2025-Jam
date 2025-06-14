@@ -35,6 +35,9 @@ public:
 	drawType getDrawType() const { return drawType; }
 	void setDrawType(drawType dt) { drawType = dt; }
 
+	void makeCentredSquareCollisionShape();
+	void makeSquareCollisionShape();
+
 	sf::Vector2f lastPos;
 protected:
 	//sprite properties

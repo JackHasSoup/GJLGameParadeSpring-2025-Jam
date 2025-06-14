@@ -3,16 +3,16 @@
 StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
 	cam = Camera(midWin, winSize);
-	player = PhysicsObject(midWin, { 50.f, 50.f }, 10.f);
+	player = BaseEnemy(midWin, { 50.f, 50.f }, 10.f);
 	enemyStandin = BaseEnemy(midWin + sf::Vector2f(0, -150.f), { 50.f, 50.f }, 10.f);
 	enemyStandin.setFillColor(sf::Color::Yellow);
 	enemyStandin.setRotationLock(true);
 	
 	availableActions = {
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, -35000.f }); }),//up
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 0.f, 35000.f }); }),//down
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ -35000.f, 0.f }); }),//left
-		new BufferedCommand(&player, [](PhysicsObject* target) {target->accelerate({ 35000.f, 0.f }); })//right
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ 0.f, -35000.f }); }),//up
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ 0.f, 35000.f }); }),//down
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ -35000.f, 0.f }); }),//left
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ 35000.f, 0.f }); })//right
 	};
 
 	cmndr.addPressed(sf::Keyboard::W, new GenericCommand(SUBA(StoredMoveBufferTestScene, executeAndTrack, availableActions[0])));
@@ -40,7 +40,7 @@ void StoredMoveBufferTestScene::handleInput(float dt)
 	if (cooldown <= 0.f && size)
 	{
 		cooldown = maxCooldown;
-		actionList[performingAction]->execute(&enemyStandin);
+		actionList[performingAction]->execute(&enemyStandin, {});
 
 		performingAction = performingAction + 1 >= size ? 0 : performingAction + 1;
 	}

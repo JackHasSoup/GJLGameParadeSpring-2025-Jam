@@ -1,17 +1,17 @@
 #pragma once
 #include <functional>
 #include "Framework/Command.h"
-#include "Framework/PhysicsObject.h"
+#include "CreatureObject.h"
 
 class BufferedCommand : public Command
 {
 public:
-	BufferedCommand(PhysicsObject* defaultTarget, std::function<void(PhysicsObject* target)> cb);
+	BufferedCommand(CreatureObject* defaultTarget, std::function<void(CreatureObject* target, std::vector<CreatureObject*> creatures)> cb);
 	~BufferedCommand() {};
 
-	virtual void execute(PhysicsObject* target);
-	virtual void execute() override { execute(nullptr); };
+	virtual void execute(CreatureObject* target, std::vector<CreatureObject*> creatures);
+	virtual void execute() override { execute(nullptr, {}); };
 private:
-	std::function<void(PhysicsObject* target)> callback;
-	PhysicsObject* defaultTarget;
+	std::function<void(CreatureObject* target, std::vector<CreatureObject*> creatures)> callback;
+	CreatureObject* defaultTarget;
 };

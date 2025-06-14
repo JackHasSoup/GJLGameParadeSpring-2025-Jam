@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 	sprite.setScale(SCALE, -SCALE);
 	sprite.setPosition(sf::Vector2f(0, mode.height));
 
+	GameState::setRenderTarget(&tex);
+
 	//init glew
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
