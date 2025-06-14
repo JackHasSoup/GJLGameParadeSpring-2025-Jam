@@ -89,13 +89,13 @@ void Player::update(float dt)
 	setTextureRect(slap[howBloody].getCurrentFrame());
 }
 
-void Player::lightAttack()
+void Player::lightAttack(std::vector<CreatureObject*> creatures)
 {
 	std::cout << "plyr light\n";
 	lastAction = Action::LIGHT;
 }
 
-void Player::heavyAttack()
+void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
 	std::cout << "plyr heavy\n";
 	lastAction = Action::HEAVY;

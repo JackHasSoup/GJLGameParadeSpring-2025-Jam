@@ -10,12 +10,12 @@ public:
 	BaseEnemy(sf::Vector2f pos, sf::Vector2f size, float mass);
 	~BaseEnemy() {};
 
-	virtual void lightAttack() override;
-	virtual void heavyAttack() override;
+	virtual void lightAttack(std::vector<CreatureObject*> creatures) override;
+	virtual void heavyAttack(std::vector<CreatureObject*> creatures) override;
 	virtual void dodge() override;
 	virtual void parry() override;
 
-	void trackPlayer(PhysicsObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
+	void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
 protected:
 	sf::Vector2f direction, directionNorm;
 	float speed = 200.f;

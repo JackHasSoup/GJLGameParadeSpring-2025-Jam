@@ -12,8 +12,8 @@ public:
 
 	virtual void update(float dt) override;
 
-	virtual void lightAttack() override;
-	virtual void heavyAttack() override;
+	virtual void lightAttack(std::vector<CreatureObject*> creatures) override;
+	virtual void heavyAttack(std::vector<CreatureObject*> creatures) override;
 	virtual void dodge() override;
 	virtual void parry() override;
 

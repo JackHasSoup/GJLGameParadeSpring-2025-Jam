@@ -43,10 +43,10 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	commander.addPressed(sf::Keyboard::Space, updateText);*/
 	//buffer actions
 	availableActions = {
-		new BufferedCommand(&player, [](CreatureObject* target) {target->lightAttack(); }),
-		new BufferedCommand(&player, [](CreatureObject* target) {target->heavyAttack(); }),
-		new BufferedCommand(&player, [](CreatureObject* target) {target->dodge(); }),
-		new BufferedCommand(&player, [](CreatureObject* target) {target->parry(); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->heavyAttack(creatures); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->dodge(); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->parry(); }),
 	};
 
 	commander.addPressed(sf::Keyboard::Space, new GenericCommand(SUBA(TestScene, executeAndTrack, availableActions[2])));
@@ -225,5 +225,5 @@ void TestScene::executeAndTrack(BufferedCommand* b)
 		actionBuffer[oldestAction] = b;
 
 	oldestAction = oldestAction + 1 >= size ? 0 : oldestAction + 1;
-	b->execute();
+	b->execute(nullptr, {});
 }

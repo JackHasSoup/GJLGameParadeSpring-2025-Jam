@@ -8,8 +8,8 @@ public:
 	CreatureObject() {};//default constructor
 	~CreatureObject() {};
 
-	virtual void lightAttack() = 0;
-	virtual void heavyAttack() = 0;
+	virtual void lightAttack(std::vector<CreatureObject*> creatures) = 0;
+	virtual void heavyAttack(std::vector<CreatureObject*> creatures) = 0;
 	virtual void dodge() = 0;
 	virtual void parry() = 0;
 

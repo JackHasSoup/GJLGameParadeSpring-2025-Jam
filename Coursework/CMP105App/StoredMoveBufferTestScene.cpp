@@ -9,10 +9,10 @@ StoredMoveBufferTestScene::StoredMoveBufferTestScene(sf::RenderTarget* hwnd) : S
 	enemyStandin.setRotationLock(true);
 	
 	availableActions = {
-		new BufferedCommand(&player, [](CreatureObject* target) {target->accelerate({ 0.f, -35000.f }); }),//up
-		new BufferedCommand(&player, [](CreatureObject* target) {target->accelerate({ 0.f, 35000.f }); }),//down
-		new BufferedCommand(&player, [](CreatureObject* target) {target->accelerate({ -35000.f, 0.f }); }),//left
-		new BufferedCommand(&player, [](CreatureObject* target) {target->accelerate({ 35000.f, 0.f }); })//right
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ 0.f, -35000.f }); }),//up
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ 0.f, 35000.f }); }),//down
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ -35000.f, 0.f }); }),//left
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->accelerate({ 35000.f, 0.f }); })//right
 	};
 
 	cmndr.addPressed(sf::Keyboard::W, new GenericCommand(SUBA(StoredMoveBufferTestScene, executeAndTrack, availableActions[0])));
@@ -40,7 +40,7 @@ void StoredMoveBufferTestScene::handleInput(float dt)
 	if (cooldown <= 0.f && size)
 	{
 		cooldown = maxCooldown;
-		actionList[performingAction]->execute(&enemyStandin);
+		actionList[performingAction]->execute(&enemyStandin, {});
 
 		performingAction = performingAction + 1 >= size ? 0 : performingAction + 1;
 	}
