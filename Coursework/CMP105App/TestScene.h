@@ -3,6 +3,8 @@
 #include "StackedObject.h"
 #include "GenericCommand.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "Player.h"
+
 
 class TestScene : public Scene
 {
@@ -39,5 +41,6 @@ protected:
 	float r=0;
 	float mSpeed = 350.f;
 	float hue = 0.f;
+	Player player;
 };
 
