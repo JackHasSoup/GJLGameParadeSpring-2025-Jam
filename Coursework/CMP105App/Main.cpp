@@ -1,8 +1,10 @@
 #include <iostream>
 #include "TestScene.h"
+#include "TutorialScene.h"
 #include "MenuScene.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
+#include "Framework/SceneTransition.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
@@ -63,10 +65,25 @@ int main(int argc, char *argv[])
 	// Initialise input and level objects.
 	AudioManager::init();
 	Input::init();
-	TestScene level(&tex);
+
+	TestScene testScene(&tex);
+	TutorialScene tutorialScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	PauseScene pause(&tex);
+	SceneTransition sceneTrans(&tex);
+
+
+	// Call a scene's render function given its gamestate enum. so you don't have to write a long switch statement
+
+	#define RENDER_SCENE(inputState)\
+	switch(inputState){\
+	case State::MENU: menu.render(); break;\
+	case State::PAUSE: pause.render(); break;\
+	case State::TUTORIAL: tutorialScene.render(); break;\
+	case State::TEST: testScene.render(); break;\
+	}; 
+
 
 	// Initialise objects for delta time
 	sf::Clock clock;
@@ -130,26 +147,47 @@ int main(int argc, char *argv[])
 			pause.update(deltaTime);
 
 			pause.beginDraw();
-			switch (pause.getPausedState()) { // Render the background image of the scene you paused from
-			case State::LEVEL:
-				level.render();
-			}
+			RENDER_SCENE(pause.getPausedState());
 			pause.render();
 
 			window.draw(sprite);
 			window.display();
 			break;
 		}
-		case State::LEVEL: {
-			level.handleInput(deltaTime);
-			level.update(deltaTime);
-			level.render();
+		case State::TUTORIAL: {
+			tutorialScene.handleInput(deltaTime);
+			tutorialScene.update(deltaTime);
+			tutorialScene.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
+		case State::TEST: {
+			testScene.handleInput(deltaTime);
+			testScene.update(deltaTime);
+			testScene.render();
 			window.draw(sprite);//USEASCII ? window.draw(sprite, &ascii) : window.draw(sprite);
 			window.display();
 			break;
 		}
-		default:
+		case State::TRANSITION: {
+			if (sceneTrans.getInTimer() >= 0.f) { // If in the first half of fading
+				RENDER_SCENE(sceneTrans.getStartState());
+				sceneTrans.fadeIn(deltaTime);
+			}
+			else if (sceneTrans.getOutTimer() >= 0.f && sceneTrans.getInTimer() <= 0.f) { // If in the second half of fading
+				RENDER_SCENE(sceneTrans.getEndState());
+				sceneTrans.fadeOut(deltaTime);
+			}
+			else { // If scene transition is done
+				GameState::setCurrentState(sceneTrans.getEndState());
+				GameState::setLastState(sceneTrans.getEndState());
+			}
+			sceneTrans.render();
+			window.draw(sprite);
+			window.display();
 			break;
+			}
 		}
 
 		if (GameState::getCurrentState() != GameState::getLastState()) { // Call once when a gamestate switches from one to the other
@@ -157,6 +195,12 @@ int main(int argc, char *argv[])
 			case State::PAUSE:
 				pause.setPausedState(GameState::getLastState());
 				break;
+			case State::TUTORIAL: case State::TEST: // New levels added here
+				if (GameState::getLastState() != State::PAUSE) {
+					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
+					GameState::setCurrentState(State::TRANSITION);
+				}
+			break;
 			}
 		}
 
