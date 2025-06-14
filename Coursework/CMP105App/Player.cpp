@@ -224,7 +224,7 @@ void Player::jumpAnim(float dt)
 	if(jumpTime > 0)
 	{
 		float p = jumpTime / jumpLength;
-		jumpClone.setRotation((slap[howBloody].getFlipped() ? 360.f : -360.f) * p); //rotate the player based on the jump time
+		jumpClone.setRotation((slap[howBloody].getFlipped() ? 335.f : -335.f) * (p > 0.5f ? p*2.f : 1.f)); //rotate the player based on the jump time
 		jumpClone.setPosition(
 			getPosition() - sf::Vector2f(
 				0, 
