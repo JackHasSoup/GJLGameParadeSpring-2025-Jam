@@ -36,6 +36,6 @@ protected:
 	Action lastAction = Action::NONE;
 
 	std::vector<CreatureObject*> creaturesTemp;
-	bool invincible = false;
+	float invincibleTime = 0.f;
 };
 

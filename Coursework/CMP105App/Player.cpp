@@ -54,6 +54,7 @@ void Player::update(float dt)
 	{
 		lastAction = Action::NONE;
 	}
+	invincibleTime -= dt; //decrease the invincible time
 
 	auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
 	switch (lastAction)
@@ -187,6 +188,8 @@ void Player::dodge()
 
 void Player::parry()
 {
+	//parry just gives some invincible time
+	invincibleTime = 0.5f; //set the invincible time to 0.5 seconds
 	std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
 }
@@ -216,7 +219,7 @@ void Player::jumpAnim(float dt)
 
 void Player::damage(float d)
 {
-	if (invincible) return; //if the player is invincible, don't take damage
+	if (invincibleTime > 0) return; //if the player is invincible, don't take damage
 	health -= d;
 	if (health < 0) health = 0;
 	if (health < maxHealth / 3) howBloody = 3; //very bloody
