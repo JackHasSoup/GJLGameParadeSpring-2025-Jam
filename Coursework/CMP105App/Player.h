@@ -27,6 +27,5 @@ protected:
 	float health, maxHealth;
 	float speed;
 	float cooldown, maxCooldown;
-	sf::Texture* sealTexture;
 };
 

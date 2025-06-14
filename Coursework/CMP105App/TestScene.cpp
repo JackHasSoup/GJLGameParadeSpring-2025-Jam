@@ -31,13 +31,20 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
+	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
+	player.setDrawType(drawType::RECT);
 	auto cs = sf::ConvexShape(4);
 	cs.setPoint(0, { 0.f, 0.f });
 	cs.setPoint(1, { player.getSize().x, 0.f});
 	cs.setPoint(2, { player.getSize().x, player.getSize().y });
 	cs.setPoint(3, { 0.f, player.getSize().y });
 	player.setCollisionShape(cs);
+
+	AssetManager::registerNewTex("happySeal");
+	AssetManager::getTex("happySeal")->loadFromFile("gfx/debugTestSprites/happySeal.png"); //Doesn't exist yet
+	player.setTexture(AssetManager::getTex("happySeal"));
+	player.setFillColor(sf::Color::White);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
