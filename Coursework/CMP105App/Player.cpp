@@ -19,7 +19,7 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	lightAttackDamage = 0.5f;
 	heavyAttackDamage = 1.5f;
 	lightAttackRange = 1.f;
-	heavyAttackRange = 2.5f;
+	heavyAttackRange = 1.75f;
 
 	setDrawType(drawType::RECT);
 
@@ -63,13 +63,17 @@ void Player::update(float dt)
 	{
 	case Action::LIGHT:
 	{
-		if (mPos.y < getPosition().y - getOrigin().y)
+		if (slap[howBloody].getFrame() != 0) break; //only update if the player is not already attacking
+		auto const dif = mPos - getPosition();
+		if (abs(dif.y) > abs(dif.x))
 		{
-			slap[howBloody].setFrame(3);
-		}
-		else if (mPos.y > getPosition().y + getOrigin().y)
-		{
-			slap[howBloody].setFrame(2);
+			if (dif.y < 0)
+			{
+				slap[howBloody].setFrame(3); //up
+			}
+			else {
+				slap[howBloody].setFrame(2); //down
+			}
 		}
 		else {
 			slap[howBloody].setFrame(1);
@@ -88,12 +92,15 @@ void Player::update(float dt)
 	}
 
 	//if mouse position is left of seal position flip the animation
-	if (VectorHelper::magnitudeSqrd(lastPos - getPosition()) < 0.01f) //if not moving use mouse
+	if (slap[howBloody].getFrame() == 0) //only flip if no animation happening
 	{
-		slap[howBloody].setFlipped(mPos.x < getPosition().x);
-	}
-	else {
-		slap[howBloody].setFlipped(lastPos.x > getPosition().x);
+		if (VectorHelper::magnitudeSqrd(lastPos - getPosition()) < 0.01f) //if not moving use mouse
+		{
+			slap[howBloody].setFlipped(mPos.x < getPosition().x);
+		}
+		else {
+			slap[howBloody].setFlipped(lastPos.x > getPosition().x);
+		}
 	}
 	
 	setTextureRect(slap[howBloody].getCurrentFrame());
@@ -116,15 +123,18 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
 
 			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-			if (mPos.y < getPosition().y - getOrigin().y)
+			auto const dif = mPos - getPosition();
+			if (abs(dif.y) > abs(dif.x))
 			{
-				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-				attackBox.top -= attackBox.height / 2.f;
-			}
-			else if (mPos.y > getPosition().y + getOrigin().y)
-			{
-				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-				attackBox.top += attackBox.height / 2.f;
+				if (dif.y < 0)
+				{
+					attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+					attackBox.top -= attackBox.height / 2.f;
+				}
+				else {
+					attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+					attackBox.top += attackBox.height / 2.f;
+				}
 			}
 			else {
 				attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack

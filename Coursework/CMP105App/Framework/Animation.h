@@ -18,6 +18,7 @@ public:
 
 	//get current frame of animation
 	sf::IntRect getCurrentFrame();
+	int getFrame() { return currentFrame; };
 
 	//animation controls
 	float getFrameSpeed() { return animationSpeed; };
