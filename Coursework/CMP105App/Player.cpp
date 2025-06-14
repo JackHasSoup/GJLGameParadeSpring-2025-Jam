@@ -10,6 +10,21 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	AssetManager::getTex("happySeal")->loadFromFile("gfx/debugTestSprites/happySeal.png"); //Doesn't exist yet
 	setTexture(AssetManager::getTex("happySeal"));
 	setFillColor(sf::Color::White);
+
+	maxCooldown = 0.75f;
+	cooldown = 0.f;
+	speed = 350.f;
+	health = 100.f;
+	maxHealth = 100.f;
+
+	setDrawType(drawType::RECT);
+
+	auto cs = sf::ConvexShape(4);
+	cs.setPoint(0, { 0.f, 0.f });
+	cs.setPoint(1, { getSize().x, 0.f });
+	cs.setPoint(2, { getSize().x, getSize().y });
+	cs.setPoint(3, { 0.f, getSize().y });
+	setCollisionShape(cs);
 }
 
 Player::~Player()

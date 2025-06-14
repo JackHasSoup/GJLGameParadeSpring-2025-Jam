@@ -33,14 +33,6 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
-	player.setSpeed(350.f);
-	player.setDrawType(drawType::RECT);
-	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 0.f, 0.f });
-	cs.setPoint(1, { player.getSize().x, 0.f});
-	cs.setPoint(2, { player.getSize().x, player.getSize().y });
-	cs.setPoint(3, { 0.f, player.getSize().y });
-	player.setCollisionShape(cs);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -126,6 +118,8 @@ void TestScene::update(float dt)
 	physMan.update(dt);
 
 	cam.update(dt);
+
+	player.setCooldown(player.getCooldown() - dt);
 }
 
 void TestScene::handleInput(float dt)
@@ -220,6 +214,10 @@ void TestScene::changeText(const sf::String& msg)
 
 void TestScene::executeAndTrack(BufferedCommand* b)
 {
+	if (!b) return; //if the command is null, do nothing
+	if (player.getCooldown() > 0.f) return; //if the player is on cooldown, do nothing
+	player.setCooldown(player.getMaxCooldown()); //reset the cooldown
+
 	const int size = actionBuffer.size();
 	if (size < maxActBufferSize)
 		actionBuffer.push_back(b);
