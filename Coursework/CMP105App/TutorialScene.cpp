@@ -8,6 +8,7 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	lighter.addLight(midWin + sf::Vector2f(-125, 150), 250.f, sf::Color::Yellow);
 
 	//BaseLevel::loadLevel("levels/level.json");
+	commander.addPressed(sf::Keyboard::Space, new GenericCommand([=] {GameState::setCurrentState(State::TEST); }));
 }
 
 void TutorialScene::handleInput(float dt)
