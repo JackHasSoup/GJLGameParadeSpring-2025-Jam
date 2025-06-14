@@ -21,14 +21,15 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	lightAttackRange = 1.f;
 	heavyAttackRange = 1.75f;
 
-	setDrawType(drawType::RECT);
-
-	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 0.f, 0.f });
-	cs.setPoint(1, { getSize().x, 0.f });
-	cs.setPoint(2, { getSize().x, getSize().y });
-	cs.setPoint(3, { 0.f, getSize().y });
-	setCollisionShape(cs);
+	setDrawType(drawType::RECT_COL_LIGHTMASK);
+	//50,36
+	sf::CircleShape c = sf::CircleShape(size.x * 0.61f * 0.5f);//0.61 is the how much of the sprite is actually seal
+	collisionShape = sf::ConvexShape(c.getPointCount() );
+	for (int i = 0; i < c.getPointCount(); i++)
+	{
+		collisionShape.setPoint(i, c.getPoint(i) + sf::Vector2f(size.x * 0.198f, size.y * 0.167f)); //point + offset of seal from corner of grid
+	}
+	baseHull = collisionShape;
 
 	for (int i = 0; i < 4; i++)
 	{

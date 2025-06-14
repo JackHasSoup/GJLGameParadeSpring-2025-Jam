@@ -30,30 +30,87 @@ void DeferredIllumination::beginDraw(const sf::Color& clear)
 
 void DeferredIllumination::draw(GameObject* drawable, const sf::RenderStates* state)
 {
-	if (drawable->getDrawType() == drawType::COLLISION) {
-		draw(drawable->getRAWCollisionShape(), state);
-		return;
-	}
+	//switch for each drawable drawtype
+	//I actually hate this switch but its late and I can't be bothered to make a better solution right now
+	//please direct all hate to me via frog mailing list
+	switch (drawable->getDrawType())
+	{
+	case drawType::RECT:
+	{
+		renderQueue->push_back(
+			renderPair(drawable, state ? state : &defaultState)
+		);
 
-	if (drawable->getDrawType() == drawType::BOTH_CR)
+		for (int i = 0; i < 4; i++) //4 edges on a rect
+		{
+			auto p1 = drawable->getTransform().transformPoint(drawable->getPoint(i));
+			auto p2 = drawable->getTransform().transformPoint(drawable->getPoint(i == 3 ? 0 : i + 1));
+			edges.push_back(sf::Glsl::Vec4(p1.x, p1.y, p2.x, p2.y));
+		}
+		break;
+	}
+	case drawType::COLLISION:
+		draw(drawable->getRAWCollisionShape(), state);
+		break;
+	case drawType::BOTH_RC:
+	{
+		renderQueue->push_back(
+			renderPair(drawable, state ? state : &defaultState)
+		);
+
+		for (int i = 0; i < 4; i++) //4 edges on a rect
+		{
+			auto p1 = drawable->getTransform().transformPoint(drawable->getPoint(i));
+			auto p2 = drawable->getTransform().transformPoint(drawable->getPoint(i == 3 ? 0 : i + 1));
+			edges.push_back(sf::Glsl::Vec4(p1.x, p1.y, p2.x, p2.y));
+		}
+		draw(drawable->getRAWCollisionShape(), state);
+		break;
+	}
+	case drawType::BOTH_CR:
 	{
 		draw(drawable->getRAWCollisionShape(), state);
-	}
-	
-	renderQueue->push_back(
-		renderPair(drawable, state ? state : &defaultState)
-	);
+		renderQueue->push_back(
+			renderPair(drawable, state ? state : &defaultState)
+		);
 
-	for (int i = 0; i < 4; i++) //4 edges on a rect
-	{
-		auto p1 = drawable->getTransform().transformPoint(drawable->getPoint(i));
-		auto p2 = drawable->getTransform().transformPoint(drawable->getPoint(i == 3 ? 0 : i + 1));
-		edges.push_back(sf::Glsl::Vec4(p1.x, p1.y, p2.x, p2.y));
+		for (int i = 0; i < 4; i++) //4 edges on a rect
+		{
+			auto p1 = drawable->getTransform().transformPoint(drawable->getPoint(i));
+			auto p2 = drawable->getTransform().transformPoint(drawable->getPoint(i == 3 ? 0 : i + 1));
+			edges.push_back(sf::Glsl::Vec4(p1.x, p1.y, p2.x, p2.y));
+		}
+		break;
 	}
-
-	if (drawable->getDrawType() == drawType::BOTH_RC)
+	case drawType::RECT_COL_LIGHTMASK:
 	{
-		draw(drawable->getRAWCollisionShape(), state);
+		renderQueue->push_back(
+			renderPair(drawable, state ? state : &defaultState)
+		);
+
+		int m = drawable->getRAWCollisionShape()->getPointCount() - 1;
+		for (int i = 0; i < m + 1; i++)
+		{
+			auto p1 = drawable->getRAWCollisionShape()->getTransform().transformPoint(drawable->getRAWCollisionShape()->getPoint(i));
+			auto p2 = drawable->getRAWCollisionShape()->getTransform().transformPoint(drawable->getRAWCollisionShape()->getPoint(i == m ? 0 : i + 1));
+			edges.push_back(sf::Glsl::Vec4(p1.x, p1.y, p2.x, p2.y));
+		}
+		break;
+	}
+	case drawType::COL_RECT_LIGHTMASK:
+	{
+		renderQueue->push_back(
+			renderPair(drawable->getRAWCollisionShape(), state ? state : &defaultState)
+		);
+
+		for (int i = 0; i < 4; i++) //4 edges on a rect
+		{
+			auto p1 = drawable->getRAWCollisionShape()->getTransform().transformPoint(drawable->getRAWCollisionShape()->getPoint(i));
+			auto p2 = drawable->getRAWCollisionShape()->getTransform().transformPoint(drawable->getRAWCollisionShape()->getPoint(i == 3 ? 0 : i + 1));
+			edges.push_back(sf::Glsl::Vec4(p1.x, p1.y, p2.x, p2.y));
+		}
+		break;
+	}
 	}
 }
 
