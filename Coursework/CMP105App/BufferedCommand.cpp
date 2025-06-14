@@ -1,12 +1,12 @@
 #include "BufferedCommand.h"
 
-BufferedCommand::BufferedCommand(PhysicsObject* defaultTarget, std::function<void(PhysicsObject* target)> cb)
+BufferedCommand::BufferedCommand(CreatureObject* defaultTarget, std::function<void(CreatureObject* target)> cb)
 {
 	this->defaultTarget = defaultTarget;
 	callback = cb;
 }
 
-void BufferedCommand::execute(PhysicsObject* target)
+void BufferedCommand::execute(CreatureObject* target)
 {
 	callback(target ? target : defaultTarget);
 }
