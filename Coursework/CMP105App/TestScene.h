@@ -2,6 +2,7 @@
 #include "Framework/Scene.h"
 #include "StackedObject.h"
 #include "GenericCommand.h"
+#include "BufferedCommand.h"
 #include "EDITOR/SceneDataLoader.h"
 #include "Player.h"
 
@@ -42,5 +43,13 @@ protected:
 	float mSpeed = 350.f;
 	float hue = 0.f;
 	Player player;
+
+	//action buffer
+	std::vector<BufferedCommand*> availableActions;
+	std::vector<BufferedCommand*> actionBuffer;
+	int oldestAction = 0;
+	int maxActBufferSize = 8;
+
+	void executeAndTrack(BufferedCommand* b);
 };
 

@@ -19,16 +19,24 @@ Player::~Player()
 
 void Player::lightAttack()
 {
+	std::cout << "plyr light\n";
 }
 
 void Player::heavyAttack()
 {
+	std::cout << "plyr heavy\n";
 }
 
 void Player::dodge()
 {
+	sf::Vector2f dir = (sf::Vector2f(0, 1) * (float)Input::isKeyDown(sf::Keyboard::S)) +
+						(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
+						(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
+						(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));
+	accelerate(dir, speed * speed);
 }
 
 void Player::parry()
 {
+	std::cout << "plyr parry\n";
 }

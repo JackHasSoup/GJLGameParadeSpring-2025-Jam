@@ -17,6 +17,7 @@ public:
 	virtual void restoreHealth() { health = maxHealth; };
 
 	virtual void setSpeed(float s) { speed = s; };
+	virtual float getSpeed() { return speed; };
 protected:
 	float health, maxHealth;
 	float speed;

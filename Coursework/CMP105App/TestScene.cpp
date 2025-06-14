@@ -33,6 +33,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
+	player.setSpeed(350.f);
 	player.setDrawType(drawType::RECT);
 	auto cs = sf::ConvexShape(4);
 	cs.setPoint(0, { 0.f, 0.f });
@@ -48,11 +49,21 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	/*updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
 	commander.addPressed(sf::Keyboard::Space, updateText);*/
+	//buffer actions
+	availableActions = {
+		new BufferedCommand(&player, [](CreatureObject* target) {target->lightAttack(); }),
+		new BufferedCommand(&player, [](CreatureObject* target) {target->heavyAttack(); }),
+		new BufferedCommand(&player, [](CreatureObject* target) {target->dodge(); }),
+		new BufferedCommand(&player, [](CreatureObject* target) {target->parry(); }),
+	};
 
-	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-mSpeed }); }));
-	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player.accelerate({ 0,mSpeed }); }));
-	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player.accelerate({ -mSpeed,0 }); }));
-	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player.accelerate({ mSpeed,0 }); }));
+	commander.addPressed(sf::Keyboard::Space, new GenericCommand(SUBA(TestScene, executeAndTrack, availableActions[2])));
+	commander.addPressed(sf::Keyboard::Q, new GenericCommand(SUBA(TestScene, executeAndTrack, availableActions[3])));
+
+	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-1 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player.accelerate({ 0,1 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player.accelerate({ -1,0 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player.accelerate({ 1,0 }, player.getSpeed()); }));
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
@@ -120,6 +131,16 @@ void TestScene::update(float dt)
 void TestScene::handleInput(float dt)
 {
 	commander.handleInput();
+
+	if (Input::isLeftMousePressed())
+	{
+		executeAndTrack(availableActions[0]);
+	}
+	if (Input::isRightMousePressed())
+	{
+		executeAndTrack(availableActions[1]);
+	}
+
 	if (Input::isLeftMousePressed())
 	{
 		auto mp = window->mapPixelToCoords(sf::Vector2i(Input::getMousePos()));
@@ -195,4 +216,16 @@ void TestScene::render()
 void TestScene::changeText(const sf::String& msg)
 {
 	button.setString(msg);
+}
+
+void TestScene::executeAndTrack(BufferedCommand* b)
+{
+	const int size = actionBuffer.size();
+	if (size < maxActBufferSize)
+		actionBuffer.push_back(b);
+	else
+		actionBuffer[oldestAction] = b;
+
+	oldestAction = oldestAction + 1 >= size ? 0 : oldestAction + 1;
+	b->execute();
 }
