@@ -203,6 +203,9 @@
     <ClCompile Include="PauseScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Crab.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -306,6 +309,9 @@
     </ClInclude>
     <ClInclude Include="PauseScene.h">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Crab.h">
+      <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

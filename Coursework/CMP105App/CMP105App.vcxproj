@@ -161,6 +161,7 @@
     <ClCompile Include="BufferedCommand.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="BaseEnemyTestScene.cpp" />
+    <ClCompile Include="Crab.cpp" />
     <ClCompile Include="CreatureObject.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="BufferedCommand.h" />
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="BaseEnemyTestScene.h" />
+    <ClInclude Include="Crab.h" />
     <ClInclude Include="CreatureObject.h" />
     <ClInclude Include="EDITOR\EditorScene.h" />
     <ClInclude Include="EDITOR\SceneDataLoader.h" />
