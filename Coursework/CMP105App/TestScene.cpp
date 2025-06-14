@@ -34,6 +34,8 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
+	crab = Crab(midWin * 1.2f, { 75.f, 75.f }, 20.f, { 1.5f, 4.f });
+
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
@@ -100,7 +102,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	}
 
 	//load some generic enemies around the screen
-	for (int i = 0; i < 5; ++i)
+	/*for (int i = 0; i < 5; ++i)
 	{
 		auto* e = new BaseEnemy(midWin + sf::Vector2f(rand() % 1000 - 500, rand() % 1000 - 500), { 50.f,50.f }, 20.f);
 		e->setFillColor(sf::Color::Red);
@@ -110,7 +112,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 		e->setAlive(true);
 		enemies.push_back(e);
 		physMan.registerObj(e, false);
-	}
+	}*/
 }
 
 void TestScene::update(float dt)
@@ -142,6 +144,8 @@ void TestScene::update(float dt)
 	physMan.update(dt);
 
 	cam.update(dt);
+
+	crab.trackPlayer(&player, actionBuffer, dt);
 
 	player.setCooldown(player.getCooldown() - dt);
 }
@@ -192,6 +196,7 @@ void TestScene::render()
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
+	window->draw(crab);
 
 
 	lighter.endDraw();

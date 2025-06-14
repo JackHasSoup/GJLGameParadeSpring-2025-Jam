@@ -22,6 +22,7 @@ void BaseEnemy::parry()
 {
 }
 
+
 void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
 	if (!isAlive())return;
 	cooldown -= dt;

@@ -6,6 +6,7 @@
 #include "EDITOR/SceneDataLoader.h"
 #include "Player.h"
 #include "BaseEnemy.h"
+#include "Crab.h"
 
 
 class TestScene : public Scene
@@ -44,6 +45,7 @@ protected:
 	float mSpeed = 350.f;
 	float hue = 0.f;
 	Player player;
+	Crab crab;
 
 	std::vector<CreatureObject*> enemies;
 
