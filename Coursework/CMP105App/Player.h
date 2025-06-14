@@ -17,6 +17,9 @@ public:
 	virtual void dodge() override;
 	virtual void parry() override;
 
+	virtual void jumpAnim(float dt);
+	virtual void actualHeavyAttack(std::vector<CreatureObject*> creatures);
+
 	/*float getHealth();
 	void setHealth();
 	void attack1();
@@ -24,10 +27,15 @@ public:
 	void attack3();*/
 	//probably add more attacks and rename them
 	virtual void damage(float d) override;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 protected:
-	
+	sf::RectangleShape jumpClone;
+	float jumpTime = 0.f, jumpLength = 0.65f, jumpHeight = 75.f;
 	int howBloody = 0;
 	Animation slap[3]; //1-normal, 2-bloody, 3-very bloody (normal, side, down, up)
 	Action lastAction = Action::NONE;
+
+	std::vector<CreatureObject*> creaturesTemp;
+	bool invincible = false;
 };
 

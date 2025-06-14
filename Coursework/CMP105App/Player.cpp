@@ -14,12 +14,12 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	maxCooldown = 0.75f;
 	cooldown = 0.f;
 	speed = 350.f;
-	health = 100.f;
-	maxHealth = 100.f;
-	lightAttackDamage = 10.f;
-	heavyAttackDamage = 25.f;
+	health = 10.f;
+	maxHealth = 10.f;
+	lightAttackDamage = 0.5f;
+	heavyAttackDamage = 1.5f;
 	lightAttackRange = 1.f;
-	heavyAttackDamage = 2.5f;
+	heavyAttackRange = 2.5f;
 
 	setDrawType(drawType::RECT);
 
@@ -36,6 +36,9 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 		slap[1].addFrame({ 253, 215 * i, 253, 215 });
 		slap[2].addFrame({ 506, 215 * i, 253, 215 });
 	}
+
+	jumpClone = *dynamic_cast<sf::RectangleShape*>(this); //clone the player for jump animation, so it can be rotated without affecting the player
+	jumpClone.setOrigin(getOrigin());
 }
 
 Player::~Player()
@@ -91,6 +94,7 @@ void Player::update(float dt)
 	}
 	
 	setTextureRect(slap[howBloody].getCurrentFrame());
+	jumpAnim(dt); //update the jump animation if the player is jumping
 }
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
@@ -148,53 +152,27 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
-	//TEMP: heavy attack is just more powerfull light attack
-	for (auto const& c : creatures)
-	{
-		//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-		sf::FloatRect attackBox;
-		if (slap[howBloody].getCurrentFrame().width != 0) //if the frame is valid
-		{
-			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
-			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-			if (mPos.y < getPosition().y - getOrigin().y)
-			{
-				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
-				attackBox.top -= attackBox.height / 2.f;
-			}
-			else if (mPos.y > getPosition().y + getOrigin().y)
-			{
-				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
-				attackBox.top += attackBox.height / 2.f;
-			}
-			else {
-				attackBox.width *= heavyAttackRange; //increase the width of the attack box for heavy attack
-				if (slap[howBloody].getFlipped()) //if the player is facing left
-				{
-					attackBox.left -= attackBox.width / 2.f;
-				}
-				else {
-					attackBox.left += attackBox.width / 2.f;
-				}
-			}
-	
-			//check if the attack box intersects the creature's collision shape
-			if (c->getCollisionShape().getGlobalBounds().intersects(attackBox))
-			{
-				c->damage(heavyAttackDamage);
-				std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
-				c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-			}
-			else {
-				std::cout << "plyr miss\n"; //missed
-			}
-		}
-		else {
-			return; //no valid frame, no attack
-		}
-	}
+	//don't do attack here, wait to land
+	jumpTime = jumpLength; //reset the jump time for the jump animation
+	creaturesTemp = creatures;
 	std::cout << "plyr heavy\n";
 	lastAction = Action::HEAVY;
+}
+
+void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
+{
+	for (auto const& c : creatures)
+	{
+		if (VectorHelper::magnitudeSqrd(c->getPosition() - getPosition()) < heavyAttackRange * heavyAttackRange * getSize().x * getSize().y) //check if the creature is within the heavy attack range
+		{
+			c->damage(heavyAttackDamage);
+			std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
+			c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+		}
+		else {
+			std::cout << "plyr miss\n"; //missed
+		}
+	}
 }
 
 void Player::dodge()
@@ -213,11 +191,43 @@ void Player::parry()
 	lastAction = Action::PARRY;
 }
 
+void Player::jumpAnim(float dt)
+{
+	if(jumpTime > 0)
+	{
+		float p = jumpTime / jumpLength;
+		jumpClone.setRotation((slap[howBloody].getFlipped() ? 360.f : -360.f) * p); //rotate the player based on the jump time
+		jumpClone.setPosition(
+			getPosition() - sf::Vector2f(
+				0, 
+				jumpTime >= jumpLength * 0.5f ?
+				sin(PI * p) * jumpHeight :
+				jumpHeight * pow(2.f * (p), 5.f)
+			));
+		jumpClone.setTextureRect(slap[howBloody].getCurrentFrame()); //set the texture rect to the current frame of the slap animation
+
+		if (jumpTime - dt < 0)
+		{
+			actualHeavyAttack(creaturesTemp); //perform the heavy attack when the player hits the floor
+		}
+	}
+	jumpTime -= dt;
+}
+
 void Player::damage(float d)
 {
+	if (invincible) return; //if the player is invincible, don't take damage
 	health -= d;
 	if (health < 0) health = 0;
 	if (health < maxHealth / 3) howBloody = 3; //very bloody
 	else if (health < maxHealth / 2) howBloody = 2; //bloody
 	else howBloody = 1; //normal
+}
+
+void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	if (jumpTime>0)
+		target.draw(jumpClone, states);
+	else 
+		CreatureObject::draw(target, states);
 }
