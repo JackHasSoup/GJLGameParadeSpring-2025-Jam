@@ -203,6 +203,15 @@
     <ClCompile Include="PauseScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\BaseLevel.cpp">
+      <Filter>Framework\Source\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TutorialScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\SceneTransition.cpp">
+      <Filter>Framework\Source\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -306,6 +315,15 @@
     </ClInclude>
     <ClInclude Include="PauseScene.h">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\BaseLevel.h">
+      <Filter>Framework\Header\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TutorialScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SceneTransition.h">
+      <Filter>Framework\Header\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

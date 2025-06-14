@@ -1,4 +1,6 @@
 #include "GameState.h"
+#include <iostream>
+
 State GameState::currentState = State::MENU;
 State GameState::lastState = State::MENU;
 
@@ -22,4 +24,13 @@ void GameState::setLastState(State s)
 State GameState::getLastState()
 {
 	return GameState::lastState;
+}
+
+void GameState::incrementLevel()
+{
+	if (GameState::currentState > State::LOSE && static_cast<int>(GameState::currentState) < (static_cast<int>(State::NUMSCENES) - 1)) { // If it is a level and not a UI screen
+
+		GameState::currentState = static_cast<State>(static_cast<int>(GameState::currentState) + 1);
+
+	}
 }
