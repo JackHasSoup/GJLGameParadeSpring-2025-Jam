@@ -1,5 +1,6 @@
 #pragma once
 #include "CreatureObject.h"
+#include "Framework/Animation.h"
 #include "Framework/AssetManager.h"
 
 class Player : public CreatureObject
@@ -8,6 +9,8 @@ public:
 	Player() {};
 	Player(sf::Vector2f pos, sf::Vector2f size, float mass);
 	~Player();
+
+	virtual void update(float dt) override;
 
 	virtual void lightAttack() override;
 	virtual void heavyAttack() override;
@@ -21,7 +24,10 @@ public:
 	void attack3();*/
 	//probably add more attacks and rename them
 
-
+	virtual void damage(float d) override;
 protected:
+	int howBloody = 0;
+	Animation slap[3]; //1-normal, 2-bloody, 3-very bloody (normal, side, down, up)
+	Action lastAction = Action::NONE;
 };
 

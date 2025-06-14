@@ -24,7 +24,10 @@ public:
 	static void setLastState(State s);
 	static State getLastState();
 
+	static sf::RenderTarget* getRenderTarget() { return renderTarget; };
+	static void setRenderTarget(sf::RenderTarget* rt) {renderTarget = rt;};
 protected:
 	static State currentState;
 	static State lastState;
+	static sf::RenderTarget* renderTarget;
 };

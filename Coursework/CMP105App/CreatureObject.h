@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/PhysicsObject.h"
+enum class Action{NONE, LIGHT,HEAVY,DODGE,PARRY};
 class CreatureObject : public PhysicsObject
 {
 public:
@@ -11,6 +12,8 @@ public:
 	virtual void heavyAttack() = 0;
 	virtual void dodge() = 0;
 	virtual void parry() = 0;
+
+	virtual void update(float dt) override;
 
 	virtual void damage(float d) { health -= d; };
 	virtual float getHealth() { return health; };

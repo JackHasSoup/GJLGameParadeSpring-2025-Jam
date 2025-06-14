@@ -6,9 +6,9 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	//setPosition(0,0);
 	//setMass(20);
 	//setFillColor(sf::Color::Red);
-	AssetManager::registerNewTex("happySeal");
-	AssetManager::getTex("happySeal")->loadFromFile("gfx/debugTestSprites/happySeal.png"); //Doesn't exist yet
-	setTexture(AssetManager::getTex("happySeal"));
+	AssetManager::registerNewTex("sealSlapSheet");
+	AssetManager::getTex("sealSlapSheet")->loadFromFile("gfx/Seal/Slap.png");
+	setTexture(AssetManager::getTex("sealSlapSheet"));
 	setFillColor(sf::Color::White);
 
 	maxCooldown = 0.75f;
@@ -32,14 +32,59 @@ Player::~Player()
 
 }
 
+void Player::update(float dt)
+{
+	CreatureObject::update(dt);
+
+	if (cooldown <= 0) //not on cooldown, action not being performed
+	{
+		lastAction = Action::NONE;
+	}
+
+	auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
+	switch (lastAction)
+	{
+	case Action::LIGHT:
+	{
+		if (mPos.y < getPosition().y - getOrigin().y)
+		{
+			slap[howBloody].setFrame(3);
+		}
+		else if (mPos.y > getPosition().y + getOrigin().y)
+		{
+			slap[howBloody].setFrame(2);
+		}
+		else {
+			slap[howBloody].setFrame(1);
+		}
+	}
+		break;
+	case Action::HEAVY:
+		break;
+	case Action::DODGE:
+		break;
+	case Action::PARRY:
+		break;
+	default:
+		slap[howBloody].setFrame(0); //regular seal
+		break;
+	}
+
+	//if mouse position is left of seal position flip the animation
+	slap[howBloody].setFlipped(mPos.x < getPosition().x);
+	setTextureRect(slap[howBloody].getCurrentFrame());
+}
+
 void Player::lightAttack()
 {
 	std::cout << "plyr light\n";
+	lastAction = Action::LIGHT;
 }
 
 void Player::heavyAttack()
 {
 	std::cout << "plyr heavy\n";
+	lastAction = Action::HEAVY;
 }
 
 void Player::dodge()
@@ -49,9 +94,20 @@ void Player::dodge()
 						(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
 						(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));
 	accelerate(dir, speed * speed);
+	lastAction = Action::DODGE;
 }
 
 void Player::parry()
 {
 	std::cout << "plyr parry\n";
+	lastAction = Action::PARRY;
+}
+
+void Player::damage(float d)
+{
+	health -= d;
+	if (health < 0) health = 0;
+	if (health < maxHealth / 3) howBloody = 3; //very bloody
+	else if (health < maxHealth / 2) howBloody = 2; //bloody
+	else howBloody = 1; //normal
 }
