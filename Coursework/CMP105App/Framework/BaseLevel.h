@@ -13,6 +13,8 @@ public:
 	virtual void update(float dt) override;
 	virtual void render() override;
 
+	void doorCheck();
+
 	void loadLevel(std::string const& filename);
 
 protected:
@@ -23,7 +25,14 @@ protected:
 	std::vector<PhysicsObject*> sceneObjects;
 	PhysicsManager physMan;
 
+	GameObject floor;
 	PhysicsObject door;
+
+	sf::Texture* floorTexture;
+	sf::Texture* doorTexture;
+
+	int doorLightI;
+	Light doorLight;
 
 	sf::Color bgColor;
 	DeferredIllumination lighter;
@@ -33,6 +42,7 @@ protected:
 	float mSpeed = 350.f;
 
 	int enemyCount; // how many enemies the player must kill to progress
+	int killCount;
 
 
 };
