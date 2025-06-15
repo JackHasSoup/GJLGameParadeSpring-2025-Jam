@@ -22,6 +22,8 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	cs.setPoint(3, { 0.f, player.getSize().y });
 	player.setCollisionShape(cs);
 
+	healthBar = HealthBar(window, &player);
+
 	physMan.registerObj(&player, false);
 
 	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-mSpeed }); }));

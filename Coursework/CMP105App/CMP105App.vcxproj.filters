@@ -360,5 +360,8 @@
     <None Include="shaders\gradientOverlay.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="heart.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -40,8 +40,6 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 
 	jumpClone = *dynamic_cast<sf::RectangleShape*>(this); //clone the player for jump animation, so it can be rotated without affecting the player
 	jumpClone.setOrigin(getOrigin());
-
-	healthBar = HealthBar(maxHealth);
 }
 
 Player::~Player()
@@ -252,6 +250,7 @@ void Player::damage(float d)
 	if (health < maxHealth / 3) howBloody = 3; //very bloody
 	else if (health < maxHealth / 2) howBloody = 2; //bloody
 	else howBloody = 1; //normal
+
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const

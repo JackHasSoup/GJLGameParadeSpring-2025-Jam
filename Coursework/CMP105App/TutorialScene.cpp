@@ -9,6 +9,7 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 
 	//BaseLevel::loadLevel("levels/level.json");
 	commander.addPressed(sf::Keyboard::Space, new GenericCommand([=] {GameState::setCurrentState(State::TEST); }));
+	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.damage(1.f); }));
 }
 
 void TutorialScene::handleInput(float dt)
@@ -22,6 +23,8 @@ void TutorialScene::update(float dt)
 	physMan.update(dt);
 
 	cam.update(dt);
+
+	healthBar.update(dt);
 
 }
 
@@ -43,6 +46,6 @@ void TutorialScene::render()
 	// HUD
 	window->setView(window->getDefaultView());
 
-	player.getHealthBar()->render(window);
+	healthBar.render();
 
 }

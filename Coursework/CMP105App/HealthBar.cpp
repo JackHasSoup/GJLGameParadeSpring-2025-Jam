@@ -1,23 +1,38 @@
 #include "HealthBar.h"
+#include <iostream>
 
 HealthBar::HealthBar()
 {
-
+	window = nullptr;
 }
 
-HealthBar::HealthBar(float inputMaxHealth)
+HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
 {
-	maxHealth = inputMaxHealth;
+	window = hwnd;
+
+	player = inputPlayer;
+	maxHealth = player->getMaxHealth();
 	currentHealth = 0.f;
 
 	sf::Vector2f startPos = sf::Vector2f{ 50.f,50.f };
 	sf::Vector2f size = sf::Vector2f{ 100,100.f };
 
+	setDrawType(drawType::RECT);
+
 	heartTexture = AssetManager::registerNewTex("heart");
 	heartTexture->loadFromFile("gfx/Seal/heart.png");
 
-	hearts.resize(ceil(maxHealth));
-	for (int i = 0; i < ceil(maxHealth); i++) {
+	//if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
+	//{
+	//	std::cout << "Error loading healthbar shader";
+	//}
+	//heartShader.setUniform("texture", sf::Shader::CurrentTexture);
+
+	int numHearts = static_cast<int>(nearbyint(maxHealth));
+	std::cout << numHearts << std::endl;
+	hearts.resize(numHearts);
+
+	for (int i = 0; i < hearts.size(); i++) {
 		hearts[i].setSize(size);
 		hearts[i].setPosition(startPos + sf::Vector2f{i * hearts[i].getSize().x, 0.f});
 		hearts[i].setTexture(heartTexture);
@@ -26,27 +41,26 @@ HealthBar::HealthBar(float inputMaxHealth)
 
 }
 
-void HealthBar::render(sf::RenderTarget* window)
+void HealthBar::update(float dt)
+{
+	if (player->getHealth() != currentHealth) {
+		currentHealth = player->getHealth();
+
+		for (int i = 0; i < hearts.size(); i++) {
+			if ((i + 1) > currentHealth) {
+				hearts[i].setFillColor(sf::Color::Black);
+
+			}
+			else {
+				hearts[i].setFillColor(sf::Color::White);
+			}
+		}
+	}
+}
+
+void HealthBar::render()
 {
 	for (int i = 0; i < hearts.size(); i++) {
 		window->draw(hearts[i]);
 	}
-}
-
-void HealthBar::setHealth(float inputHealth)
-{
-	currentHealth = inputHealth;
-
-	for (int i = 0; i < maxHealth; i++) {
-		if (i + i < currentHealth) {
-			// If the current heart is higher than the current health value
-			hearts[i].setAlive(false);
-			hearts[i].setFillColor(sf::Color::Black);
-		}
-		else {
-			hearts[i].setAlive(true);
-			hearts[i].setFillColor(sf::Color::White);
-		}
-	}
-
 }

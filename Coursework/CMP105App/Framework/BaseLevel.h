@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "../HealthBar.h"
 #include "../Player.h"
 #include "../GenericCommand.h"
 #include "../EDITOR/SceneDataLoader.h"
@@ -22,6 +23,8 @@ protected:
 
 	std::vector<PhysicsObject*> sceneObjects;
 	PhysicsManager physMan;
+
+	HealthBar healthBar;
 
 	PhysicsObject door;
 

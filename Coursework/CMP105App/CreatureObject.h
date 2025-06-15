@@ -17,6 +17,7 @@ public:
 
 	virtual void damage(float d) { health -= d; };
 	virtual float getHealth() { return health; };
+	virtual float getMaxHealth() { return maxHealth; };
 	virtual void restoreHealth() { health = maxHealth; };
 
 	virtual void setSpeed(float s) { speed = s; };
