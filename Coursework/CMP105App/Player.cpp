@@ -40,6 +40,8 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 
 	jumpClone = *dynamic_cast<sf::RectangleShape*>(this); //clone the player for jump animation, so it can be rotated without affecting the player
 	jumpClone.setOrigin(getOrigin());
+
+	healthBar = HealthBar(maxHealth);
 }
 
 Player::~Player()

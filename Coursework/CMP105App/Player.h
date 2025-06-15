@@ -2,6 +2,7 @@
 #include "CreatureObject.h"
 #include "Framework/Animation.h"
 #include "Framework/AssetManager.h"
+#include "HealthBar.h"
 
 class Player : public CreatureObject
 {
@@ -28,6 +29,8 @@ public:
 	//probably add more attacks and rename them
 	virtual void damage(float d) override;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	HealthBar* getHealthBar() { return &healthBar; };
 protected:
 	sf::RectangleShape jumpClone;
 	float jumpTime = 0.f, jumpLength = 0.65f, jumpHeight = 75.f;
@@ -37,5 +40,7 @@ protected:
 
 	std::vector<CreatureObject*> creaturesTemp;
 	float invincibleTime = 0.f;
+
+	HealthBar healthBar;
 };
 

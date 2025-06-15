@@ -23,7 +23,6 @@ void TutorialScene::update(float dt)
 
 	cam.update(dt);
 
-
 }
 
 void TutorialScene::render()
@@ -40,5 +39,10 @@ void TutorialScene::render()
 	lighter.draw(&player);
 
 	lighter.endDraw();
+
+	// HUD
+	window->setView(window->getDefaultView());
+
+	player.getHealthBar()->render(window);
 
 }

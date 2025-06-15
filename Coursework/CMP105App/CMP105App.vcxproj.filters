@@ -212,6 +212,9 @@
     <ClCompile Include="Framework\SceneTransition.cpp">
       <Filter>Framework\Source\Base</Filter>
     </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -324,6 +327,9 @@
     </ClInclude>
     <ClInclude Include="Framework\SceneTransition.h">
       <Filter>Framework\Header\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthBar.h">
+      <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
