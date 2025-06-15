@@ -33,6 +33,8 @@ public:
 	static float angle(sf::Vector2f v);
 	//Linearly interpolates a point between 2 vectors by percentage P
 	static sf::Vector2f lerp(sf::Vector2f v, sf::Vector2f u, float P);
+	//Linearly interpolates a float between 2 floats by percentage P
+	static float lerp(float v, float u, float P);
 	//Returns a vector of the multiplicataion of the components of 2 vectors
 	static sf::Vector2f componentMult(sf::Vector2f v, sf::Vector2f u);
 	//Returns the cross product of 2 vectors

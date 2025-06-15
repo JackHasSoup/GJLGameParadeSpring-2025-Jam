@@ -68,7 +68,13 @@ float VectorHelper::angle(sf::Vector2f v)
 	return atan2(v.y, v.x);
 }
 
+
 sf::Vector2f VectorHelper::lerp(sf::Vector2f v, sf::Vector2f u, float P)
+{
+	return v + (u - v) * P;
+}
+
+float VectorHelper::lerp(float v, float u, float P)
 {
 	return v + (u - v) * P;
 }

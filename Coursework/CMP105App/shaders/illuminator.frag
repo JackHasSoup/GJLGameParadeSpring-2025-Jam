@@ -12,6 +12,7 @@ uniform float numSegments;
 
 uniform vec2 screenSize;
 uniform vec2 viewPos;
+uniform vec4 ambient = vec4(0.0,0.0,0.0,0.65);
 vec2 halfScreen = screenSize * 0.5;
 
 vec2 screenToWorld(vec2 fragCoord) {
@@ -79,6 +80,6 @@ void main() {
         totalIntensity = 1.0;
     }
 
-    gl_FragColor = vec4(colour, (1.0 - totalIntensity) * 0.65);
+    gl_FragColor = vec4(mix(colour, ambient.rgb, 1.0 - ambient.a), (1.0 - totalIntensity) * ambient.a);
 }
 

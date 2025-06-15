@@ -14,21 +14,22 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	maxCooldown = 0.75f;
 	cooldown = 0.f;
 	speed = 350.f;
-	health = 100.f;
-	maxHealth = 100.f;
-	lightAttackDamage = 10.f;
-	heavyAttackDamage = 25.f;
+	health = 10.f;
+	maxHealth = 10.f;
+	lightAttackDamage = 0.5f;
+	heavyAttackDamage = 1.5f;
 	lightAttackRange = 1.f;
-	heavyAttackDamage = 2.5f;
+	heavyAttackRange = 1.75f;
 
-	setDrawType(drawType::RECT);
-
-	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 0.f, 0.f });
-	cs.setPoint(1, { getSize().x, 0.f });
-	cs.setPoint(2, { getSize().x, getSize().y });
-	cs.setPoint(3, { 0.f, getSize().y });
-	setCollisionShape(cs);
+	setDrawType(drawType::RECT_COL_LIGHTMASK);
+	//50,36
+	sf::CircleShape c = sf::CircleShape(size.x * 0.61f * 0.5f);//0.61 is the how much of the sprite is actually seal
+	collisionShape = sf::ConvexShape(c.getPointCount() );
+	for (int i = 0; i < c.getPointCount(); i++)
+	{
+		collisionShape.setPoint(i, c.getPoint(i) + sf::Vector2f(size.x * 0.198f, size.y * 0.167f)); //point + offset of seal from corner of grid
+	}
+	baseHull = collisionShape;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -36,6 +37,9 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 		slap[1].addFrame({ 253, 215 * i, 253, 215 });
 		slap[2].addFrame({ 506, 215 * i, 253, 215 });
 	}
+
+	jumpClone = *dynamic_cast<sf::RectangleShape*>(this); //clone the player for jump animation, so it can be rotated without affecting the player
+	jumpClone.setOrigin(getOrigin());
 }
 
 Player::~Player()
@@ -47,6 +51,9 @@ void Player::update(float dt)
 {
 	CreatureObject::update(dt);
 
+	cooldown -= dt;
+	invincibleTime -= dt; //decrease the invincible time
+
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
@@ -57,13 +64,17 @@ void Player::update(float dt)
 	{
 	case Action::LIGHT:
 	{
-		if (mPos.y < getPosition().y - getOrigin().y)
+		if (slap[howBloody].getFrame() != 0) break; //only update if the player is not already attacking
+		auto const dif = mPos - getPosition();
+		if (abs(dif.y) > abs(dif.x))
 		{
-			slap[howBloody].setFrame(3);
-		}
-		else if (mPos.y > getPosition().y + getOrigin().y)
-		{
-			slap[howBloody].setFrame(2);
+			if (dif.y < 0)
+			{
+				slap[howBloody].setFrame(3); //up
+			}
+			else {
+				slap[howBloody].setFrame(2); //down
+			}
 		}
 		else {
 			slap[howBloody].setFrame(1);
@@ -82,21 +93,27 @@ void Player::update(float dt)
 	}
 
 	//if mouse position is left of seal position flip the animation
-	if (VectorHelper::magnitudeSqrd(lastPos - getPosition()) < 0.01f) //if not moving use mouse
+	if (slap[howBloody].getFrame() == 0) //only flip if no animation happening
 	{
-		slap[howBloody].setFlipped(mPos.x < getPosition().x);
-	}
-	else {
-		slap[howBloody].setFlipped(lastPos.x > getPosition().x);
+		if (VectorHelper::magnitudeSqrd(lastPos - getPosition()) < 0.01f) //if not moving use mouse
+		{
+			slap[howBloody].setFlipped(mPos.x < getPosition().x);
+		}
+		else {
+			slap[howBloody].setFlipped(lastPos.x > getPosition().x);
+		}
 	}
 	
 	setTextureRect(slap[howBloody].getCurrentFrame());
-	std::cout << health << std::endl;
+	jumpAnim(dt); //update the jump animation if the player is jumping
 }
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	lastAction = Action::LIGHT;
+	setCooldown(maxCooldown);
+
 	update(0.f); //update to set the correct frame for the attack
 	for (auto const& c : creatures)
 	{
@@ -107,15 +124,18 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
 
 			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-			if (mPos.y < getPosition().y - getOrigin().y)
+			auto const dif = mPos - getPosition();
+			if (abs(dif.y) > abs(dif.x))
 			{
-				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-				attackBox.top -= attackBox.height / 2.f;
-			}
-			else if (mPos.y > getPosition().y + getOrigin().y)
-			{
-				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-				attackBox.top += attackBox.height / 2.f;
+				if (dif.y < 0)
+				{
+					attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+					attackBox.top -= attackBox.height / 2.f;
+				}
+				else {
+					attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+					attackBox.top += attackBox.height / 2.f;
+				}
 			}
 			else {
 				attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
@@ -149,57 +169,37 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
-	//TEMP: heavy attack is just more powerfull light attack
-	for (auto const& c : creatures)
-	{
-		//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-		sf::FloatRect attackBox;
-		if (slap[howBloody].getCurrentFrame().width != 0) //if the frame is valid
-		{
-			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
-			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-			if (mPos.y < getPosition().y - getOrigin().y)
-			{
-				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
-				attackBox.top -= attackBox.height / 2.f;
-			}
-			else if (mPos.y > getPosition().y + getOrigin().y)
-			{
-				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
-				attackBox.top += attackBox.height / 2.f;
-			}
-			else {
-				attackBox.width *= heavyAttackRange; //increase the width of the attack box for heavy attack
-				if (slap[howBloody].getFlipped()) //if the player is facing left
-				{
-					attackBox.left -= attackBox.width / 2.f;
-				}
-				else {
-					attackBox.left += attackBox.width / 2.f;
-				}
-			}
-	
-			//check if the attack box intersects the creature's collision shape
-			if (c->getCollisionShape().getGlobalBounds().intersects(attackBox))
-			{
-				c->damage(heavyAttackDamage);
-				std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
-				c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-			}
-			else {
-				std::cout << "plyr miss\n"; //missed
-			}
-		}
-		else {
-			return; //no valid frame, no attack
-		}
-	}
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
+	setCooldown(maxCooldown * 1.5f);//longer cooldown for heavy attack
+
+	//don't do attack here, wait to land
+	jumpTime = jumpLength; //reset the jump time for the jump animation
+	creaturesTemp = creatures;
 	std::cout << "plyr heavy\n";
 	lastAction = Action::HEAVY;
 }
 
+void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
+{
+	for (auto const& c : creatures)
+	{
+		if (VectorHelper::magnitudeSqrd(c->getPosition() - getPosition()) < heavyAttackRange * heavyAttackRange * getSize().x * getSize().y) //check if the creature is within the heavy attack range
+		{
+			c->damage(heavyAttackDamage);
+			std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
+			c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+		}
+		else {
+			std::cout << "plyr miss\n"; //missed
+		}
+	}
+}
+
 void Player::dodge()
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
+	setCooldown(maxCooldown * 0.75f); //shorter cooldown for dodge
+
 	sf::Vector2f dir = (sf::Vector2f(0, 1) * (float)Input::isKeyDown(sf::Keyboard::S)) +
 						(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
 						(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
@@ -210,15 +210,52 @@ void Player::dodge()
 
 void Player::parry()
 {
+	if (cooldown > 0) return; //if the player is on cooldown, don't attack
+	setCooldown(maxCooldown * 0.35f); //shorter cooldown for parry
+
+	//parry just gives some invincible time
+	invincibleTime = 0.5f; //set the invincible time to 0.5 seconds
 	std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
 }
 
+void Player::jumpAnim(float dt)
+{
+	if(jumpTime > 0)
+	{
+		float p = jumpTime / jumpLength;
+		jumpClone.setRotation((slap[howBloody].getFlipped() ? 335.f : -335.f) * (p > 0.5f ? p*2.f : 1.f)); //rotate the player based on the jump time
+		jumpClone.setPosition(
+			getPosition() - sf::Vector2f(
+				0, 
+				jumpTime >= jumpLength * 0.5f ?
+				sin(PI * p) * jumpHeight :
+				jumpHeight * pow(2.f * (p), 5.f)
+			));
+		jumpClone.setTextureRect(slap[howBloody].getCurrentFrame()); //set the texture rect to the current frame of the slap animation
+
+		if (jumpTime - dt < 0)
+		{
+			actualHeavyAttack(creaturesTemp); //perform the heavy attack when the player hits the floor
+		}
+	}
+	jumpTime -= dt;
+}
+
 void Player::damage(float d)
 {
+	if (invincibleTime > 0) return; //if the player is invincible, don't take damage
 	health -= d;
 	if (health < 0) health = 0;
 	if (health < maxHealth / 3) howBloody = 2; //very bloody
 	else if (health < maxHealth / 2) howBloody = 1; //bloody
 	else howBloody = 0; //normal
+}
+
+void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	if (jumpTime>0)
+		target.draw(jumpClone, states);
+	else 
+		CreatureObject::draw(target, states);
 }

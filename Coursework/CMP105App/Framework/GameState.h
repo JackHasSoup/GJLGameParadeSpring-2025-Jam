@@ -6,7 +6,7 @@
 
 
 // Possible states. This enum can be modified to add additional states as required.
-enum class State { MENU, PAUSE, WIN, LOSE, LEVEL };
+enum class State : int { MENU, PAUSE, TRANSITION, WIN, LOSE, TUTORIAL, TEST, NUMSCENES}; // Everything after LOSE is a level, everything before it is UI. Levels are stored in the order they appear in-game
 
 struct CollisionData {
 	bool collision = false;
@@ -23,6 +23,8 @@ public:
 
 	static void setLastState(State s);
 	static State getLastState();
+
+	static void incrementLevel();
 
 	static sf::RenderTarget* getRenderTarget() { return renderTarget; };
 	static void setRenderTarget(sf::RenderTarget* rt) {renderTarget = rt;};

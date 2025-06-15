@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include <iostream>
 
-enum class drawType{ RECT, COLLISION, BOTH_RC, BOTH_CR};
+enum class drawType{ RECT, COLLISION, BOTH_RC, BOTH_CR, RECT_COL_LIGHTMASK, COL_RECT_LIGHTMASK};//last 2 use first name for rendering, 2nd for lighting shadows
 
 class GameObject : public sf::RectangleShape
 {

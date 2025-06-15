@@ -15,7 +15,7 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIS
 	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.2f, 36, font, "Start", true);
 	buttons[ButtonIndex::Play].body().setFillColor(sf::Color::Black);
 	buttons[ButtonIndex::Play].msg().setFillColor(sf::Color::White);
-	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::LEVEL); });
+	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::TUTORIAL); });
 
 	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{0,winSize.y * 0.3f}, winSize * 0.2f, 36, font, "Exit", true);
 	buttons[ButtonIndex::Exit].body().setFillColor(sf::Color::Black);

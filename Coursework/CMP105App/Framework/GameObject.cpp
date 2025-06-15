@@ -70,6 +70,12 @@ void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		target.draw(s, states);
 		target.draw(static_cast<RectangleShape>(*this), states);
 		break;
+	case drawType::RECT_COL_LIGHTMASK:
+		target.draw(static_cast<RectangleShape>(*this), states);
+		break;
+	case drawType::COL_RECT_LIGHTMASK:
+		target.draw(s, states);
+		break;
 	default:
 		//if not set, assume intentional to set object invisible
 		break;
