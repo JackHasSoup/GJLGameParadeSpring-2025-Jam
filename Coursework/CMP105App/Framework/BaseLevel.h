@@ -19,6 +19,8 @@ public:
 	virtual void update(float dt) override = 0;
 	virtual void render() override = 0;
 
+	void doorCheck();
+
 	void loadLevel(std::string const& filename);
 
 protected:
@@ -32,7 +34,14 @@ protected:
 	HealthBar healthBar;
 	sf::Shader* hitFlashShader;
 
+	GameObject floor;
 	PhysicsObject door;
+
+	sf::Texture* floorTexture;
+	sf::Texture* doorTexture;
+
+	int doorLightI;
+	Light doorLight;
 
 	sf::Color bgColor;
 	DeferredIllumination lighter;
@@ -41,6 +50,7 @@ protected:
 
 
 	int enemyCount; // how many enemies the player must kill to progress
+	int killCount;
 
 	// action buffer
 	std::vector<BufferedCommand*> availableActions;

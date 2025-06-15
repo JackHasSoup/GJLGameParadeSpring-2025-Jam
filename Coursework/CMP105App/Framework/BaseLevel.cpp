@@ -24,9 +24,22 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	// Player
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
+	floor.setSize(sf::Vector2f{ window->getSize() });
+	floor.setOrigin(floor.getSize() / 2.f);
+	floor.setPosition(midWin);
+
+	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
+
+	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
+	door.setFillColor(sf::Color::White);
+
+	doorLightI = lighter.addLight(door.getPosition() - sf::Vector2f(-23.f, 70.f), 100.f, sf::Color::Red);
+	doorLight = Light(door.getPosition() - sf::Vector2f(0, 40.f), 50.f, sf::Color::Red);
+
 	healthBar = HealthBar(window, &player);
 
 	physMan.registerObj(&player, false);
+	physMan.registerObj(&door, true);
 
 	availableActions = {
 		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
@@ -99,6 +112,25 @@ void BaseLevel::loadLevel(std::string const& filename)
 		default:
 			continue; // skip unknown creature types
 		}
+void BaseLevel::render()
+{
+}
+
+void BaseLevel::doorCheck()
+{
+	if (killCount >= enemyCount) {
+		// change door light to green if enough enemies have been killed
+		std::get<0>(doorLight) = sf::Vector2f{ door.getPosition() - sf::Vector2f(-23.f, 70.f) };
+		std::get<1>(doorLight) = 100.f;
+		std::get<2>(doorLight) = sf::Color::Green;
+		lighter.setLight(doorLightI, doorLight);
+
+		if (Collision::checkBoundingBox(&player, &door)) {
+			GameState::incrementLevel();
+		}
+	}
+
+}
 
 		if (roomIndex >= 0 && roomIndex < rooms.size())
 		{
