@@ -13,5 +13,5 @@ public:
 	virtual void execute() override { execute(nullptr, {}); };
 private:
 	std::function<void(CreatureObject* target, std::vector<CreatureObject*> creatures)> callback;
-	CreatureObject* defaultTarget;
+	CreatureObject* defaultTarget = nullptr;
 };

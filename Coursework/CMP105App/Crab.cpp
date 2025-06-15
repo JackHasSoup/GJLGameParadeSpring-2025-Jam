@@ -49,7 +49,7 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
-		std::cout << "last action none" << std::endl;
+		//std::cout << "last action none" << std::endl;
 	}
 	switch (lastAction)
 	{
