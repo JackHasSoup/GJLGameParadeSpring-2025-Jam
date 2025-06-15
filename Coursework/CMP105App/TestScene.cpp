@@ -34,7 +34,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
-	crab = Crab(midWin * 1.2f, { 75.f, 75.f }, 20.f, { 1.5f, 4.f });
+	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -69,6 +69,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	physMan.registerObj(&g1, false);
 	physMan.registerObj(&g2, false);
 	physMan.registerObj(&player, false);
+	physMan.registerObj(&crab, false);
 
 	lighter.setTarget(dynamic_cast<sf::RenderTexture*>(window));
 	lighter.create();

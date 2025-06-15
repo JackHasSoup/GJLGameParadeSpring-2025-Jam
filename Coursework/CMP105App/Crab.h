@@ -13,15 +13,15 @@ public :
 
 	void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
 	
-	virtual void lightAttack(std::vector<CreatureObject*> creatures) override;
-	virtual void heavyAttack(std::vector<CreatureObject*> creatures) override;
+	virtual void lightAttack(CreatureObject* player) /*override*/;
+	//virtual void heavyAttack(CreatureObject* player) override;
 	virtual void dodge() override;
 	virtual void parry() override;
 
 	virtual void damage(float d) override;
 private : 
-	sf::Vector2f vecToPlayer, vecToProjPointNorm, vecToProjPoint;
-	float heightDiff, rota1, rota2;
+	sf::Vector2f vecToPlayer, vecToProjPointNorm, vecToProjPoint, movementAxis;
+	double heightDiff, rota1, rota2;
 
 	int howBloody = 0;
 	Animation pinch[3]; //1-normal, 2-bloody, 3-very bloody (normal, side, down, up)
