@@ -43,11 +43,13 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 }
 
 void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
-	CreatureObject::update(dt);
+	//CreatureObject::update(dt);
+	BaseEnemy::trackPlayer(player, actionBuffer, dt);
 
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
+		std::cout << "last action none" << std::endl;
 	}
 	switch (lastAction)
 	{
@@ -72,8 +74,8 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 
 	if (abs(getPosition().y - (getPosition().x * (movementAxis.y / movementAxis.x) + heightDiff)) > 1) {
 		heightDiff = getPosition().y - (getPosition().x * (movementAxis.y / movementAxis.x));
-		std::cout << "change axis" << std::endl;
-		std::cout << getPosition().x << " ; " << getPosition().y << " ; " << ((movementAxis.y / movementAxis.x)) << std::endl;
+		//std::cout << "change axis" << std::endl;
+		//std::cout << getPosition().x << " ; " << getPosition().y << " ; " << ((movementAxis.y / movementAxis.x)) << std::endl;
 	}
 
 	if (player->getPosition().y > (movementAxis.y / movementAxis.x) * player->getPosition().x + heightDiff) {
@@ -90,11 +92,13 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	//std::cout << heightDiff << std::endl;
 }
 
-void Crab::lightAttack(CreatureObject* player)
+void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	CreatureObject* player = creatures[0];
 	lastAction = Action::LIGHT;
 	update(0.f); //update to set the correct frame for the attack
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
+	pinch[howBloody].setFrame(1);
 	sf::FloatRect attackBox;
 	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
 	{
@@ -132,18 +136,18 @@ void Crab::lightAttack(CreatureObject* player)
 		if (player->getCollisionShape().getGlobalBounds().intersects(attackBox))
 		{
 			player->damage(lightAttackDamage);
-			std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+			//std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			std::cout << "plyr miss\n"; //missed
+			//std::cout << "plyr miss\n"; //missed
 		}
 	}
 	else {
-		std::cout << "return\n";
+		//std::cout << "return\n";
 		return; //no valid frame, no attack
 	}
-	std::cout << "plyr light\n";
+	//std::cout << "plyr light\n";
 }
 
 //void Crab::heavyAttack(CreatureObject* player)
@@ -211,13 +215,4 @@ void Crab::parry()
 {
 	std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
-}
-
-void Crab::damage(float d)
-{
-	health -= d;
-	if (health < 0) health = 0;
-	if (health < maxHealth / 3) howBloody = 3; //very bloody
-	else if (health < maxHealth / 2) howBloody = 2; //bloody
-	else howBloody = 1; //normal
 }

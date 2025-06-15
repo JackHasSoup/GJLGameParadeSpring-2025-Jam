@@ -15,7 +15,7 @@ public:
 	virtual void dodge() override;
 	virtual void parry() override;
 
-	void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
+	virtual void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
 	void damage(float d) override;
 protected:
 	sf::Vector2f direction, directionNorm;
@@ -24,4 +24,5 @@ protected:
 	int actionBufferIndex = 0; //current index of the action copy
 	float maxCooldown = 0.75f;
 	float cooldown = maxCooldown;
+	int howBloody = 0;
 };

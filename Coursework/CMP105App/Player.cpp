@@ -91,6 +91,7 @@ void Player::update(float dt)
 	}
 	
 	setTextureRect(slap[howBloody].getCurrentFrame());
+	std::cout << health << std::endl;
 }
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
@@ -217,7 +218,7 @@ void Player::damage(float d)
 {
 	health -= d;
 	if (health < 0) health = 0;
-	if (health < maxHealth / 3) howBloody = 3; //very bloody
-	else if (health < maxHealth / 2) howBloody = 2; //bloody
-	else howBloody = 1; //normal
+	if (health < maxHealth / 3) howBloody = 2; //very bloody
+	else if (health < maxHealth / 2) howBloody = 1; //bloody
+	else howBloody = 0; //normal
 }

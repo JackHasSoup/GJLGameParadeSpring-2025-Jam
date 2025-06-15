@@ -11,14 +11,12 @@ public :
 	Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f direction);
 	~Crab() {};
 
-	void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
+	void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) override;
 	
-	virtual void lightAttack(CreatureObject* player) /*override*/;
+	virtual void lightAttack(std::vector<CreatureObject*> creatures) override;
 	//virtual void heavyAttack(CreatureObject* player) override;
 	virtual void dodge() override;
 	virtual void parry() override;
-
-	virtual void damage(float d) override;
 private : 
 	sf::Vector2f vecToPlayer, vecToProjPointNorm, vecToProjPoint, movementAxis;
 	double heightDiff, rota1, rota2;
