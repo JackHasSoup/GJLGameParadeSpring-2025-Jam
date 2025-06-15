@@ -252,7 +252,6 @@ void TestScene::executeAndTrack(BufferedCommand* b)
 {
 	if (!b) return; //if the command is null, do nothing
 	if (player.getCooldown() > 0.f) return; //if the player is on cooldown, do nothing
-	player.setCooldown(player.getMaxCooldown()); //reset the cooldown
 
 	const int size = actionBuffer.size();
 	if (size < maxActBufferSize)
