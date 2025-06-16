@@ -26,4 +26,5 @@ protected:
 	float maxCooldown = 0.75f;
 	float cooldown = maxCooldown;
 	int howBloody = 0;
+	Action lastAction = Action::NONE;
 };

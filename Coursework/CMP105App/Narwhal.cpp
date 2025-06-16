@@ -40,13 +40,15 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 
 	health = 7.5f;
 	maxHealth = 12.5f;
-	speed = 100.f;
+	speed = 250.f;
 	cooldown = 0.f;
-	maxCooldown = 1.5f;
+	maxCooldown = 2.5f;
 	lightAttackDamage = 0.5f;
 	heavyAttackDamage = 3.5f;
 	lightAttackRange = 0.5f; //50% of the size of the attack check box
 	heavyAttackRange = 1.0f; //100% of the size of the attack check box
+
+	attackRange = getSize().x; //the distance the narwhal will stop approaching the player
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -61,6 +63,45 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 
 void Narwhal::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
+
+	lastAction = Action::LIGHT;
+	cooldown = maxCooldown;
+	update(0.f); //update to set the correct frame for the attack
+
+	auto* c = creatures[0]; //get the player, the first (and only) creature in the vector
+	//check if the creature intersects a box sent out from narwhal's look direction on attack (look direction being the direction the narwhal is facing like in update getting the frame for light attack)
+	sf::FloatRect attackBox;
+	if (light[howBloody].getCurrentFrame().width != 0) //if the frame is valid
+	{
+		attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
+		auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
+		auto const dif = mPos - getPosition();
+		if (abs(dif.y) > abs(dif.x))
+		{
+			if (dif.y < 0)
+			{
+				attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
+			}
+			else {
+				attackBox.height *= lightAttackRange * 0.5f; //decrease the height of the attack box for light attack
+			}
+		}
+		else {
+			if (dif.x < 0)
+			{
+				attackBox.width *= lightAttackRange * 0.5f; //decrease the width of the attack box for light attack
+			}
+			else {
+				attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
+			}
+		}
+		if (attackBox.intersects(c->getCollisionShape().getGlobalBounds())) //check if the creature is within the light attack range
+		{
+			c->damage(lightAttackDamage);
+			c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+		}
+	}
 }
 
 void Narwhal::heavyAttack(std::vector<CreatureObject*> creatures)
@@ -78,4 +119,43 @@ void Narwhal::parry()
 void Narwhal::update(float dt)
 {
 	BaseEnemy::update(dt);
+
+	if (cooldown <= 0) //not on cooldown, action not being performed
+	{
+		lastAction = Action::NONE;
+	}
+
+	//switch for animation frame
+	switch (lastAction)
+	{
+	case Action::LIGHT:
+	{
+		float p = (cooldown * 2.f) / maxCooldown; //only animate for half the cooldown
+		if (p > 1.f) break;
+		if (p > 0.67f) { light[howBloody].setFrame(1); }else 
+		if (p > 0.33f) { light[howBloody].setFrame(2); }else
+		{light[howBloody].setFrame(3);}
+		break;
+	}
+	default:
+		light[howBloody].setFrame(0); //regular narwhal
+		break;
+	}
+
+	setTextureRect(light[howBloody].getCurrentFrame());
+}
+
+void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt)
+{
+	BaseEnemy::trackPlayer(player, actionBuffer, dt);
+	if (!isAlive()) return;
+
+	//look at player direction
+	light[howBloody].setFlipped(player->getPosition().x < getPosition().x);
+
+	if (VectorHelper::magnitudeSqrd(player->getPosition() - getPosition()) >= attackRange*attackRange)
+	{
+		accelerate(VectorHelper::normalise(player->getPosition() - getPosition()), speed);//no dt, handled by physics anyway
+	}
+
 }

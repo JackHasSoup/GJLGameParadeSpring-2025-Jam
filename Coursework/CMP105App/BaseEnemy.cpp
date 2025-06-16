@@ -34,10 +34,9 @@ void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 	//	accelerate(directionNorm, speed);
 	//}
 	if(cooldown <= 0.f && size) {
-		cooldown = maxCooldown;
-
 		actionBuffer[actionBufferIndex]->execute(this, { player });
 		actionBufferIndex = actionBufferIndex + 1 >= size ? 0 : actionBufferIndex + 1;
+		cooldown = maxCooldown;
 	}
 }
 
