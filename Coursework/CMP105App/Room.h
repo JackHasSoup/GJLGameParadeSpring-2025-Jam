@@ -26,11 +26,14 @@ public:
 
 	void updateCreatures(std::vector<BufferedCommand*> actionBuffer, float dt);
 	void render(DeferredIllumination* lighter);
+
+	bool allCreaturesDead();
 private:
 	Player* player;
 	Room* sceneActiveRoom = nullptr; // the room that is currently active in the scene
 	std::vector<CreatureObject*> enemies; // enemies in this room (must be kept as creatures for action buffer)
-	
+	bool allDead = false;
+
 	void onEnter();
 	void onExit();
 };

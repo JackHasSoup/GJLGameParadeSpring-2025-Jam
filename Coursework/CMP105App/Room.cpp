@@ -47,6 +47,21 @@ void Room::render(DeferredIllumination* lighter)
 	}
 }
 
+bool Room::allCreaturesDead()
+{
+	if (allDead) return true; // if already known all are dead, return true immediately
+	allDead = true; // assume all creatures are dead
+	for (const auto& e : enemies)
+	{
+		if (e->isAlive())
+		{
+			allDead = false; // if any creature is alive, then not all are dead
+			break;
+		}
+	}
+	return allDead;
+}
+
 void Room::onEnter()
 {
 	for (auto& e : enemies)
