@@ -166,7 +166,8 @@ void Narwhal::update(float dt)
 		if (p > 1.f) break;
 		if (p > 0.67f) { light[howBloody].setFrame(1); }else 
 		if (p > 0.33f) { light[howBloody].setFrame(2); }else
-		{light[howBloody].setFrame(3);}
+		if (p > 0.165) { light[howBloody].setFrame(3); }
+		else{light[howBloody].setFrame(0);}
 		setTextureRect(light[howBloody].getCurrentFrame());
 		break;
 	}
