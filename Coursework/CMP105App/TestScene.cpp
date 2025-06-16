@@ -35,6 +35,9 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
+	//crab.setDrawType(drawType::BOTH_CR);
+
+	enemies.push_back(&crab);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -146,7 +149,7 @@ void TestScene::update(float dt)
 
 	cam.update(dt);
 
-	crab.trackPlayer(&player, actionBuffer, dt);
+	//crab.trackPlayer(&player, actionBuffer, dt);
 
 	player.setCooldown(player.getCooldown() - dt);
 }
@@ -193,13 +196,11 @@ void TestScene::render()
 	lighter.draw(&g1);
 	lighter.draw(&g2);
 	lighter.draw(&player);
-	lighter.draw(&crab);
+	//lighter.draw(&crab);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
-	
-
 
 	lighter.endDraw();
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point

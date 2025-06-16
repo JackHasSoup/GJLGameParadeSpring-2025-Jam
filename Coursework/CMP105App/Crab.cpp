@@ -17,20 +17,21 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	maxCooldown = 0.75f;
 	cooldown = 0.f;
 	speed = 350.f;
-	health = 100.f;
-	maxHealth = 100.f;
+	health = 2.5f;
+	maxHealth = 2.5f;
 	lightAttackDamage = 10.f;
 	heavyAttackDamage = 25.f;
 	lightAttackRange = 1.f;
 	heavyAttackDamage = 2.5f;
+	lightAtkRadius = 3600.f;
 
 	setDrawType(drawType::RECT);
 
 	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 0.f, 0.f });
-	cs.setPoint(1, { getSize().x, 0.f });
-	cs.setPoint(2, { getSize().x, getSize().y });
-	cs.setPoint(3, { 0.f, getSize().y });
+	cs.setPoint(0, { 20.f, 15.f });
+	cs.setPoint(1, { getSize().x - 20.f, 15.f });
+	cs.setPoint(2, { getSize().x - 20.f, getSize().y - 15.f });
+	cs.setPoint(3, { 20.f, getSize().y - 15.f });
 	setCollisionShape(cs);
 
 	for (int i = 0; i < 2; i++)
@@ -39,13 +40,13 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 		pinch[1].addFrame({ 300, 150 * i, 300, 150 });
 		pinch[2].addFrame({ 600, 150 * i, 300, 150 });
 	}
-	pinch[0].setFrame(0);
+	//pinch[0].setFrame(0);
 }
 
 void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
 	//CreatureObject::update(dt);
 	BaseEnemy::trackPlayer(player, actionBuffer, dt);
-
+	//std::cout << howBloody << std::endl;
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
@@ -61,6 +62,7 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	case Action::HEAVY:
 		break;
 	case Action::DODGE:
+		pinch[howBloody].setFrame(0);
 		break;
 	case Action::PARRY:
 		break;
@@ -133,14 +135,14 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 		//	}
 		//}
 		//check if the attack box intersects the creature's collision shape
-		if (player->getCollisionShape().getGlobalBounds().intersects(attackBox))
+		if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAtkRadius)
 		{
 			player->damage(lightAttackDamage);
-			//std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+			std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			//std::cout << "plyr miss\n"; //missed
+			std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
 		}
 	}
 	else {
@@ -203,16 +205,17 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Crab::dodge()
 {
-	sf::Vector2f dir = (sf::Vector2f(0, 1) * (float)Input::isKeyDown(sf::Keyboard::S)) +
+	/*sf::Vector2f dir = (sf::Vector2f(0, 1) * (float)Input::isKeyDown(sf::Keyboard::S)) +
 		(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
 		(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
-		(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));
-	accelerate(dir, speed * speed);
+		(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));*/
+	accelerate(VectorHelper::normalise(vecToProjPoint) * speed * speed);
 	lastAction = Action::DODGE;
+	//std::cout << "dodge" << std::endl;
 }
 
 void Crab::parry()
 {
-	std::cout << "plyr parry\n";
+	//std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
 }
