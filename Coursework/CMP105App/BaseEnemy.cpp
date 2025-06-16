@@ -52,5 +52,6 @@ void BaseEnemy::damage(float d)
 	{
 		setAlive(false);
 	}
+	//std::cout << health << std::endl;
 }
 

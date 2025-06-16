@@ -36,6 +36,9 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
 	nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
+	//crab.setDrawType(drawType::BOTH_CR);
+
+	enemies.push_back(&crab);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -193,12 +196,11 @@ void TestScene::render()
 	lighter.draw(&g1);
 	lighter.draw(&g2);
 	lighter.draw(&player);
+	lighter.draw(&crab);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
-	
-
 
 	lighter.endDraw();
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
