@@ -3,7 +3,7 @@
 Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f direction) : BaseEnemy(pos, size, mass)
 {
 	AssetManager::registerNewTex("crabSheet");
-	AssetManager::getTex("crabSheet")->loadFromFile("gfx/Crab/crabSheet.png");
+	AssetManager::getTex("crabSheet")->loadFromFile("gfx/Crab/crabSheetFinalFinal.png");
 	setTexture(AssetManager::getTex("crabSheet"));
 	setFillColor(sf::Color::White);
 
@@ -36,7 +36,7 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	cs.setPoint(3, { 20.f, getSize().y - 15.f });
 	setCollisionShape(cs);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		pinch[0].addFrame({ 0, 150 * i, 300, 150 });
 		pinch[1].addFrame({ 300, 150 * i, 300, 150 });
@@ -62,11 +62,14 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	}
 	break;
 	case Action::HEAVY:
+		pinch[howBloody].setFrame(2);
 		break;
 	case Action::DODGE:
 		pinch[howBloody].setFrame(0);
 		break;
 	case Action::PARRY:
+		pinch[howBloody].setFrame(3);
+		std::cout << "parried" << std::endl;
 		break;
 	default:
 		pinch[howBloody].setFrame(0); //regular crab
@@ -119,7 +122,7 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 	lastAction = Action::LIGHT;
 	update(0.f); //update to set the correct frame for the attack
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-	pinch[howBloody].setFrame(1);
+	//pinch[howBloody].setFrame(1);
 	sf::FloatRect attackBox;
 	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
 	{
