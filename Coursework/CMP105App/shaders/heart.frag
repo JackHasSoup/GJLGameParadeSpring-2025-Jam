@@ -17,7 +17,7 @@ void main()
     isOnIndex = 1;
     }
 
-    float currentTimer = lerp(0.0,1.0,hitTimer * 10.0);
+    float currentTimer = mix(0.0,1.0,hitTimer * 10.0);
 
     float halfMask = isOnIndex * step(0.5,uv.x) * isEmpty;
 

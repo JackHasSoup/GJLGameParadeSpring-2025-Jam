@@ -20,6 +20,7 @@ private:
 	sf::Shader* heartShader;
 
 	float hitEffectTimer;
+	float effectTimerMax;
 
 	sf::Vector2f startPos;
 

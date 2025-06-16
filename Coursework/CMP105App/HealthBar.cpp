@@ -16,6 +16,7 @@ HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer, sf::Shader* in
 	currentHealth = maxHealth;
 
 	hitEffectTimer = 0.f;
+	effectTimerMax = 0.125f;
 
 	heartShader = inputShader;
 
@@ -43,19 +44,20 @@ void HealthBar::update(float dt)
 {
 	if (player->getHealth() != currentHealth) {
 		if (player->getHealth() < currentHealth) {
-			hitEffectTimer = 0.125f;
+			hitEffectTimer = effectTimerMax;
 		}
 		currentHealth = player->getHealth();
 	}
 	hitEffectTimer -= dt;
 	heartShader->setUniform("hitTimer", hitEffectTimer);
+	heartShader->setUniform("currentHealth", currentHealth);
 
 	if (hitEffectTimer > 0.f) {
 		for (int i = 0; i < hearts.size(); i++) {
 		hearts[i].setPosition(hearts[i].getPosition() - sf::Vector2f{ 0.f, (cos(hitEffectTimer * TAU * 400.f) * 2.f) });
 		}
 	}
-	else if(hitEffectTimer < 0.f && hitEffectTimer > -0.2f) {
+	else if(hitEffectTimer < 0.f && hitEffectTimer > -effectTimerMax) {
 		// move hearts back to where they where
 		for (int i = 0; i < hearts.size(); i++) {
 			hearts[i].setPosition(startPos + sf::Vector2f{ i * hearts[i].getSize().x, 0.f });
@@ -68,7 +70,6 @@ void HealthBar::render()
 
 	for (int i = 0; i < hearts.size(); i++) {
 		heartShader->setUniform("index", (i * 1.f));
-		heartShader->setUniform("currentHealth", currentHealth);
 		window->draw(hearts[i], heartShader);
 	}
 }
