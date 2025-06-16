@@ -25,6 +25,7 @@ protected:
 	PhysicsManager physMan;
 
 	HealthBar healthBar;
+	sf::Shader heartShader;
 
 	PhysicsObject door;
 

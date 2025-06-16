@@ -8,7 +8,7 @@
 class HealthBar : public GameObject {
 public:
 	HealthBar();
-	HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer);
+	HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer, sf::Shader* inputShader);
 
 	void update(float dt);
 	void render();
@@ -17,8 +17,11 @@ private:
 	float currentHealth;
 	float maxHealth;
 
-	//sf::Shader heartShader;
-	//sf::RenderStates state;
+	sf::Shader* heartShader;
+
+	float hitEffectTimer;
+
+	sf::Vector2f startPos;
 
 	std::vector<GameObject> hearts;
 	sf::Texture* heartTexture;

@@ -9,7 +9,8 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 
 	//BaseLevel::loadLevel("levels/level.json");
 	commander.addPressed(sf::Keyboard::Space, new GenericCommand([=] {GameState::setCurrentState(State::TEST); }));
-	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.damage(1.f); }));
+	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.damage(0.5f); }));
+	commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.restoreHealth(); }));
 }
 
 void TutorialScene::handleInput(float dt)

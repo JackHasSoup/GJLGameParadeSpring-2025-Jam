@@ -4,17 +4,22 @@
 HealthBar::HealthBar()
 {
 	window = nullptr;
+	heartShader = nullptr;
 }
 
-HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
+HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer, sf::Shader* inputShader)
 {
 	window = hwnd;
 
 	player = inputPlayer;
 	maxHealth = player->getMaxHealth();
-	currentHealth = 0.f;
+	currentHealth = maxHealth;
 
-	sf::Vector2f startPos = sf::Vector2f{ 50.f,50.f };
+	hitEffectTimer = 0.f;
+
+	heartShader = inputShader;
+
+	startPos = sf::Vector2f{ 50.f,50.f };
 	sf::Vector2f size = sf::Vector2f{ 100,100.f };
 
 	setDrawType(drawType::RECT);
@@ -22,14 +27,7 @@ HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
 	heartTexture = AssetManager::registerNewTex("heart");
 	heartTexture->loadFromFile("gfx/Seal/heart.png");
 
-	//if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
-	//{
-	//	std::cout << "Error loading healthbar shader";
-	//}
-	//heartShader.setUniform("texture", sf::Shader::CurrentTexture);
-
-	int numHearts = static_cast<int>(nearbyint(maxHealth));
-	std::cout << numHearts << std::endl;
+	int numHearts = static_cast<int>(round(maxHealth));
 	hearts.resize(numHearts);
 
 	for (int i = 0; i < hearts.size(); i++) {
@@ -44,23 +42,33 @@ HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
 void HealthBar::update(float dt)
 {
 	if (player->getHealth() != currentHealth) {
+		if (player->getHealth() < currentHealth) {
+			hitEffectTimer = 0.125f;
+		}
 		currentHealth = player->getHealth();
+	}
+	hitEffectTimer -= dt;
+	heartShader->setUniform("hitTimer", hitEffectTimer);
 
+	if (hitEffectTimer > 0.f) {
 		for (int i = 0; i < hearts.size(); i++) {
-			if ((i + 1) > currentHealth) {
-				hearts[i].setFillColor(sf::Color::Black);
-
-			}
-			else {
-				hearts[i].setFillColor(sf::Color::White);
-			}
+		hearts[i].setPosition(hearts[i].getPosition() - sf::Vector2f{ 0.f, (cos(hitEffectTimer * TAU * 400.f) * 2.f) });
+		}
+	}
+	else if(hitEffectTimer < 0.f && hitEffectTimer > -0.2f) {
+		// move hearts back to where they where
+		for (int i = 0; i < hearts.size(); i++) {
+			hearts[i].setPosition(startPos + sf::Vector2f{ i * hearts[i].getSize().x, 0.f });
 		}
 	}
 }
 
 void HealthBar::render()
 {
+
 	for (int i = 0; i < hearts.size(); i++) {
-		window->draw(hearts[i]);
+		heartShader->setUniform("index", (i * 1.f));
+		heartShader->setUniform("currentHealth", currentHealth);
+		window->draw(hearts[i], heartShader);
 	}
 }

@@ -239,7 +239,7 @@
     <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="heart.frag" />
+    <None Include="shaders\heart.frag" />
     <None Include="shaders\ascii.frag" />
     <None Include="shaders\crt.frag" />
     <None Include="shaders\gb.frag" />

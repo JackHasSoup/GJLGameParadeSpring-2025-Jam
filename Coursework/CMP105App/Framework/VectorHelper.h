@@ -3,6 +3,7 @@
 #include <math.h>
 #ifndef PI
 #define PI 3.14159265
+#define TAU 6.28318f
 #define Rad(a) (a * (PI * 0.00555555555))
 #define Deg(a) (a * (180.0f / PI))
 #endif // !PI
