@@ -9,6 +9,9 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 	AssetManager::registerNewTex("NarwhalHeavy");
 	AssetManager::getTex("NarwhalHeavy")->loadFromFile("gfx/Narwhal/HeavyAttack.png");
 
+	AssetManager::registerNewTex("NarwhalParry");
+	AssetManager::getTex("NarwhalParry")->loadFromFile("gfx/Narwhal/NarwhalParry.png");
+
 	setFillColor(sf::Color::White);
 	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
@@ -63,9 +66,8 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 	for (int i = 0; i < 3; i++)
 	{
 		heavy[i].addFrame({256* i, 0, 256, 256});
-		heavy[i].setFlipped(0);
+		parryAnim[i] = heavy[i]; //parry uses the same frames as heavy attack
 	}
-
 	light[howBloody].setFrame(0);
 	setTextureRect(light[howBloody].getCurrentFrame());
 }
@@ -126,10 +128,24 @@ void Narwhal::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Narwhal::dodge()
 {
+	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
+	setTexture(AssetManager::getTex("NarwhalHeavy"));
+	lastAction = Action::DODGE;
+	cooldown = maxCooldown * 1.15f; //longer cooldown for dodge
+	update(0.f); //update to set the correct frame for the attack
+
+	accelerate(getVelocity(1.f), -speed * speed); //charge in opposite direction of current movement
 }
 
 void Narwhal::parry()
 {
+	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
+	setTexture(AssetManager::getTex("NarwhalParry"));
+	lastAction = Action::PARRY;
+	cooldown = maxCooldown * 0.25f; //short parry length
+	update(0.f); //update to set the correct frame for the action
+
+	//this is all that has to be done, the parry animation will play and the narwhal will not take damage while it is parrying
 }
 
 void Narwhal::update(float dt)
@@ -173,6 +189,7 @@ void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> 
 
 	//look at player direction
 	bool flip = player->getPosition().x < getPosition().x;
+	flip = lastAction == Action::DODGE ? !flip : flip; //if dodging, flip the narwhal to face the opposite direction
 	light[howBloody].setFlipped(flip);
 	heavy[howBloody].setFlipped(flip);
 
@@ -181,4 +198,10 @@ void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> 
 		accelerate(VectorHelper::normalise(player->getPosition() - getPosition()), speed);//no dt, handled by physics anyway
 	}
 
+}
+
+void Narwhal::damage(float d)
+{
+	if (lastAction == Action::PARRY) return; //if the narwhal is parrying, don't take damage
+	BaseEnemy::damage(d);
 }

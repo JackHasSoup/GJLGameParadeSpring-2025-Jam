@@ -15,8 +15,11 @@ public:
 
 	virtual void update(float dt) override;
 	virtual void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) override;
+
+	virtual void damage(float d) override;
 private:
 	Animation light[3];
-	Animation heavy[3];;
+	Animation heavy[3]; //also used for dodge
+	Animation parryAnim[3];
 };
 
