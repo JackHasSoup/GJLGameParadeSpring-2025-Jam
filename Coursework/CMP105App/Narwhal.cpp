@@ -55,7 +55,7 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 	lightAttackRange = 0.5f; //50% of the size of the attack check box
 	heavyAttackRange = 1.0f; //100% of the size of the attack check box
 
-	attackRange = getSize().x; //the distance the narwhal will stop approaching the player
+	lightAttackRange = getSize().x; //the distance the narwhal will stop approaching the player
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -193,7 +193,7 @@ void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> 
 	light[howBloody].setFlipped(flip);
 	heavy[howBloody].setFlipped(flip);
 
-	if (VectorHelper::magnitudeSqrd(player->getPosition() - getPosition()) >= attackRange*attackRange)
+	if (VectorHelper::magnitudeSqrd(player->getPosition() - getPosition()) >= lightAttackRange* lightAttackRange)
 	{
 		accelerate(VectorHelper::normalise(player->getPosition() - getPosition()), speed);//no dt, handled by physics anyway
 	}

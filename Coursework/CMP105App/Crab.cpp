@@ -22,10 +22,8 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	
 	lightAttackDamage = 1.f;
 	heavyAttackDamage = 2.5f;
-	lightAtkRadius = 3600.f;
-	heavyAtkRadius = 3600.f;
-	heavyAtkMaxDuration = 0.25f;
-	heavyAtkDuration = 0.25f;
+	lightAttackRange = 3600.f;
+	heavyAttackRange = 3600.f;
 
 	setDrawType(drawType::RECT);
 
@@ -95,18 +93,13 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	}
 
 	if (heavyAtkActive == true) {
-		heavyAtkDuration -= dt;
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAtkRadius)
+		heavyAttackRange -= dt;
+		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
 		{
 			player->damage(heavyAttackDamage);
 			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 			
-			heavyAtkActive = false;
-			heavyAtkDuration = heavyAtkMaxDuration;
-		}
-		if (heavyAtkDuration <= 0) {
-			heavyAtkDuration = heavyAtkMaxDuration;
 			heavyAtkActive = false;
 		}
 	}
@@ -129,7 +122,7 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
 	{
 		//check if the attack box intersects the creature's collision shape
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAtkRadius)
+		if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAttackRange)
 		{
 			player->damage(lightAttackDamage);
 			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
@@ -149,7 +142,7 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 {
 	if (cooldown > 0) return;
-	cooldown = maxCooldown * 1.5f;
+	cooldown = maxCooldown * 2.5f;
 
 	CreatureObject* player = creatures[0];
 	
@@ -166,7 +159,7 @@ void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
 	{
 		//check if the attack box intersects the creature's collision shape
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAtkRadius)
+		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
 		{
 			player->damage(heavyAttackDamage);
 			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";

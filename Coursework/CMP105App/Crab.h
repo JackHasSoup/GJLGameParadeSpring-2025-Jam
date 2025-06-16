@@ -20,7 +20,6 @@ public :
 private : 
 	sf::Vector2f vecToPlayer, vecToProjPointNorm, vecToProjPoint, movementAxis;
 	double heightDiff, rota1, rota2;
-	float lightAtkRadius, heavyAtkRadius, heavyAtkMaxDuration, heavyAtkDuration;
 	bool heavyAtkActive = false;
 
 
