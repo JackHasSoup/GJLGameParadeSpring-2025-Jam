@@ -3,8 +3,7 @@
 
 TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
-	font = AssetManager::registerNewFont("arial");
-	font->loadFromFile("./font/arial.ttf");
+	font = AssetManager::getFont("arial");
 	/*button = Button(midWin, winSize * 0.2f, 24, font, "Hello", true);
 	button.body().setFillColor(sf::Color::Black);
 	button.msg().setFillColor(sf::Color::Cyan);

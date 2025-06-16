@@ -191,6 +191,7 @@
     <ClCompile Include="Framework\SceneTransition.cpp" />
     <ClCompile Include="Narwhal.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomTestScene.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuScene.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Framework\SceneTransition.h" />
     <ClInclude Include="Narwhal.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomTestScene.h" />
     <ClInclude Include="TutorialScene.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PauseScene.h" />

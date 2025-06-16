@@ -45,5 +45,5 @@ protected:
 
 	//rooms
 	std::vector<Room> rooms; // all rooms in the level
-	Room* activeRoom;
+	Room* activeRoom = nullptr;
 };

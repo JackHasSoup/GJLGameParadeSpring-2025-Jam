@@ -7,7 +7,8 @@ BaseLevel::BaseLevel()
 
 BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
-
+	auto* font = AssetManager::registerNewFont("arial");
+	font->loadFromFile("./font/arial.ttf");
 	// Variable initalisation
 	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);

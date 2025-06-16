@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
+#include "RoomTestScene.h"
 #include "Framework/SceneTransition.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
-	TestScene testScene(&tex);
+	RoomTestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
 
 	MenuScene menu(&tex, &window);
