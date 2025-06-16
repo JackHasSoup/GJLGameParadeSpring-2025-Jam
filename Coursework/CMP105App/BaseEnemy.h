@@ -1,6 +1,7 @@
 #pragma once
 #include "CreatureObject.h"
 #include "BufferedCommand.h"
+#include "Framework/Animation.h"
 #include <vector>
 
 class BaseEnemy : public CreatureObject

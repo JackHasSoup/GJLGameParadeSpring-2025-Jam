@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/PhysicsObject.h"
+#include "Framework/AssetManager.h"
 enum class Action{NONE, LIGHT,HEAVY,DODGE,PARRY};
 class CreatureObject : public PhysicsObject
 {

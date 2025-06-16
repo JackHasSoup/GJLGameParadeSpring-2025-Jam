@@ -215,6 +215,9 @@
     <ClCompile Include="Crab.cpp">
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
+    <ClCompile Include="Narwhal.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -329,6 +332,9 @@
       <Filter>Framework\Header\Base</Filter>
     </ClInclude>
     <ClInclude Include="Crab.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Narwhal.h">
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
   </ItemGroup>

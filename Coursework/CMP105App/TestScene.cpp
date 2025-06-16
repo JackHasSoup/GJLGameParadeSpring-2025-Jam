@@ -35,6 +35,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
+	nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -70,6 +71,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	physMan.registerObj(&g2, false);
 	physMan.registerObj(&player, false);
 	physMan.registerObj(&crab, false);
+	physMan.registerObj(&nar, false);
 
 	lighter.setTarget(dynamic_cast<sf::RenderTexture*>(window));
 	lighter.create();
@@ -114,6 +116,8 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 		enemies.push_back(e);
 		physMan.registerObj(e, false);
 	}*/
+	enemies.push_back(&crab);
+	enemies.push_back(&nar);
 }
 
 void TestScene::update(float dt)
@@ -145,10 +149,6 @@ void TestScene::update(float dt)
 	physMan.update(dt);
 
 	cam.update(dt);
-
-	crab.trackPlayer(&player, actionBuffer, dt);
-
-	player.setCooldown(player.getCooldown() - dt);
 }
 
 void TestScene::handleInput(float dt)
@@ -194,6 +194,7 @@ void TestScene::render()
 	lighter.draw(&g2);
 	lighter.draw(&player);
 	lighter.draw(&crab);
+	lighter.draw(&nar);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
