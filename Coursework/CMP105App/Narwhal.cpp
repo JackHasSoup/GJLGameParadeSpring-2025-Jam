@@ -5,6 +5,10 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 	AssetManager::registerNewTex("NarwhalLight");
 	AssetManager::getTex("NarwhalLight")->loadFromFile("gfx/Narwhal/LightAttack.png");
 	setTexture(AssetManager::getTex("NarwhalLight"));
+
+	AssetManager::registerNewTex("NarwhalHeavy");
+	AssetManager::getTex("NarwhalHeavy")->loadFromFile("gfx/Narwhal/HeavyAttack.png");
+
 	setFillColor(sf::Color::White);
 	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
@@ -56,6 +60,11 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 		light[1].addFrame({ 256, 256 * i, 256, 256 });
 		light[2].addFrame({ 512, 256 * i, 256, 256 });
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		heavy[i].addFrame({256* i, 0, 256, 256});
+		heavy[i].setFlipped(0);
+	}
 
 	light[howBloody].setFrame(0);
 	setTextureRect(light[howBloody].getCurrentFrame());
@@ -64,7 +73,7 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 void Narwhal::lightAttack(std::vector<CreatureObject*> creatures)
 {
 	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
-
+	setTexture(AssetManager::getTex("NarwhalLight"));
 	lastAction = Action::LIGHT;
 	cooldown = maxCooldown;
 	update(0.f); //update to set the correct frame for the attack
@@ -106,6 +115,13 @@ void Narwhal::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Narwhal::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
+	setTexture(AssetManager::getTex("NarwhalHeavy"));
+	lastAction = Action::HEAVY;
+	cooldown = maxCooldown * 1.5f; //longer cooldown for heavy attack
+	update(0.f); //update to set the correct frame for the attack
+
+	accelerate((creatures[0]->getPosition() - getPosition()) * speed * 2.f); //charge towards the player
 }
 
 void Narwhal::dodge()
@@ -135,14 +151,19 @@ void Narwhal::update(float dt)
 		if (p > 0.67f) { light[howBloody].setFrame(1); }else 
 		if (p > 0.33f) { light[howBloody].setFrame(2); }else
 		{light[howBloody].setFrame(3);}
+		setTextureRect(light[howBloody].getCurrentFrame());
 		break;
 	}
+	case Action::HEAVY:
+		setTextureRect(heavy[howBloody].getCurrentFrame());
+		break;
 	default:
 		light[howBloody].setFrame(0); //regular narwhal
+		setTextureRect(light[howBloody].getCurrentFrame());
 		break;
 	}
 
-	setTextureRect(light[howBloody].getCurrentFrame());
+	
 }
 
 void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt)
@@ -151,7 +172,9 @@ void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> 
 	if (!isAlive()) return;
 
 	//look at player direction
-	light[howBloody].setFlipped(player->getPosition().x < getPosition().x);
+	bool flip = player->getPosition().x < getPosition().x;
+	light[howBloody].setFlipped(flip);
+	heavy[howBloody].setFlipped(flip);
 
 	if (VectorHelper::magnitudeSqrd(player->getPosition() - getPosition()) >= attackRange*attackRange)
 	{

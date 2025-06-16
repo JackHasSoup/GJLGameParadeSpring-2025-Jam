@@ -17,5 +17,6 @@ public:
 	virtual void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) override;
 private:
 	Animation light[3];
+	Animation heavy[3];;
 };
 
