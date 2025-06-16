@@ -14,7 +14,7 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	rota1 = atan(direction.y / direction.x) * 180 / 3.1415926;
 	rota2 = (atan(direction.y / direction.x) + 3.1415926) * 180 / 3.1415926 ;
 
-	maxCooldown = 0.75f;
+	maxCooldown = 1.15f;
 	cooldown = 0.f;
 	speed = 350.f;
 	health = 2.5f;
@@ -118,6 +118,8 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 
 void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return;
+	cooldown = maxCooldown;
 	CreatureObject* player = creatures[0];
 	lastAction = Action::LIGHT;
 	update(0.f); //update to set the correct frame for the attack
@@ -126,36 +128,6 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 	sf::FloatRect attackBox;
 	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
 	{
-		//attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
-		////auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-		//if (getRotation() == rota1) {
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top += attackBox.height / 2.f;
-		//}
-		//else if (getRotation() == rota2) {
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top -= attackBox.height / 2.f;
-		//}
-		//if (mPos.y < getPosition().y - getOrigin().y)
-		//{
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top -= attackBox.height / 2.f;
-		//}
-		//else if (mPos.y > getPosition().y + getOrigin().y)
-		//{
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top += attackBox.height / 2.f;
-		//}
-		//else {
-		//	attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
-		//	if (pinch[howBloody].getFlipped()) //if the player is facing left
-		//	{
-		//		attackBox.left -= attackBox.width / 2.f;
-		//	}
-		//	else {
-		//		attackBox.left += attackBox.width / 2.f;
-		//	}
-		//}
 		//check if the attack box intersects the creature's collision shape
 		if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAtkRadius)
 		{
@@ -176,6 +148,9 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	if (cooldown > 0) return;
+	cooldown = maxCooldown * 1.5f;
+
 	CreatureObject* player = creatures[0];
 	
 	lastAction = Action::HEAVY;
@@ -190,36 +165,6 @@ void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 	sf::FloatRect attackBox;
 	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
 	{
-		//attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
-		////auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-		//if (getRotation() == rota1) {
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top += attackBox.height / 2.f;
-		//}
-		//else if (getRotation() == rota2) {
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top -= attackBox.height / 2.f;
-		//}
-		//if (mPos.y < getPosition().y - getOrigin().y)
-		//{
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top -= attackBox.height / 2.f;
-		//}
-		//else if (mPos.y > getPosition().y + getOrigin().y)
-		//{
-		//	attackBox.height *= lightAttackRange; //increase the height of the attack box for light attack
-		//	attackBox.top += attackBox.height / 2.f;
-		//}
-		//else {
-		//	attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
-		//	if (pinch[howBloody].getFlipped()) //if the player is facing left
-		//	{
-		//		attackBox.left -= attackBox.width / 2.f;
-		//	}
-		//	else {
-		//		attackBox.left += attackBox.width / 2.f;
-		//	}
-		//}
 		//check if the attack box intersects the creature's collision shape
 		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAtkRadius)
 		{
@@ -231,68 +176,13 @@ void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 			//std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
 		}
 	}
-	else {
-		//std::cout << "return\n";
-		return; //no valid frame, no attack
-	}
-	//std::cout << "plyr light\n";
-	//	//TEMP: heavy attack is just more powerfull light attack
-//	
-// 
-// for (auto const& c : creatures)
-//	{
-//		//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-//		sf::FloatRect attackBox;
-//		if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
-//		{
-//			attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
-//			auto const mPos = GameState::getRenderTarget()->mapPixelToCoords(Input::getIntMousePos());
-//			if (mPos.y < getPosition().y - getOrigin().y)
-//			{
-//				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
-//				attackBox.top -= attackBox.height / 2.f;
-//			}
-//			else if (mPos.y > getPosition().y + getOrigin().y)
-//			{
-//				attackBox.height *= heavyAttackRange; //increase the height of the attack box for heavy attack
-//				attackBox.top += attackBox.height / 2.f;
-//			}
-//			else {
-//				attackBox.width *= heavyAttackRange; //increase the width of the attack box for heavy attack
-//				if (pinch[howBloody].getFlipped()) //if the player is facing left
-//				{
-//					attackBox.left -= attackBox.width / 2.f;
-//				}
-//				else {
-//					attackBox.left += attackBox.width / 2.f;
-//				}
-//			}
-//
-//			//check if the attack box intersects the creature's collision shape
-//			if (c->getCollisionShape().getGlobalBounds().intersects(attackBox))
-//			{
-//				c->damage(heavyAttackDamage);
-//				std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
-//				c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-//			}
-//			else {
-//				std::cout << "plyr miss\n"; //missed
-//			}
-//		}
-//		else {
-//			return; //no valid frame, no attack
-//		}
-//	}
-//	std::cout << "plyr heavy\n";
-//	lastAction = Action::HEAVY;
 }
 
 void Crab::dodge()
 {
-	/*sf::Vector2f dir = (sf::Vector2f(0, 1) * (float)Input::isKeyDown(sf::Keyboard::S)) +
-		(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
-		(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
-		(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));*/
+	if (cooldown > 0) return;
+	cooldown = maxCooldown * 1.15f;
+
 	accelerate(VectorHelper::normalise(vecToProjPoint) * speed * speed);
 	lastAction = Action::DODGE;
 	//std::cout << "dodge" << std::endl;
@@ -300,6 +190,8 @@ void Crab::dodge()
 
 void Crab::parry()
 {
+	if (cooldown > 0) return;
+	cooldown = maxCooldown * 0.25f;
 	//std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
 }

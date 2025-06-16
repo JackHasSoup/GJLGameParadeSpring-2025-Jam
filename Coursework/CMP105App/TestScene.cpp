@@ -196,7 +196,6 @@ void TestScene::render()
 	lighter.draw(&g1);
 	lighter.draw(&g2);
 	lighter.draw(&player);
-	lighter.draw(&crab);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
