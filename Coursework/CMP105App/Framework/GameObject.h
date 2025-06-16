@@ -38,11 +38,15 @@ public:
 	void makeCentredSquareCollisionShape();
 	void makeSquareCollisionShape();
 
+	virtual void setActive(bool a) { active = a; };
+	virtual bool isActive() { return active; };
+
 	sf::Vector2f lastPos;
 protected:
 	//sprite properties
 	sf::Vector2f velocity;
 	bool alive;
+	bool active = true; //like alive but strictly for physics/lighting/loading
 
 	//collision vars
 	sf::FloatRect collisionBox;
