@@ -37,11 +37,11 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
 	//nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
 	//crab.setDrawType(drawType::BOTH_CR);
-	//jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
-	//jellyfish.setDrawType(drawType::BOTH_CR);
+	jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
+	//aajellyfish.setDrawType(drawType::BOTH_CR);
 
 	enemies.push_back(&crab);
-	//enemies.push_back(&jellyfish);
+	enemies.push_back(&jellyfish);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);

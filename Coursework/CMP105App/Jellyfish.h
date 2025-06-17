@@ -20,6 +20,7 @@ private:
 	sf::Vector2f vecToPlayer, movementVec/*, vecToProjPointNorm, vecToProjPoint, movementAxis*/;
 	//double heightDiff, rota1, rota2;
 	bool heavyAtkActive = false;
+	int animFrame = 0;
 
 
 	//int howBloody = 0;

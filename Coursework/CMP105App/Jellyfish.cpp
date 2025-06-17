@@ -14,16 +14,16 @@ Jellyfish::Jellyfish(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnem
 	rota1 = atan(direction.y / direction.x) * 180 / 3.1415926;
 	rota2 = (atan(direction.y / direction.x) + 3.1415926) * 180 / 3.1415926;*/
 
-	maxCooldown = 5.f;
-	cooldown = 5.f;
+	maxCooldown = 3.f;
+	cooldown = 3.f;
 	speed = 200.f;
 	health = 1.f;
 	maxHealth = 1.f;
 
 	lightAttackDamage = 1.f;
 	heavyAttackDamage = 2.f;
-	lightAttackRange = 3600.f;
-	heavyAttackRange = 3600.f;
+	lightAttackRange = 7500.f;
+	heavyAttackRange = 12000.f;
 
 	movementVec = sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
 
@@ -36,9 +36,12 @@ Jellyfish::Jellyfish(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnem
 	cs.setPoint(3, { 95.f, getSize().y - 120.f });
 	setCollisionShape(cs);
 
-	zap[0].addFrame({ 0, 1200, 600, 600 });
-	zap[0].addFrame({ 0, 600, 600, 600 });
-	zap[0].addFrame({ 0, 0, 600, 600 });
+	for (int i = 0; i < 2; i++) {
+		zap[i].addFrame({ 600 * i, 1200, 600, 600 });
+		zap[i].addFrame({ 600 * i, 600, 600, 600 });
+		zap[i].addFrame({ 600 * i, 0, 600, 600 });
+	}
+	
 	//pinch[0].setFrame(0);
 }
 
@@ -46,35 +49,51 @@ void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 	//CreatureObject::update(dt);
 	BaseEnemy::trackPlayer(player, actionBuffer, dt);
 	//std::cout << howBloody << std::endl;
+	
+	(sin(dt * 3000) >= 0) ? animFrame = 0 : animFrame = 1;
+	zap[animFrame].setFrame(animFrame + 1);
+	std::cout << animFrame << std::endl;
+	
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
 		//std::cout << "last action none" << std::endl;
 	}
-	switch (lastAction)
-	{
-	case Action::LIGHT:
-	{
-		zap[0].setFrame(1);
-	}
-	break;
-	case Action::HEAVY:
-		zap[0].setFrame(2);
-		break;
-	case Action::DODGE:
-		zap[0].setFrame(0);
-		break;
-	case Action::PARRY:
-		zap[0].setFrame(3);
-		std::cout << "parried" << std::endl;
-		break;
-	default:
-		zap[0].setFrame(0); //regular crab
-		break;
-	}
+	//switch (lastAction)
+	//{
+	//case Action::LIGHT:
+	//{
+	//	float p = cooldown / maxCooldown;
+
+	//	if (p < 0.6f) { zap[animFrame].setFrame(animFrame); }
+	//	else { zap[animFrame].setFrame(1); std::cout << "bruhhh" << std::endl; };
+	//	//if (p < 0.75f) { std::cout << "yay" << std::endl; };
+	//	
+	//	
+	//	//zap[animFrame].setFrame(0);
+	//	setTextureRect(zap[animFrame].getCurrentFrame());
+	//	//std::cout << p << std::endl;
+	//	//zap[0].setFrame(1);
+	//	
+	//}
+	//break;
+	//case Action::HEAVY:
+	//	zap[animFrame].setFrame(2);
+	//	break;
+	//case Action::DODGE:
+	//	zap[animFrame].setFrame(0);
+	//	break;
+	//case Action::PARRY:
+	//	zap[animFrame].setFrame(3);
+	//	std::cout << "parried" << std::endl;
+	//	break;
+	//default:
+	//	zap[animFrame].setFrame(0); //regular crab
+	//	break;
+	//}
 
 	movementVec += sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
-	std::cout << movementVec.x << " ; " << movementVec.y <<  std::endl;
+	//std::cout << movementVec.x << " ; " << movementVec.y <<  std::endl;
 
 	vecToPlayer = player->getPosition() - getPosition();
 	//vecToProjPoint = (VectorHelper::dot(vecToPlayer, vecToProjPointNorm) / VectorHelper::dot(vecToProjPointNorm, vecToProjPointNorm)) * vecToProjPointNorm;
@@ -123,7 +142,7 @@ void Jellyfish::lightAttack(std::vector<CreatureObject*> creatures)
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
 	//pinch[howBloody].setFrame(1);
 	sf::FloatRect attackBox;
-	if (zap[howBloody].getCurrentFrame().width != 0) //if the frame is valid
+	if (zap[animFrame].getCurrentFrame().width != 0) //if the frame is valid
 	{
 		//check if the attack box intersects the creature's collision shape
 		if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAttackRange)
@@ -133,7 +152,7 @@ void Jellyfish::lightAttack(std::vector<CreatureObject*> creatures)
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			//std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+			std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
 		}
 	}
 	else {
@@ -155,14 +174,14 @@ void Jellyfish::heavyAttack(std::vector<CreatureObject*> creatures)
 	lastAction = Action::HEAVY;
 	update(0.f); //update to set the correct frame for the attack
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-	zap[0].setFrame(2);
+	zap[animFrame].setFrame(2);
 
 	//accelerate(VectorHelper::normalise(vecToPlayer) * speed * speed);
 
 	heavyAtkActive = true;
 
 	sf::FloatRect attackBox;
-	if (zap[0].getCurrentFrame().width != 0) //if the frame is valid
+	if (zap[animFrame].getCurrentFrame().width != 0) //if the frame is valid
 	{
 		//check if the attack box intersects the creature's collision shape
 		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
@@ -172,7 +191,7 @@ void Jellyfish::heavyAttack(std::vector<CreatureObject*> creatures)
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			//std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+			std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
 		}
 	}
 }
