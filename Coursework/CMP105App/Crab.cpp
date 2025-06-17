@@ -24,6 +24,8 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	heavyAttackDamage = 2.5f;
 	lightAttackRange = 3600.f;
 	heavyAttackRange = 3600.f;
+	heavyAtkMaxDuration = 0.5f;
+	heavyAtkDuration = 0.5f;
 
 	setDrawType(drawType::RECT);
 
@@ -93,17 +95,21 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	}
 
 	if (heavyAtkActive == true) {
-		heavyAttackRange -= dt;
+		heavyAtkDuration -= dt;
 		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
 		{
 			player->damage(heavyAttackDamage);
 			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-			
+
+			heavyAtkActive = false;
+			heavyAtkDuration = heavyAtkMaxDuration;
+		}
+		if (heavyAtkDuration <= 0) {
+			heavyAtkDuration = heavyAtkMaxDuration;
 			heavyAtkActive = false;
 		}
 	}
-
 	accelerate(VectorHelper::normalise(vecToProjPoint) * speed);
 	setTextureRect(pinch[howBloody].getCurrentFrame());
 	//std::cout << heightDiff << std::endl;
@@ -156,19 +162,19 @@ void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 	heavyAtkActive = true;
 
 	sf::FloatRect attackBox;
-	if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
-	{
-		//check if the attack box intersects the creature's collision shape
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
-		{
-			player->damage(heavyAttackDamage);
-			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
-			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-		}
-		else {
-			//std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
-		}
-	}
+	//if (pinch[howBloody].getCurrentFrame().width != 0) //if the frame is valid
+	//{
+	//	//check if the attack box intersects the creature's collision shape
+	//	if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
+	//	{
+	//		player->damage(heavyAttackDamage);
+	//		//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+	//		player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+	//	}
+	//	else {
+	//		//std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+	//	}
+	//}
 }
 
 void Crab::dodge()

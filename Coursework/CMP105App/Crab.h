@@ -21,7 +21,7 @@ private :
 	sf::Vector2f vecToPlayer, vecToProjPointNorm, vecToProjPoint, movementAxis;
 	double heightDiff, rota1, rota2;
 	bool heavyAtkActive = false;
-
+	float heavyAtkMaxDuration, heavyAtkDuration;
 
 	//int howBloody = 0;
 	Animation pinch[3]; //1-normal, 2-bloody, 3-very bloody (normal, side, down, up)
