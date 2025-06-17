@@ -3,6 +3,7 @@
 #include "TutorialScene.h"
 #include "MenuScene.h"
 #include "GameOverWinScreen.h"
+#include "GameOverLoseScreen.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
 #include "RoomTestScene.h"
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
 
 	MenuScene menu(&tex, &window);
 	GameOverWinScreen gameOverWinScreen(&tex, &window);
+	GameOverLoseScreen gameOverLoseScreen(&tex, &window);
 	PauseScene pause(&tex);
 	SceneTransition sceneTrans(&tex);
 
@@ -87,6 +89,7 @@ int main(int argc, char *argv[])
 	case State::TUTORIAL: tutorialScene.render(); break;\
 	case State::TEST: testScene.render(); break;\
 	case State::WIN: gameOverWinScreen.render(); break;\
+	case State::LOSE: gameOverLoseScreen.render(); break;\
 	}; 
 
 
@@ -151,6 +154,14 @@ int main(int argc, char *argv[])
 			gameOverWinScreen.handleInput(deltaTime);
 			gameOverWinScreen.update(deltaTime);
 			gameOverWinScreen.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
+		case State::LOSE: {
+			gameOverLoseScreen.handleInput(deltaTime);
+			gameOverLoseScreen.update(deltaTime);
+			gameOverLoseScreen.render();
 			window.draw(sprite);
 			window.display();
 			break;
