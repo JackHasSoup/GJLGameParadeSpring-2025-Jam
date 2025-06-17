@@ -50,47 +50,44 @@ void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 	BaseEnemy::trackPlayer(player, actionBuffer, dt);
 	//std::cout << howBloody << std::endl;
 	
-	(sin(dt * 3000) >= 0) ? animFrame = 0 : animFrame = 1;
-	zap[animFrame].setFrame(animFrame + 1);
-	std::cout << animFrame << std::endl;
+	animTimeElapsed += dt * 15;
+	(sin(animTimeElapsed) >= 0) ? animFrame = 0 : animFrame = 1;
+	zap[animFrame].setFrame(0);
+	setTextureRect(zap[animFrame].getCurrentFrame());
+	//std::cout << animFrame << std::endl;
 	
+	float p = cooldown / maxCooldown;
+
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
 		//std::cout << "last action none" << std::endl;
 	}
-	//switch (lastAction)
-	//{
-	//case Action::LIGHT:
-	//{
-	//	float p = cooldown / maxCooldown;
-
-	//	if (p < 0.6f) { zap[animFrame].setFrame(animFrame); }
-	//	else { zap[animFrame].setFrame(1); std::cout << "bruhhh" << std::endl; };
-	//	//if (p < 0.75f) { std::cout << "yay" << std::endl; };
-	//	
-	//	
-	//	//zap[animFrame].setFrame(0);
-	//	setTextureRect(zap[animFrame].getCurrentFrame());
-	//	//std::cout << p << std::endl;
-	//	//zap[0].setFrame(1);
-	//	
-	//}
-	//break;
-	//case Action::HEAVY:
-	//	zap[animFrame].setFrame(2);
-	//	break;
-	//case Action::DODGE:
-	//	zap[animFrame].setFrame(0);
-	//	break;
-	//case Action::PARRY:
-	//	zap[animFrame].setFrame(3);
-	//	std::cout << "parried" << std::endl;
-	//	break;
-	//default:
-	//	zap[animFrame].setFrame(0); //regular crab
-	//	break;
-	//}
+	switch (lastAction)
+	{
+	case Action::LIGHT:
+	{
+		if (p < 0.75f) { zap[animFrame].setFrame(0); }
+		else { zap[animFrame].setFrame(1); };
+		setTextureRect(zap[animFrame].getCurrentFrame());
+	}
+	break;
+	case Action::HEAVY:
+		if (p < 0.75f) { zap[animFrame].setFrame(0); }
+		else { zap[animFrame].setFrame(2); };
+		setTextureRect(zap[animFrame].getCurrentFrame());
+		break;
+	case Action::DODGE:
+		zap[animFrame].setFrame(0);
+		break;
+	case Action::PARRY:
+		zap[animFrame].setFrame(3);
+		std::cout << "parried" << std::endl;
+		break;
+	default:
+		zap[animFrame].setFrame(0); //regular crab
+		break;
+	}
 
 	movementVec += sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
 	//std::cout << movementVec.x << " ; " << movementVec.y <<  std::endl;
@@ -126,7 +123,7 @@ void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 	}
 
 	accelerate(VectorHelper::normalise(movementVec) * speed);
-	setTextureRect(zap[0].getCurrentFrame());
+	//setTextureRect(zap[0].getCurrentFrame());
 	//std::cout << heightDiff << std::endl;
 }
 

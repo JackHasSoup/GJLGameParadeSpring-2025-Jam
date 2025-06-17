@@ -21,6 +21,7 @@ private:
 	//double heightDiff, rota1, rota2;
 	bool heavyAtkActive = false;
 	int animFrame = 0;
+	float animTimeElapsed = 0.f;
 
 
 	//int howBloody = 0;
