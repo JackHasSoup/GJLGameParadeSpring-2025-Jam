@@ -22,29 +22,36 @@ void BaseEnemy::parry()
 {
 }
 
+
 void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
 	if (!isAlive())return;
 	cooldown -= dt;
-	direction = sf::Vector2f(player->getPosition().x - getPosition().x, player->getPosition().y - getPosition().y);
-	directionNorm = VectorHelper::normalise(direction);
+	/*direction = sf::Vector2f(player->getPosition().x - getPosition().x, player->getPosition().y - getPosition().y);
+	directionNorm = VectorHelper::normalise(direction);*/
 
 	const int size = actionBuffer.size();
-	if (VectorHelper::magnitudeSqrd(direction) >= attackRange) {//compare sqr magnitude for performance reasons
-		accelerate(directionNorm, speed);
-	}
-	else if(cooldown <= 0.f && size) {
-		cooldown = maxCooldown;
-
+	//if (VectorHelper::magnitudeSqrd(direction) >= attackRange) {//compare sqr magnitude for performance reasons
+	//	accelerate(directionNorm, speed);
+	//}
+	if(cooldown <= 0.f && size) {
 		actionBuffer[actionBufferIndex]->execute(this, { player });
 		actionBufferIndex = actionBufferIndex + 1 >= size ? 0 : actionBufferIndex + 1;
+		cooldown = maxCooldown;
 	}
 }
 
 void BaseEnemy::damage(float d)
 {
-	CreatureObject::damage(d);
+	health -= d;
+	if (health < 0) health = 0;
+	if (health < maxHealth / 3) howBloody = 2; //very bloody
+	else if (health < maxHealth / 2) howBloody = 1; //bloody
+	else howBloody = 0; //normal
+
 	if (health <= 0)
 	{
 		setAlive(false);
 	}
+	//std::cout << health << std::endl;
 }
+

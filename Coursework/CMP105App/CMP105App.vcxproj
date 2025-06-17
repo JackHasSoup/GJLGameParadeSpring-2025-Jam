@@ -161,6 +161,7 @@
     <ClCompile Include="BufferedCommand.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="BaseEnemyTestScene.cpp" />
+    <ClCompile Include="Crab.cpp" />
     <ClCompile Include="CreatureObject.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="GenericCommand.cpp" />
     <ClCompile Include="Framework\BaseLevel.cpp" />
     <ClCompile Include="Framework\SceneTransition.cpp" />
+    <ClCompile Include="Narwhal.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -202,6 +204,7 @@
     <ClInclude Include="BufferedCommand.h" />
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="BaseEnemyTestScene.h" />
+    <ClInclude Include="Crab.h" />
     <ClInclude Include="CreatureObject.h" />
     <ClInclude Include="EDITOR\EditorScene.h" />
     <ClInclude Include="EDITOR\SceneDataLoader.h" />
@@ -229,6 +232,7 @@
     <ClInclude Include="GenericCommand.h" />
     <ClInclude Include="Framework\BaseLevel.h" />
     <ClInclude Include="Framework\SceneTransition.h" />
+    <ClInclude Include="Narwhal.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="TutorialScene.h" />
     <ClInclude Include="MenuScene.h" />

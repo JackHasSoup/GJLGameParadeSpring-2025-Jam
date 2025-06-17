@@ -152,19 +152,19 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 			if (c->getCollisionShape().getGlobalBounds().intersects(attackBox))
 			{
 				c->damage(lightAttackDamage);
-				std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
+				//std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
 				c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 			}
 			else {
-				std::cout << "plyr miss\n"; //missed
+				//std::cout << "plyr miss\n"; //missed
 			}
 		}
 		else {
-			std::cout << "return\n";
+			//std::cout << "return\n";
 			return; //no valid frame, no attack
 		}
 	}
-	std::cout << "plyr light\n";
+	//std::cout << "plyr light\n";
 }
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
@@ -175,7 +175,7 @@ void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 	//don't do attack here, wait to land
 	jumpTime = jumpLength; //reset the jump time for the jump animation
 	creaturesTemp = creatures;
-	std::cout << "plyr heavy\n";
+	//std::cout << "plyr heavy\n";
 	lastAction = Action::HEAVY;
 }
 
@@ -186,11 +186,11 @@ void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
 		if (VectorHelper::magnitudeSqrd(c->getPosition() - getPosition()) < heavyAttackRange * heavyAttackRange * getSize().x * getSize().y) //check if the creature is within the heavy attack range
 		{
 			c->damage(heavyAttackDamage);
-			std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
+			//std::cout << "plyr hit " << c->getPosition().x << ", " << c->getPosition().y << "\n";
 			c->setCooldown(c->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			std::cout << "plyr miss\n"; //missed
+			//std::cout << "plyr miss\n"; //missed
 		}
 	}
 }
@@ -215,7 +215,7 @@ void Player::parry()
 
 	//parry just gives some invincible time
 	invincibleTime = 0.5f; //set the invincible time to 0.5 seconds
-	std::cout << "plyr parry\n";
+	//std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
 }
 
@@ -247,10 +247,10 @@ void Player::damage(float d)
 	if (invincibleTime > 0) return; //if the player is invincible, don't take damage
 	health -= d;
 	if (health < 0) health = 0;
-	if (health < maxHealth / 3) howBloody = 3; //very bloody
-	else if (health < maxHealth / 2) howBloody = 2; //bloody
-	else howBloody = 1; //normal
-
+	if (health < maxHealth / 3) howBloody = 2; //very bloody
+	else if (health < maxHealth / 2) howBloody = 1; //bloody
+	else howBloody = 0; //normal
+	std::cout << health << std::endl;
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const

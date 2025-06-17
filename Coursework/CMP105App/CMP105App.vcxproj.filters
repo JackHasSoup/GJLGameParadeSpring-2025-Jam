@@ -212,7 +212,11 @@
     <ClCompile Include="Framework\SceneTransition.cpp">
       <Filter>Framework\Source\Base</Filter>
     </ClCompile>
-    <ClCompile Include="HealthBar.cpp">
+    <ClCompile Include="Crab.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Narwhal.cpp">
+        <ClCompile Include="HealthBar.cpp">
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -328,6 +332,10 @@
     <ClInclude Include="Framework\SceneTransition.h">
       <Filter>Framework\Header\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Crab.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Narwhal.h">
     <ClInclude Include="HealthBar.h">
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
