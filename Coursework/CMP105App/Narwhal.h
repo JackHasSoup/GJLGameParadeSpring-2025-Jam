@@ -21,5 +21,8 @@ private:
 	Animation light[3];
 	Animation heavy[3]; //also used for dodge
 	Animation parryAnim[3];
+
+	bool heavyHit = false;
+	CreatureObject* player = nullptr; //the player object, used for heavy attack hit detection
 };
 
