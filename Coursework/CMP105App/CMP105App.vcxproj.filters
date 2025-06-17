@@ -216,7 +216,9 @@
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
     <ClCompile Include="Narwhal.cpp">
-        <ClCompile Include="HealthBar.cpp">
+     <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
@@ -342,6 +344,8 @@
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
     <ClInclude Include="Narwhal.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
     <ClInclude Include="HealthBar.h">
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
