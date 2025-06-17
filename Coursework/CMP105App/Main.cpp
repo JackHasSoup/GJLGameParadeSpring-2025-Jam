@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
+#include "RoomTestScene.h"
 #include "Framework/SceneTransition.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
