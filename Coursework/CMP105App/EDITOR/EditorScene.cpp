@@ -42,7 +42,9 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 
 	commander.addHeld(sf::Keyboard::LShift, new GenericCommand([=]{ camera.pan(window->mapPixelToCoords(Input::getIntMousePos()) - camera.getCenter()); }));
 	commander.addPressed(sf::Keyboard::Delete, new GenericCommand([=]{ deleteSelectedObject(); }));
+	//mode switching
 	commander.addPressed(sf::Keyboard::L, new GenericCommand([=] { placingLight = !placingLight; }));
+	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom= !placingRoom; }));
 	//for save load
 	commander.addPressed(sf::Keyboard::PageUp, new GenericCommand([=] { saveToFile("levels/level.json"); }));
 	commander.addPressed(sf::Keyboard::PageDown, new GenericCommand([=] { loadFromFile("levels/level.json"); }));
@@ -133,6 +135,52 @@ void EditorScene::handleInput(float dt)
 			}
 		}
 		return; //skip normal prop/object placement when in light mode
+	}
+	else if (placingRoom)
+	{
+		//just like light placing, first click is where the top left corner of the room is, second click is bottom right corner
+		if (Input::isLeftMousePressed() && !midLightPlace)
+		{
+			//check if clicking on an existing room
+			selectedIndex = -1;
+			for (size_t i = 0; i < placedRooms.size(); ++i)
+			{
+				if (placedRooms[i].contains(mousePos))
+				{
+					selectedIndex = static_cast<int>(i);
+					break;
+				}
+			}
+			if (selectedIndex != -1)
+			{
+				//drag existing room
+				if (!dragging)
+				{
+					dragging = true;
+					dragOffset = sf::Vector2f(placedRooms[selectedIndex].top, placedRooms[selectedIndex].left) - mousePos;
+				}
+				return; //skip normal prop/object placement when in room mode
+			}
+
+			//else new room
+			midLightPlace = true;
+			placedRooms.push_back(sf::FloatRect(mousePos, { 0.f, 0.f }));
+			activeRoomIndex = static_cast<int>(placedRooms.size()) - 1; //set active room to the last one added
+			return;
+		}
+		else if (midLightPlace) //place bottom corner
+		{
+			sf::FloatRect& room = placedRooms[activeRoomIndex];
+			room.width = mousePos.x - room.left;
+			room.height = mousePos.y - room.top;
+			if (Input::isLeftMousePressed())
+			{
+				midLightPlace = false;
+				placingRoom = false; //stop placing rooms after placing one
+			}
+		}
+
+		return;
 	}
 
 	// left click: select or add
@@ -244,6 +292,17 @@ void EditorScene::render()
 		}
 		window->draw(c);
 	}
+
+	// Draw placed rooms
+	for (const auto& room : placedRooms)
+	{
+		sf::RectangleShape rect(sf::Vector2f(room.width, room.height));
+		rect.setPosition(room.left, room.top);
+		rect.setFillColor(sf::Color(100, 100, 100, 50));
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(1.f);
+		window->draw(rect);
+	}
 }
 
 void EditorScene::selectObjectAt(const sf::Vector2f &pos)
@@ -283,6 +342,7 @@ void EditorScene::addObject(const sf::Vector2f &pos)
 	placed.tex = selectedTex;
 	placed.obj.setPosition(pos);
 	placed.selected = true;
+	//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
 	objects.push_back(placed);
 	selectedIndex = static_cast<int>(objects.size()) - 1;
 	for (size_t i = 0; i < objects.size(); ++i)
@@ -542,6 +602,7 @@ void EditorScene::saveToFile(const std::string& filename)
 		o["textureKey"] = obj.tex.toAnsiString();
 		o["scale"] = obj.obj.getScale().x;
 		o["rotation"] = obj.obj.getRotation();
+		//o["roomIndex"] = obj.roomIndex; // save room index (don't do this, only creatures are assigned to a room)
 		if (obj.obj.getCollisionShape().getPointCount() > 0)
 		{
 			o["hull"] = json::array();
@@ -570,6 +631,19 @@ void EditorScene::saveToFile(const std::string& filename)
 		lj["colour"] = SceneDataLoader::colourToJson(std::get<2>(l));
 		j["lights"].push_back(lj);
 	}
+
+	// save rooms
+	j["rooms"] = json::array();
+	for (const auto& room : placedRooms)
+	{
+		json r;
+		r["left"] = room.left;
+		r["top"] = room.top;
+		r["width"] = room.width;
+		r["height"] = room.height;
+		j["rooms"].push_back(r);
+	}
+
 	std::ofstream out(filename);
 	out << j.dump(4);
 }
@@ -622,6 +696,7 @@ void EditorScene::loadFromFile(const std::string& filename)
 			SceneDataLoader::setTexture(&obj.obj, o["textureKey"].get<std::string>());
 
 		obj.selected = false;
+		//obj.roomIndex = o.value("roomIndex", -1); // load room index, default to -1 if not present (don't do this, only creatures are assigned to a room)
 		objects.push_back(obj);
 	}
 	//load lights
@@ -632,6 +707,19 @@ void EditorScene::loadFromFile(const std::string& filename)
 			lj.value("radius", 0.f),
 			SceneDataLoader::colourFromJson(lj["colour"])
 		));
+	}
+
+	//load rooms
+	placedRooms.clear();
+	for (const auto& r : j["rooms"])
+	{
+		sf::FloatRect room(
+			r["left"].get<float>(),
+			r["top"].get<float>(),
+			r["width"].get<float>(),
+			r["height"].get<float>()
+		);
+		placedRooms.push_back(room);
 	}
 }
 
