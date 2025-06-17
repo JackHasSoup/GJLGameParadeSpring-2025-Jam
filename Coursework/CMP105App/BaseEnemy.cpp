@@ -42,7 +42,7 @@ void BaseEnemy::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 
 void BaseEnemy::damage(float d)
 {
-	health -= d;
+	CreatureObject::damage(d);
 	if (health < 0) health = 0;
 	if (health < maxHealth / 3) howBloody = 2; //very bloody
 	else if (health < maxHealth / 2) howBloody = 1; //bloody

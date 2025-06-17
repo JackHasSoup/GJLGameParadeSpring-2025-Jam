@@ -248,6 +248,7 @@
     <None Include="shaders\crt.frag" />
     <None Include="shaders\gb.frag" />
     <None Include="shaders\gradientOverlay.frag" />
+    <None Include="shaders\hitFlash.frag" />
     <None Include="shaders\illuminator.frag" />
     <None Include="shaders\illuminator.vert" />
     <None Include="shaders\posterise.frag" />

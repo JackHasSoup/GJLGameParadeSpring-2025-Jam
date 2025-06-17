@@ -1,5 +1,5 @@
 #include "TestScene.h"
-#define DEBUG_COL_POINTS
+//#define DEBUG_COL_POINTS
 
 TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
@@ -46,7 +46,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	}
 	heartShader.setUniform("texture", sf::Shader::CurrentTexture);
 
-	healthBar = HealthBar(window, &player, &heartShader);
+	healthBar = HealthBar(window, &player);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -201,12 +201,16 @@ void TestScene::render()
 	//draw enemies with lighter
 	for (auto& e : enemies)
 	{
-		if(e->isAlive())lighter.draw(e);
+		if (e->isAlive()) {
+			AssetManager::getShader("flash")->setUniform("timer", e->getHitTimer()); 
+			lighter.draw(e, e->getState());
+		}
 	}
 
 	lighter.draw(&g1);
 	lighter.draw(&g2);
-	lighter.draw(&player);
+	AssetManager::getShader("flash")->setUniform("timer", player.getHitTimer());
+	lighter.draw(&player, player.getState());
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());

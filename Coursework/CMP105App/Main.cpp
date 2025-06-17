@@ -1,6 +1,6 @@
 #include <iostream>
-#include "TestScene.h"
 #include "TutorialScene.h"
+#include "TestScene.h"
 #include "MenuScene.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
-	TestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
+	TestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	PauseScene pause(&tex);

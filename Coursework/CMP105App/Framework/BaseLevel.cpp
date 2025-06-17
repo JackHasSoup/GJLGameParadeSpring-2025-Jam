@@ -3,6 +3,8 @@
 BaseLevel::BaseLevel()
 {
 	window = nullptr;
+	heartShader = nullptr;
+	hitFlashShader = nullptr;
 
 }
 
@@ -13,23 +15,27 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);
 
+	heartShader = AssetManager::registerNewShader("heart");
+	if (heartShader != nullptr) {
+		if (!heartShader->loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
+		{
+			std::cout << "Error loading healthbar shader";
+		}
+	}
+	heartShader->setUniform("texture", sf::Shader::CurrentTexture);
+
+	hitFlashShader = AssetManager::registerNewShader("flash");
+	if (hitFlashShader != nullptr){
+		if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
+			std::cout << "Error loading hit flash shader";
+		}
+	}
+	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
+
 	// Player
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
-	player.setDrawType(drawType::RECT);
-	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 0.f, 0.f });
-	cs.setPoint(1, { player.getSize().x, 0.f });
-	cs.setPoint(2, { player.getSize().x, player.getSize().y });
-	cs.setPoint(3, { 0.f, player.getSize().y });
-	player.setCollisionShape(cs);
 
-	if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
-	{
-		std::cout << "Error loading healthbar shader";
-	}
-	heartShader.setUniform("texture", sf::Shader::CurrentTexture);
-
-	healthBar = HealthBar(window, &player, &heartShader);
+	healthBar = HealthBar(window, &player);
 
 	physMan.registerObj(&player, false);
 
