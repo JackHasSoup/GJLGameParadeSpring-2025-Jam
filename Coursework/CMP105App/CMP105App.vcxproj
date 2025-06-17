@@ -189,6 +189,7 @@
     <ClCompile Include="GenericCommand.cpp" />
     <ClCompile Include="Framework\BaseLevel.cpp" />
     <ClCompile Include="Framework\SceneTransition.cpp" />
+    <ClCompile Include="Jellyfish.cpp" />
     <ClCompile Include="Narwhal.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="GenericCommand.h" />
     <ClInclude Include="Framework\BaseLevel.h" />
     <ClInclude Include="Framework\SceneTransition.h" />
+    <ClInclude Include="Jellyfish.h" />
     <ClInclude Include="Narwhal.h" />
     <ClInclude Include="TutorialScene.h" />
     <ClInclude Include="MenuScene.h" />
