@@ -10,6 +10,7 @@
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
 #include <thread>
+#include "BaseEnemyTestScene.h"
 
 #ifndef FORCE_EDITOR
 #define FORCE_EDITOR false
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
-	TestScene testScene(&tex);
+	BaseEnemyTestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
 
 	MenuScene menu(&tex, &window);
