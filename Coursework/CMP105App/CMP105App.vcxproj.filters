@@ -222,7 +222,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RoomTestScene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -347,7 +347,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RoomTestScene.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -51,14 +51,18 @@ void BaseLevel::loadLevel(std::string const& filename)
 {
 
 	auto data = SceneDataLoader::loadScene(filename);
-	sceneObjects = data.first;
+	sceneObjects =std::get<0>(data);
 	for (auto* obj : sceneObjects)
 	{
 		physMan.registerObj(obj, true);
 	}
-	for (auto const& light : data.second)
+	for (auto const& light : std::get<1>(data))
 	{
 		lighter.addLight(light);
+	}
+	for (auto const& room : std::get<2>(data))
+	{
+		rooms.push_back(Room(room, &player));
 	}
 
 }

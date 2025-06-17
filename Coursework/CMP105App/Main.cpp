@@ -12,7 +12,7 @@
 #include <thread>
 
 #ifndef FORCE_EDITOR
-#define FORCE_EDITOR true
+#define FORCE_EDITOR false
 #endif // !FORCE_EDITOR
 
 int main(int argc, char *argv[])

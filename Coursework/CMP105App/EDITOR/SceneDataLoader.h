@@ -11,7 +11,7 @@
 using json = nlohmann::json;
 
 #ifndef SceneData
-#define SceneData std::pair<std::vector<PhysicsObject*>, std::vector<Light>>
+#define SceneData std::tuple<std::vector<PhysicsObject*>, std::vector<Light>, std::vector<sf::FloatRect>>
 #endif // !SceneData
 
 

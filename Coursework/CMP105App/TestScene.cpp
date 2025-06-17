@@ -96,12 +96,12 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	AudioManager::setMaxSoundVol(100.f);
 
 	auto data = SceneDataLoader::loadScene("levels/level.json");
-	sceneObjects = data.first;
+	sceneObjects = std::get<0>(data);
 	for (auto* obj : sceneObjects)
 	{
 		physMan.registerObj(obj, true);
 	}
-	for (auto const& light : data.second)
+	for (auto const& light : std::get<1>(data))
 	{
 		lighter.addLight(light);
 	}

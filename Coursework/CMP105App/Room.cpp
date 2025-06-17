@@ -1,5 +1,10 @@
 #include "Room.h"
 
+Room::Room(sf::FloatRect rect, Player* player) : sf::FloatRect(rect)
+{
+	this->player = player;
+}
+
 Room::Room(float left, float top, float width, float height, Player* player) : sf::FloatRect(left, top, width, height)
 {
 	this->player = player;
