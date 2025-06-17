@@ -2,6 +2,7 @@
 #include "TestScene.h"
 #include "TutorialScene.h"
 #include "MenuScene.h"
+#include "GameOverWinScreen.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
 #include "RoomTestScene.h"
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
 	TutorialScene tutorialScene(&tex);
 
 	MenuScene menu(&tex, &window);
+	GameOverWinScreen gameOverWinScreen(&tex, &window);
 	PauseScene pause(&tex);
 	SceneTransition sceneTrans(&tex);
 
@@ -84,6 +86,7 @@ int main(int argc, char *argv[])
 	case State::PAUSE: pause.render(); break;\
 	case State::TUTORIAL: tutorialScene.render(); break;\
 	case State::TEST: testScene.render(); break;\
+	case State::WIN: gameOverWinScreen.render(); break;\
 	}; 
 
 
@@ -144,6 +147,14 @@ int main(int argc, char *argv[])
 			window.display();
 			break;
 		}
+		case State::WIN: {
+			gameOverWinScreen.handleInput(deltaTime);
+			gameOverWinScreen.update(deltaTime);
+			gameOverWinScreen.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
 		case State::PAUSE: {
 			pause.handleInput(deltaTime);
 			pause.update(deltaTime);
@@ -191,6 +202,7 @@ int main(int argc, char *argv[])
 			break;
 			}
 		}
+
 
 		if (GameState::getCurrentState() != GameState::getLastState()) { // Call once when a gamestate switches from one to the other
 			switch (GameState::getCurrentState()) {
