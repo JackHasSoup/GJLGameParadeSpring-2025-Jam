@@ -4,6 +4,7 @@
 #include "GenericCommand.h"
 #include "BufferedCommand.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "HealthBar.h"
 #include "Player.h"
 #include "BaseEnemy.h"
 #include "Crab.h"
@@ -35,6 +36,9 @@ protected:
 	PhysicsManager physMan;
 	PhysicsObject g1, g2, rock;
 	sf::ConvexShape c1, c2, cR;
+
+	HealthBar healthBar; // when creating baseLevels a lot of this stuff will be included already
+	sf::Shader heartShader;
 
 	DeferredIllumination lighter;
 	int movingLightI;

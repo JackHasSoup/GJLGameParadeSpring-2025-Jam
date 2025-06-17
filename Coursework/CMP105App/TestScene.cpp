@@ -40,6 +40,14 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	enemies.push_back(&crab);
 
+	if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
+	{
+		std::cout << "Error loading healthbar shader";
+	}
+	heartShader.setUniform("texture", sf::Shader::CurrentTexture);
+
+	healthBar = HealthBar(window, &player, &heartShader);
+
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
@@ -65,6 +73,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE);}));
 
 	cam = Camera(midWin, winSize);
@@ -151,6 +160,8 @@ void TestScene::update(float dt)
 
 	physMan.update(dt);
 
+	healthBar.update(dt);
+
 	cam.update(dt);
 }
 
@@ -202,6 +213,14 @@ void TestScene::render()
 	window->draw(stackSprite);
 
 	lighter.endDraw();
+
+	// HUD
+	window->setView(window->getDefaultView());
+
+	healthBar.render();
+
+	window->setView(cam);
+
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
 #ifdef DEBUG_COL_POINTS
 	for (auto& o : sceneObjects)
