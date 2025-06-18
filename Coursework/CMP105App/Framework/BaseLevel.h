@@ -19,6 +19,8 @@ public:
 	virtual void update(float dt) override = 0;
 	virtual void render() override = 0;
 
+	virtual void onEnter(Player* inputPlayer);
+
 	void doorCheck();
 
 	void loadLevel(std::string const& filename);
