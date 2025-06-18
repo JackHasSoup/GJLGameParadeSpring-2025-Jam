@@ -19,6 +19,8 @@ using json = nlohmann::json;
 #define placingRoom placeState == PlaceState::ROOM
 #define placingObject placeState == PlaceState::OBJECT
 #define placingCreature placeState == PlaceState::CREATURE
+#define placeIndex ((placingObject) ? selectedIndex : selectedCreatureIndex)
+//#define placedVector ((placingObject) ? objects : creatures)
 
 #endif // !placingLight
 
@@ -70,6 +72,9 @@ private:
 
 	std::vector<PlacedObject> objects;
 	int selectedIndex = -1;
+	std::vector<PlacedCreature> creatures;
+	int selectedCreatureIndex = -1;
+
 	bool dragging = false;
 	sf::Vector2f dragOffset;
 

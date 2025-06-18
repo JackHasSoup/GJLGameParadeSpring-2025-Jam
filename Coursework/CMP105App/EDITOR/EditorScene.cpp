@@ -87,6 +87,7 @@ void EditorScene::handleInput(float dt)
 	switch (placeState)
 	{
 	case PlaceState::OBJECT:
+	{
 		// left click: select or add
 		if (Input::isLeftMousePressed())
 		{
@@ -124,7 +125,7 @@ void EditorScene::handleInput(float dt)
 			dragging = false;
 		}
 		break;
-
+	}
 
 	case PlaceState::LIGHT:
 	{
@@ -241,14 +242,46 @@ void EditorScene::handleInput(float dt)
 	}
 		break;
 
-
 	case PlaceState::CREATURE:
 	{
+		// left click: select or add
+		if (Input::isLeftMousePressed())
+		{
+			selectObjectAt(mousePos);
+			if (selectedCreatureIndex == -1)
+			{
+				addObject(mousePos);
+			}
+		}
+		// left click and hold: drag
+		else if (Input::isLeftMouseDown() && selectedCreatureIndex != -1)
+		{
+			if (!dragging)
+			{
+				dragging = true;
+				dragOffset = creatures[selectedCreatureIndex].obj.getPosition() - mousePos;
+			}
+		}
+		// right click and hold: rotate object
+		else if (Input::isRightMouseDown() && selectedCreatureIndex != -1)
+		{
+			const sf::Vector2f dir = mousePos - creatures[selectedCreatureIndex].obj.getPosition();
+			creatures[selectedCreatureIndex].obj.setRotation(Deg(VectorHelper::angle(dir)));
+		}
 
+		// drag selected object
+		if (dragging && selectedCreatureIndex != -1 && Input::isLeftMouseDown())
+		{
+			creatures[selectedCreatureIndex].obj.setPosition(mousePos + dragOffset);
+		}
 
-		return;
-	}
+		// release drag
+		if (dragging && !Input::isLeftMouseDown())
+		{
+			dragging = false;
+		}
 		break;
+	}
 	}
 }
 
@@ -305,6 +338,15 @@ void EditorScene::render()
 			SceneDataLoader::setOutlineColour(&placed.obj, sf::Color::Black, 2.f);
 	   lighting.draw(&placed.obj);
 	}
+
+	for (auto& placed : creatures)
+	{
+		if (placed.selected)
+			SceneDataLoader::setOutlineColour(&placed.obj, sf::Color::Yellow, 2.f);
+		else
+			SceneDataLoader::setOutlineColour(&placed.obj, sf::Color::Black, 2.f);
+		lighting.draw(&placed.obj);
+	}
 	lighting.endDraw();
 
 	// Draw placed lights as circles for visualization
@@ -338,25 +380,34 @@ void EditorScene::render()
 
 void EditorScene::selectObjectAt(const sf::Vector2f &pos)
 {
-	selectedIndex = -1;
-	for (size_t i = 0; i < objects.size(); ++i)
+	if (placingObject)
 	{
-		/*sf::FloatRect bounds(
-			objects[i].obj.getPosition() - objects[i].obj.getSize() / 2.f,
-			objects[i].obj.getSize());
-		if (bounds.contains(pos))
+		selectedIndex = -1;
+		for (size_t i = 0; i < objects.size(); ++i)
 		{
-			selectedIndex = static_cast<int>(i);
-			break;
-		}*/
-		if (objects[i].obj.getGlobalBounds().contains(pos))
-		{
-			selectedIndex = static_cast<int>(i);
-			break;
+			if (objects[i].obj.getGlobalBounds().contains(pos))
+			{
+				selectedIndex = static_cast<int>(i);
+				break;
+			}
 		}
+		for (size_t i = 0; i < objects.size(); ++i)
+			objects[i].selected = (i == selectedIndex);
 	}
-	for (size_t i = 0; i < objects.size(); ++i)
-		objects[i].selected = (i == selectedIndex);
+	else if (placingCreature)
+	{
+		selectedCreatureIndex = -1;
+		for (size_t i = 0; i < creatures.size(); ++i)
+		{
+			if (creatures[i].obj.getGlobalBounds().contains(pos))
+			{
+				selectedCreatureIndex = static_cast<int>(i);
+				break;
+			}
+		}
+		for (size_t i = 0; i < creatures.size(); ++i)
+			creatures[i].selected = (i == selectedCreatureIndex);
+	}
 }
 
 void EditorScene::setCurrentProp(const PhysicsObject &prop)
@@ -366,26 +417,55 @@ void EditorScene::setCurrentProp(const PhysicsObject &prop)
 
 void EditorScene::addObject(const sf::Vector2f &pos)
 {
-	PlacedObject placed;
-	placed.obj = currentProp;
-	placed.obj.setCanMove(false);
-	SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
-	placed.tex = selectedTex;
-	placed.obj.setPosition(pos);
-	placed.selected = true;
-	//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
-	objects.push_back(placed);
-	selectedIndex = static_cast<int>(objects.size()) - 1;
-	for (size_t i = 0; i < objects.size(); ++i)
-		objects[i].selected = (i == selectedIndex);
+	if (placingObject)
+	{
+		PlacedObject placed;
+		placed.obj = currentProp;
+		placed.obj.setCanMove(false);
+		SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
+		placed.tex = selectedTex;
+		placed.obj.setPosition(pos);
+		placed.selected = true;
+		//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
+		objects.push_back(placed);
+		selectedIndex = static_cast<int>(objects.size()) - 1;
+		for (size_t i = 0; i < objects.size(); ++i)
+			objects[i].selected = (i == selectedIndex);
+	}
+	else if (placingCreature && activeRoomIndex != -1)
+	{
+		PlacedCreature placed;
+		placed.obj = currentProp;
+		placed.obj.setCanMove(false);
+		SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
+		placed.tex = selectedTex;
+		placed.obj.setPosition(pos);
+		placed.selected = true;
+		placed.roomIndex = activeRoomIndex;
+		//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
+		creatures.push_back(placed);
+		selectedCreatureIndex = static_cast<int>(creatures.size()) - 1;
+		for (size_t i = 0; i < creatures.size(); ++i)
+			creatures[i].selected = (i == selectedCreatureIndex);
+	}
 }
 
 void EditorScene::deleteSelectedObject()
 {
-	if (selectedIndex >= 0 && selectedIndex < static_cast<int>(objects.size()))
+	if (placingObject)
 	{
-		objects.erase(objects.begin() + selectedIndex);
-		selectedIndex = -1;
+		if (selectedIndex >= 0 && selectedIndex < static_cast<int>(objects.size()))
+		{
+			objects.erase(objects.begin() + selectedIndex);
+			selectedIndex = -1;
+		}
+	}
+	else {
+		if (selectedCreatureIndex >= 0 && selectedCreatureIndex < static_cast<int>(creatures.size()))
+		{
+			creatures.erase(creatures.begin() + selectedCreatureIndex);
+			selectedCreatureIndex = -1;
+		}
 	}
 }
 
