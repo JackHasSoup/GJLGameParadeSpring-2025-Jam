@@ -161,6 +161,7 @@
     <ClCompile Include="BufferedCommand.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="BaseEnemyTestScene.cpp" />
+    <ClCompile Include="Crab.cpp" />
     <ClCompile Include="CreatureObject.cpp" />
     <ClCompile Include="EDITOR\EditorScene.cpp" />
     <ClCompile Include="EDITOR\SceneDataLoader.cpp" />
@@ -188,6 +189,11 @@
     <ClCompile Include="GenericCommand.cpp" />
     <ClCompile Include="Framework\BaseLevel.cpp" />
     <ClCompile Include="Framework\SceneTransition.cpp" />
+    <ClCompile Include="Jellyfish.cpp" />
+    <ClCompile Include="Narwhal.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomTestScene.cpp" />
+    <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuScene.cpp" />
@@ -201,6 +207,7 @@
     <ClInclude Include="BufferedCommand.h" />
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="BaseEnemyTestScene.h" />
+    <ClInclude Include="Crab.h" />
     <ClInclude Include="CreatureObject.h" />
     <ClInclude Include="EDITOR\EditorScene.h" />
     <ClInclude Include="EDITOR\SceneDataLoader.h" />
@@ -228,6 +235,11 @@
     <ClInclude Include="GenericCommand.h" />
     <ClInclude Include="Framework\BaseLevel.h" />
     <ClInclude Include="Framework\SceneTransition.h" />
+    <ClInclude Include="Jellyfish.h" />
+    <ClInclude Include="Narwhal.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomTestScene.h" />
+    <ClInclude Include="HealthBar.h" />
     <ClInclude Include="TutorialScene.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="PauseScene.h" />
@@ -237,10 +249,12 @@
     <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\heart.frag" />
     <None Include="shaders\ascii.frag" />
     <None Include="shaders\crt.frag" />
     <None Include="shaders\gb.frag" />
     <None Include="shaders\gradientOverlay.frag" />
+    <None Include="shaders\hitFlash.frag" />
     <None Include="shaders\illuminator.frag" />
     <None Include="shaders\illuminator.vert" />
     <None Include="shaders\posterise.frag" />

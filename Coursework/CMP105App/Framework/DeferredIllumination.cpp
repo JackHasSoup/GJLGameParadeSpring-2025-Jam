@@ -202,6 +202,18 @@ void DeferredIllumination::setLight(int i, Light const& l)
 	illuminator.setUniform("numLights", static_cast<float>(lightPos.size()));
 }
 
+void DeferredIllumination::setAmbientColour(const sf::Color& ambient)
+{
+	ambientColour = sf::Color(ambient.r, ambient.g, ambient.b, ambientColour.a);
+	illuminator.setUniform("ambient", sf::Glsl::Vec4(ambientColour));
+}
+
+void DeferredIllumination::setAmbientLight(float const& strength)
+{
+	ambientColour.a = (1.0 - strength) * 255.f;
+	illuminator.setUniform("ambient", sf::Glsl::Vec4(ambientColour));
+}
+
 GLuint DeferredIllumination::uploadSegmentTex(const std::vector<sf::Glsl::Vec4>& edges)
 {
 	std::vector<float> segmentData;

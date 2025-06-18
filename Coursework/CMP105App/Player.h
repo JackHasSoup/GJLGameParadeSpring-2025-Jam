@@ -37,5 +37,6 @@ protected:
 
 	std::vector<CreatureObject*> creaturesTemp;
 	float invincibleTime = 0.f;
+
 };
 

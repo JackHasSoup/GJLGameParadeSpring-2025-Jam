@@ -4,8 +4,11 @@
 #include "GenericCommand.h"
 #include "BufferedCommand.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "HealthBar.h"
 #include "Player.h"
 #include "BaseEnemy.h"
+#include "Crab.h"
+#include "Narwhal.h" 
 
 
 class TestScene : public Scene
@@ -34,6 +37,9 @@ protected:
 	PhysicsObject g1, g2, rock;
 	sf::ConvexShape c1, c2, cR;
 
+	HealthBar healthBar; // when creating baseLevels a lot of this stuff will be included already
+	sf::Shader heartShader;
+
 	DeferredIllumination lighter;
 	int movingLightI;
 	Light movingLight;
@@ -44,6 +50,8 @@ protected:
 	float mSpeed = 350.f;
 	float hue = 0.f;
 	Player player;
+	Crab crab;
+	Narwhal nar;
 
 	std::vector<CreatureObject*> enemies;
 

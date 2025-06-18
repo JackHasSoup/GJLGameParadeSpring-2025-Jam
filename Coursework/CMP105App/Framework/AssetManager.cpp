@@ -26,7 +26,7 @@ void AssetManager::registerExisting(sf::String const& key, sf::Shader* asset)
 
 sf::Texture* AssetManager::registerNewTex(sf::String const& key)
 {
-	//if (textures[key]) return textures[key]; //don't double add asset
+	if (textures.count(key)) return textures[key]; //don't double add asset
 
 	sf::Texture* a = new sf::Texture();
 	textures.emplace(key, a);
@@ -35,7 +35,7 @@ sf::Texture* AssetManager::registerNewTex(sf::String const& key)
 
 sf::Font* AssetManager::registerNewFont(sf::String const& key)
 {
-	//if (fonts[key]) return fonts[key]; //don't double add asset
+	if (fonts.count(key)) return fonts[key]; //don't double add asset
 
 	sf::Font* a = new sf::Font();
 	fonts.emplace(key, a);
@@ -44,7 +44,7 @@ sf::Font* AssetManager::registerNewFont(sf::String const& key)
 
 sf::Shader* AssetManager::registerNewShader(sf::String const& key)
 {
-	//if (shaders[key]) return shaders[key]; //don't double add asset
+	if (shaders.count(key)) return shaders[key]; //don't double add asset
 
 	sf::Shader* a = new sf::Shader();
 	shaders.emplace(key, a);

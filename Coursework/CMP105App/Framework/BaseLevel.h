@@ -1,17 +1,23 @@
 #pragma once
 #include "Scene.h"
+#include "../HealthBar.h"
 #include "../Player.h"
 #include "../GenericCommand.h"
 #include "../EDITOR/SceneDataLoader.h"
+#include "../BufferedCommand.h"
+#include "../Room.h" 
+#include "../Crab.h"
+#include "../Narwhal.h" 
+#include "../Jellyfish.h"
 
 class BaseLevel : public Scene {
 public:
 	BaseLevel();
 	BaseLevel(sf::RenderTarget* hwnd);
 
-	virtual void handleInput(float dt) override;
-	virtual void update(float dt) override;
-	virtual void render() override;
+	virtual void handleInput(float dt) override = 0;
+	virtual void update(float dt) override = 0;
+	virtual void render() override = 0;
 
 	void doorCheck();
 
@@ -24,6 +30,9 @@ protected:
 
 	std::vector<PhysicsObject*> sceneObjects;
 	PhysicsManager physMan;
+
+	HealthBar healthBar;
+	sf::Shader* hitFlashShader;
 
 	GameObject floor;
 	PhysicsObject door;
@@ -39,10 +48,19 @@ protected:
 
 	Player player;
 
-	float mSpeed = 350.f;
 
 	int enemyCount; // how many enemies the player must kill to progress
 	int killCount;
 
+	// action buffer
+	std::vector<BufferedCommand*> availableActions;
+	std::vector<BufferedCommand*> actionBuffer;
+	int oldestAction = 0;
+	int maxActBufferSize = 8;
 
+	void executeAndTrack(BufferedCommand* b);
+
+	//rooms
+	std::vector<Room> rooms; // all rooms in the level
+	Room* activeRoom = nullptr;
 };

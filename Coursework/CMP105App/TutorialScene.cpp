@@ -20,7 +20,8 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	lighter.addLight(midWin + sf::Vector2f(-125, 150), 600.f, sf::Color(193,240,244));
 
 	//BaseLevel::loadLevel("levels/level.json");
-	commander.addPressed(sf::Keyboard::Space, new GenericCommand([=] {GameState::setCurrentState(State::TEST); }));
+	commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.damage(0.5f); }));
+	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 }
 
 void TutorialScene::handleInput(float dt)
@@ -37,6 +38,7 @@ void TutorialScene::update(float dt)
 
 	cam.update(dt);
 
+	healthBar.update(dt);
 
 }
 
@@ -58,5 +60,10 @@ void TutorialScene::render()
 	lighter.draw(&player);
 
 	lighter.endDraw();
+
+	// HUD
+	window->setView(window->getDefaultView());
+
+	healthBar.render();
 
 }

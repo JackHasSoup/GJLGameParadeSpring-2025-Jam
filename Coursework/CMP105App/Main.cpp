@@ -1,14 +1,16 @@
 #include <iostream>
-#include "TestScene.h"
 #include "TutorialScene.h"
+#include "TestScene.h"
 #include "MenuScene.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
+#include "RoomTestScene.h"
 #include "Framework/SceneTransition.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
 #include <thread>
+#include "BaseEnemyTestScene.h"
 
 #ifndef FORCE_EDITOR
 #define FORCE_EDITOR false
@@ -66,8 +68,8 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
-	TestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
+	BaseEnemyTestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	PauseScene pause(&tex);
@@ -82,6 +84,14 @@ int main(int argc, char *argv[])
 	case State::PAUSE: pause.render(); break;\
 	case State::TUTORIAL: tutorialScene.render(); break;\
 	case State::TEST: testScene.render(); break;\
+	}; 
+
+#define UPDATE_SCENE(inputState, dt)\
+	switch(inputState){\
+	case State::MENU: menu.update(dt); break;\
+	case State::PAUSE: pause.update(dt); break;\
+	case State::TUTORIAL: tutorialScene.update(dt); break;\
+	case State::TEST: testScene.update(dt); break;\
 	}; 
 
 
@@ -198,6 +208,9 @@ int main(int argc, char *argv[])
 			case State::TUTORIAL: case State::TEST: // New levels added here
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
+					// Call update function for one frame to load in sprites etc.
+					UPDATE_SCENE(sceneTrans.getStartState(), deltaTime);
+					UPDATE_SCENE(sceneTrans.getEndState(), deltaTime);
 					GameState::setCurrentState(State::TRANSITION);
 				}
 			break;

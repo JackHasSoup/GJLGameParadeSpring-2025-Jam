@@ -17,6 +17,8 @@ SceneData SceneDataLoader::loadScene(std::string const& filename)
 
 	std::vector<PhysicsObject*> objs;
 	std::vector<Light> lights;
+	std::vector<sf::FloatRect> rooms;
+	std::vector<std::tuple<EditorCreature, sf::Vector2f, int>> creatures;
 	std::ifstream in(filename);
 	json j;
 	in >> j;
@@ -55,6 +57,16 @@ SceneData SceneDataLoader::loadScene(std::string const& filename)
 		objs.push_back(obj);
 	}
 
+	//load creatures
+	for (auto const& c : j["creatures"])
+	{
+		creatures.push_back(std::make_tuple(
+			static_cast<EditorCreature>(c["creatureType"].get<int>()),
+			vecFromJson(c["position"]),
+			c.value("roomIndex", -1) // load room index, default to -1 if not present
+		));
+	}
+
 	//load lights
 	for(auto const& lj : j["lights"])
 	{
@@ -65,7 +77,19 @@ SceneData SceneDataLoader::loadScene(std::string const& filename)
 		));
 	}
 
-	return std::make_pair(objs, lights);
+	//load rooms
+	for (auto const& r : j["rooms"])
+	{
+		sf::FloatRect room(
+			r["left"].get<float>(),
+			r["top"].get<float>(),
+			r["width"].get<float>(),
+			r["height"].get<float>()
+		);
+		rooms.push_back(room);
+	}
+
+	return SceneData(objs, lights, rooms, creatures);
 }
 
 void SceneDataLoader::setColour(PhysicsObject* obj, sf::Color const& c)

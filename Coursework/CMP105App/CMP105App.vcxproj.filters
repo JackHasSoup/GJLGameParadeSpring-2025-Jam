@@ -212,6 +212,21 @@
     <ClCompile Include="Framework\SceneTransition.cpp">
       <Filter>Framework\Source\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Crab.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Narwhal.cpp">
+     <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomTestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -325,6 +340,21 @@
     <ClInclude Include="Framework\SceneTransition.h">
       <Filter>Framework\Header\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Crab.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Narwhal.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthBar.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomTestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shadowCaster.frag">
@@ -352,6 +382,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\gradientOverlay.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\heart.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

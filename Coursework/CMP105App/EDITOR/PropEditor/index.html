@@ -239,6 +239,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="bgImageInput">Background Image:</label>
+                    <input type="file" id="bgImageInput" accept="image/*">
+                    <button class="secondary" onclick="clearBackgroundImage()">Clear Image</button>
+                </div>
+
+                <div class="form-group">
                     <label for="drawTypeSelect">Draw Type:</label>
                     <select id="drawTypeSelect">
                         <option value="0">RECT (0)</option>
@@ -314,6 +320,8 @@
                 this.drawType = 1;
                 this.color = { r: 235, g: 107, b: 111, a: 255 };
                 this.size = { x: 0.0, y: 0.0 };
+                this.bgImage = null;
+                this.bgImageObj = null;
 
                 this.init();
             }
@@ -350,6 +358,23 @@
                     this.updateColorPreview();
                     this.drawShape();
                 });
+
+                // Background image upload
+                document.getElementById('bgImageInput').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            this.bgImage = evt.target.result;
+                            this.bgImageObj = new window.Image();
+                            this.bgImageObj.onload = () => {
+                                this.drawShape();
+                            };
+                            this.bgImageObj.src = this.bgImage;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
             }
 
             hexToRgba(hex) {
@@ -369,7 +394,13 @@
             }
 
             drawGrid() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                // Draw background image if present
+                if (this.bgImageObj && this.bgImageObj.complete) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.drawImage(this.bgImageObj, 0, 0, this.canvas.width, this.canvas.height);
+                } else {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                }
 
                 // Draw grid lines
                 this.ctx.strokeStyle = '#f0f0f0';
@@ -862,6 +893,13 @@
 
         function importFromJSON() {
             designer.importFromJSON();
+        }
+
+        function clearBackgroundImage() {
+            designer.bgImage = null;
+            designer.bgImageObj = null;
+            document.getElementById('bgImageInput').value = '';
+            designer.drawShape();
         }
 
         // Initialize the designer when page loads

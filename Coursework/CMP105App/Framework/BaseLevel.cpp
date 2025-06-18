@@ -3,14 +3,23 @@
 BaseLevel::BaseLevel()
 {
 	window = nullptr;
+	hitFlashShader = nullptr;
+
 }
 
 BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
-
+	auto* font = AssetManager::registerNewFont("arial");
+	font->loadFromFile("./font/arial.ttf");
 	// Variable initalisation
 	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);
+
+	hitFlashShader = AssetManager::registerNewShader("flash");
+	if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
+		std::cout << "Error loading hit flash shader";
+	}
+	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
 
 	// Player
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
@@ -27,13 +36,25 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	doorLightI = lighter.addLight(door.getPosition() - sf::Vector2f(-23.f, 70.f), 100.f, sf::Color::Red);
 	doorLight = Light(door.getPosition() - sf::Vector2f(0, 40.f), 50.f, sf::Color::Red);
 
+	healthBar = HealthBar(window, &player);
+
 	physMan.registerObj(&player, false);
 	physMan.registerObj(&door, true);
 
-	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-mSpeed }); }));
-	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player.accelerate({ 0,mSpeed }); }));
-	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player.accelerate({ -mSpeed,0 }); }));
-	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player.accelerate({ mSpeed,0 }); }));
+	availableActions = {
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->heavyAttack(creatures); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->dodge(); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->parry(); }),
+	};
+
+	commander.addPressed(sf::Keyboard::Space, new GenericCommand(SUBA(BaseLevel, executeAndTrack, availableActions[2])));
+	commander.addPressed(sf::Keyboard::Q, new GenericCommand(SUBA(BaseLevel, executeAndTrack, availableActions[3])));
+
+	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-1 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player.accelerate({ 0,1 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player.accelerate({ -1,0 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player.accelerate({ 1,0 }, player.getSpeed()); }));
 
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addPressed(sf::Keyboard::LAlt, new GenericCommand([=] {GameState::incrementLevel(); }));
@@ -49,16 +70,60 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 }
 
-void BaseLevel::handleInput(float dt)
+void BaseLevel::loadLevel(std::string const& filename)
 {
 
+	auto data = SceneDataLoader::loadScene(filename);
+	sceneObjects =std::get<0>(data);
+	for (auto* obj : sceneObjects)
+	{
+		physMan.registerObj(obj, true);
+	}
+	for (auto const& light : std::get<1>(data))
+	{
+		lighter.addLight(light);
+	}
+	for (auto const& room : std::get<2>(data))
+	{
+		rooms.push_back(Room(room, &player));
+	}
+	for (auto const& creature : std::get<3>(data))
+	{
+		auto [creatureType, position, roomIndex] = creature;
+
+		CreatureObject* newCreature = nullptr;
+		switch (creatureType)
+		{
+		case EditorCreature::PLAYER:
+			player.setPosition(position);
+			break;
+		case EditorCreature::CRAB:
+			newCreature = new Crab(position, { 150.f, 75.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
+			break;
+		case EditorCreature::NARWHAL:
+			newCreature = new Narwhal(position, { 100.f, 100.f }, 75.f);
+			break;
+		case EditorCreature::JELLYFISH:
+			newCreature = new Jellyfish(position, { 250.f, 250.f }, 20.f);
+			break;
+		/*case EditorCreature::WALRUS:
+			newCreature = new Walrus(position);
+			break;*/
+		default:
+			continue; // skip unknown creature types
+		}
+
+		if (roomIndex >= 0 && roomIndex < rooms.size())
+		{
+			rooms[roomIndex].addCreature(newCreature);
+		}
+
+		if (newCreature)
+		{
+			physMan.registerObj(newCreature, false);
+		}
+	}
 }
-
-void BaseLevel::update(float dt)
-{
-
-}
-
 
 void BaseLevel::render()
 {
@@ -80,18 +145,17 @@ void BaseLevel::doorCheck()
 
 }
 
-void BaseLevel::loadLevel(std::string const& filename)
+void BaseLevel::executeAndTrack(BufferedCommand* b)
 {
+	if (!b) return; //if the command is null, do nothing
+	if (player.getCooldown() > 0.f) return; //if the player is on cooldown, do nothing
 
-	auto data = SceneDataLoader::loadScene(filename);
-	sceneObjects = data.first;
-	for (auto* obj : sceneObjects)
-	{
-		physMan.registerObj(obj, true);
-	}
-	for (auto const& light : data.second)
-	{
-		lighter.addLight(light);
-	}
+	const int size = actionBuffer.size();
+	if (size < maxActBufferSize)
+		actionBuffer.push_back(b);
+	else
+		actionBuffer[oldestAction] = b;
 
+	oldestAction = oldestAction + 1 >= size ? 0 : oldestAction + 1;
+	b->execute(nullptr, activeRoom->getCreatures());
 }

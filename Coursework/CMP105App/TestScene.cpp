@@ -3,8 +3,7 @@
 
 TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 {
-	font = AssetManager::registerNewFont("arial");
-	font->loadFromFile("./font/arial.ttf");
+	font = AssetManager::getFont("arial");
 	/*button = Button(midWin, winSize * 0.2f, 24, font, "Hello", true);
 	button.body().setFillColor(sf::Color::Black);
 	button.msg().setFillColor(sf::Color::Cyan);
@@ -34,6 +33,20 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
+	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
+	nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
+	//crab.setDrawType(drawType::BOTH_CR);
+
+	enemies.push_back(&crab);
+
+	if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
+	{
+		std::cout << "Error loading healthbar shader";
+	}
+	heartShader.setUniform("texture", sf::Shader::CurrentTexture);
+
+	healthBar = HealthBar(window, &player);
+
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
@@ -59,6 +72,7 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE);}));
 
 	cam = Camera(midWin, winSize);
@@ -67,6 +81,8 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	physMan.registerObj(&g1, false);
 	physMan.registerObj(&g2, false);
 	physMan.registerObj(&player, false);
+	physMan.registerObj(&crab, false);
+	physMan.registerObj(&nar, false);
 
 	lighter.setTarget(dynamic_cast<sf::RenderTexture*>(window));
 	lighter.create();
@@ -89,18 +105,18 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	AudioManager::setMaxSoundVol(100.f);
 
 	auto data = SceneDataLoader::loadScene("levels/level.json");
-	sceneObjects = data.first;
+	sceneObjects = std::get<0>(data);
 	for (auto* obj : sceneObjects)
 	{
 		physMan.registerObj(obj, true);
 	}
-	for (auto const& light : data.second)
+	for (auto const& light : std::get<1>(data))
 	{
 		lighter.addLight(light);
 	}
 
 	//load some generic enemies around the screen
-	for (int i = 0; i < 5; ++i)
+	/*for (int i = 0; i < 5; ++i)
 	{
 		auto* e = new BaseEnemy(midWin + sf::Vector2f(rand() % 1000 - 500, rand() % 1000 - 500), { 50.f,50.f }, 20.f);
 		e->setFillColor(sf::Color::Red);
@@ -110,7 +126,9 @@ TestScene::TestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 		e->setAlive(true);
 		enemies.push_back(e);
 		physMan.registerObj(e, false);
-	}
+	}*/
+	enemies.push_back(&crab);
+	enemies.push_back(&nar);
 }
 
 void TestScene::update(float dt)
@@ -140,6 +158,8 @@ void TestScene::update(float dt)
 	}
 
 	physMan.update(dt);
+
+	healthBar.update(dt);
 
 	cam.update(dt);
 }
@@ -180,7 +200,9 @@ void TestScene::render()
 	//draw enemies with lighter
 	for (auto& e : enemies)
 	{
-		if(e->isAlive())lighter.draw(e);
+		if (e->isAlive()) {
+			lighter.draw(e);
+		}
 	}
 
 	lighter.draw(&g1);
@@ -191,8 +213,15 @@ void TestScene::render()
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
 
-
 	lighter.endDraw();
+
+	// HUD
+	window->setView(window->getDefaultView());
+
+	healthBar.render();
+
+	window->setView(cam);
+
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
 #ifdef DEBUG_COL_POINTS
 	for (auto& o : sceneObjects)

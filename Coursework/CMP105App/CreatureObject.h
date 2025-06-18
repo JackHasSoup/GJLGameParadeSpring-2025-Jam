@@ -1,11 +1,12 @@
 #pragma once
 #include "Framework/PhysicsObject.h"
+#include "Framework/AssetManager.h"
 enum class Action{NONE, LIGHT,HEAVY,DODGE,PARRY};
 class CreatureObject : public PhysicsObject
 {
 public:
 	CreatureObject(sf::Vector2f pos, sf::Vector2f size, float mass);
-	CreatureObject() {};//default constructor
+	CreatureObject() { hitFlash = nullptr; };//default constructor
 	~CreatureObject() {};
 
 	virtual void lightAttack(std::vector<CreatureObject*> creatures) = 0;
@@ -15,8 +16,11 @@ public:
 
 	virtual void update(float dt) override;
 
-	virtual void damage(float d) { health -= d; };
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	virtual void damage(float d) { health -= d; hitEffectTimer = hitEffectTimerMax;};
 	virtual float getHealth() { return health; };
+	virtual float getMaxHealth() { return maxHealth; };
 	virtual void restoreHealth() { health = maxHealth; };
 
 	virtual void setSpeed(float s) { speed = s; };
@@ -27,6 +31,10 @@ public:
 
 	virtual void setMaxCooldown(float mc) { maxCooldown = mc; };
 	virtual float getMaxCooldown() { return maxCooldown; };
+
+	virtual float getHitTimer() { return hitEffectTimer; };
+	virtual float getHitTimerMax() { return hitEffectTimerMax; };
+	sf::Shader* getShader() { return hitFlash; };
 
 	virtual void setLightAttackDamage(float d) { lightAttackDamage = d; };
 	virtual float getLightAttackDamage() { return lightAttackDamage; };
@@ -43,5 +51,7 @@ protected:
 	float cooldown, maxCooldown;
 	float lightAttackDamage, heavyAttackDamage;
 	float lightAttackRange, heavyAttackRange; //range is the coeficient of the size of the attack check box for melee attacks, the projectile range for ranged attacks
+	float hitEffectTimer, hitEffectTimerMax;
+	sf::Shader* hitFlash;
 };
 
