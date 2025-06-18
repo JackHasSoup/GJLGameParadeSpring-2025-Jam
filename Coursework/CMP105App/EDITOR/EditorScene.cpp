@@ -450,8 +450,14 @@ void EditorScene::addObject(const sf::Vector2f &pos)
 		for (size_t i = 0; i < objects.size(); ++i)
 			objects[i].selected = (i == selectedIndex);
 	}
-	else if (placingCreature && activeRoomIndex != -1)
+	else if (placingCreature && activeRoomIndex != -1 && currentCreatureType != EditorCreature::UNKNOWN)
 	{
+		if (!placedRooms[activeRoomIndex].contains(pos))
+		{
+			std::cout << "Cannot place creature outside of the active room!" << std::endl;
+			return; // don't place creature outside of the active room
+		}
+
 		PlacedCreature placed;
 		placed.obj = paletteProps[0]; //use the square
 		placed.obj.setCanMove(false);
