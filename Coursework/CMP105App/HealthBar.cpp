@@ -18,7 +18,11 @@ HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
 	hitEffectTimer = 0.f;
 	effectTimerMax = player->getHitTimerMax();
 
-	heartShader = AssetManager::getShader("heart");
+	heartShader = AssetManager::registerNewShader("heart");
+	if (!heartShader->loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment)){
+		std::cout << "Error loading healthbar shader";
+	}
+	heartShader->setUniform("texture", sf::Shader::CurrentTexture);
 
 	startPos = sf::Vector2f{ 50.f,50.f };
 	sf::Vector2f size = sf::Vector2f{ 100,100.f };

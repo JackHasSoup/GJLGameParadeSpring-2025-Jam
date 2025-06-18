@@ -1,5 +1,5 @@
 #include "BaseEnemyTestScene.h"
-#define DEBUG_COL_POINTS
+//#define DEBUG_COL_POINTS
 
 BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 {
@@ -33,6 +33,8 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
+
+	healthBar = HealthBar(window, &player);
 
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
 	//nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
@@ -155,6 +157,8 @@ void BaseEnemyTestScene::update(float dt)
 
 	physMan.update(dt);
 
+	healthBar.update(dt);
+
 	cam.update(dt);
 }
 
@@ -206,6 +210,15 @@ void BaseEnemyTestScene::render()
 	window->draw(stackSprite);
 
 	lighter.endDraw();
+
+
+	// HUD
+	window->setView(window->getDefaultView());
+
+	healthBar.render();
+
+	window->setView(cam);
+
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
 #ifdef DEBUG_COL_POINTS
 	for (auto& o : sceneObjects)

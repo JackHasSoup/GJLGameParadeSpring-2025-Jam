@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
-	BaseEnemyTestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
+	BaseEnemyTestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	PauseScene pause(&tex);

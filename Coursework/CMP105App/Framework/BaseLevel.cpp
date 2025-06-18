@@ -3,7 +3,6 @@
 BaseLevel::BaseLevel()
 {
 	window = nullptr;
-	heartShader = nullptr;
 	hitFlashShader = nullptr;
 
 }
@@ -16,21 +15,14 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);
 
-	// Player
-	player = Player(midWin, { 75.f, 75.f }, 20.f);
-
-	if (!heartShader->loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
-	{
-		std::cout << "Error loading healthbar shader";
-	}
-	heartShader->setUniform("texture", sf::Shader::CurrentTexture);
-
 	hitFlashShader = AssetManager::registerNewShader("flash");
 	if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
 		std::cout << "Error loading hit flash shader";
 	}
 	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
 
+	// Player
+	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
 	healthBar = HealthBar(window, &player);
 
