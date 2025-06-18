@@ -40,6 +40,16 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	spotlight.setCollisionShape(lightShape);
 	spotlight.setDrawType(drawType::RECT);
 
+	tube = PhysicsObject(midWin, sf::Vector2f{ 175.f,437.5f }, 50.f);
+
+	sf::ConvexShape ovalShape = lightShape;
+	for (int i = 0; i < ovalShape.getPointCount(); i++)
+	{
+		ovalShape.setPoint(i, sf::Vector2f{ lightShape.getPoint(i).x * (tube.getSize().x / 100.f),lightShape.getPoint(i).y * (tube.getSize().y / 250.f) * 0.75f} + sf::Vector2f(0.f, tube.getSize().y * 0.7f));
+	}
+	tube.setFillColor(sf::Color::White);
+	tube.setCollisionShape(ovalShape);
+	tube.setDrawType(drawType::RECT_COL_LIGHTMASK);
 
 	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
 	door.setFillColor(sf::Color::White);
@@ -48,7 +58,6 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	physMan.registerObj(&player, false);
 	physMan.registerObj(&door, true);
-	physMan.registerObj(&spotlight, true);
 
 	availableActions = {
 		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
