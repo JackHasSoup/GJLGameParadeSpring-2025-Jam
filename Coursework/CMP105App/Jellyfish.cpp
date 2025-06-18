@@ -27,7 +27,7 @@ Jellyfish::Jellyfish(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnem
 
 	movementVec = sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
 
-	setDrawType(drawType::RECT);
+	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
 	auto cs = sf::ConvexShape(4);
 	cs.setPoint(0, { 95.f, 70.f });
