@@ -12,7 +12,6 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	auto* font = AssetManager::registerNewFont("arial");
 	font->loadFromFile("./font/arial.ttf");
 	// Variable initalisation
-	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);
 
 	hitFlashShader = AssetManager::registerNewShader("flash");
@@ -30,16 +29,26 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
 
+	spotlight = PhysicsObject(midWin, sf::Vector2f{100.f,100.f}, 50);
+	spotlight.setFillColor(sf::Color::White);
+	sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.44f); // Circle collision shape referenced from seal player
+	sf::ConvexShape lightShape = sf::ConvexShape(c.getPointCount());
+	for (int i = 0; i < c.getPointCount(); i++)
+	{
+		lightShape.setPoint(i, c.getPoint(i) + sf::Vector2f(spotlight.getSize().x * 0.055f, spotlight.getSize().y * 0.052f));
+	}
+	spotlight.setCollisionShape(lightShape);
+	spotlight.setDrawType(drawType::RECT);
+
+
 	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
 	door.setFillColor(sf::Color::White);
-
-	doorLightI = lighter.addLight(door.getPosition() - sf::Vector2f(-23.f, 70.f), 100.f, sf::Color::Red);
-	doorLight = Light(door.getPosition() - sf::Vector2f(0, 40.f), 50.f, sf::Color::Red);
 
 	healthBar = HealthBar(window, &player);
 
 	physMan.registerObj(&player, false);
 	physMan.registerObj(&door, true);
+	physMan.registerObj(&spotlight, true);
 
 	availableActions = {
 		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
