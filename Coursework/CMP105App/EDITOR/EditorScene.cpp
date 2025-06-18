@@ -43,8 +43,9 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	commander.addHeld(sf::Keyboard::LShift, new GenericCommand([=]{ camera.pan(window->mapPixelToCoords(Input::getIntMousePos()) - camera.getCenter()); }));
 	commander.addPressed(sf::Keyboard::Delete, new GenericCommand([=]{ deleteSelectedObject(); }));
 	//mode switching
-	commander.addPressed(sf::Keyboard::L, new GenericCommand([=] { placingLight = !placingLight; }));
-	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom= !placingRoom; }));
+	commander.addPressed(sf::Keyboard::L, new GenericCommand([=] { placingLight ? placeState = PlaceState::OBJECT : placeState = PlaceState::LIGHT; }));
+	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom ? placeState = PlaceState::OBJECT : placeState = PlaceState::ROOM; }));
+	commander.addPressed(sf::Keyboard::C, new GenericCommand([=] { placingRoom ? placeState = PlaceState::OBJECT : placeState = PlaceState::CREATURE; }));
 	//for save load
 	commander.addPressed(sf::Keyboard::PageUp, new GenericCommand([=] { saveToFile("levels/level.json"); }));
 	commander.addPressed(sf::Keyboard::PageDown, new GenericCommand([=] { loadFromFile("levels/level.json"); }));
@@ -69,7 +70,7 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	pickerWin->setFramerateLimit(15);
 	texWin->setFramerateLimit(15);
 
-	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nL: toggle between placing lights/objects\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\n\n\n";
+	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\nMODE SWITCHING:\nL: toggle between placing lights/objects\nR: toggle between rooms/objects\nC: toggle between creatures/objects\n\n\n";
 }
 
 void EditorScene::handleInput(float dt)
@@ -83,7 +84,49 @@ void EditorScene::handleInput(float dt)
 
 	sf::Vector2f mousePos = window->mapPixelToCoords(Input::getIntMousePos());
 
-	if (placingLight)
+	switch (placeState)
+	{
+	case PlaceState::OBJECT:
+		// left click: select or add
+		if (Input::isLeftMousePressed())
+		{
+			selectObjectAt(mousePos);
+			if (selectedIndex == -1)
+			{
+				addObject(mousePos);
+			}
+		}
+		// left click and hold: drag
+		else if (Input::isLeftMouseDown() && selectedIndex != -1)
+		{
+			if (!dragging)
+			{
+				dragging = true;
+				dragOffset = objects[selectedIndex].obj.getPosition() - mousePos;
+			}
+		}
+		// right click and hold: rotate object
+		else if (Input::isRightMouseDown() && selectedIndex != -1)
+		{
+			const sf::Vector2f dir = mousePos - objects[selectedIndex].obj.getPosition();
+			objects[selectedIndex].obj.setRotation(Deg(VectorHelper::angle(dir)));
+		}
+
+		// drag selected object
+		if (dragging && selectedIndex != -1 && Input::isLeftMouseDown())
+		{
+			objects[selectedIndex].obj.setPosition(mousePos + dragOffset);
+		}
+
+		// release drag
+		if (dragging && !Input::isLeftMouseDown())
+		{
+			dragging = false;
+		}
+		break;
+
+
+	case PlaceState::LIGHT:
 	{
 		//drag existing light
 		if (draggingLight && selectedLightIndex != -1 && Input::isLeftMouseDown())
@@ -136,28 +179,31 @@ void EditorScene::handleInput(float dt)
 		}
 		return; //skip normal prop/object placement when in light mode
 	}
-	else if (placingRoom)
+		break;
+
+
+	case PlaceState::ROOM:
 	{
 		//just like light placing, first click is where the top left corner of the room is, second click is bottom right corner
 		if (Input::isLeftMousePressed() && !midLightPlace)
 		{
 			//check if clicking on an existing room
-			selectedIndex = -1;
+			activeRoomIndex = -1;
 			for (size_t i = 0; i < placedRooms.size(); ++i)
 			{
 				if (placedRooms[i].contains(mousePos))
 				{
-					selectedIndex = static_cast<int>(i);
+					activeRoomIndex = static_cast<int>(i);
 					break;
 				}
 			}
-			if (selectedIndex != -1)
+			if (activeRoomIndex != -1)
 			{
 				//drag existing room
 				if (!dragging)
 				{
 					dragging = true;
-					dragOffset = sf::Vector2f(placedRooms[selectedIndex].top, placedRooms[selectedIndex].left) - mousePos;
+					dragOffset = sf::Vector2f(placedRooms[activeRoomIndex].top, placedRooms[activeRoomIndex].left) - mousePos;
 				}
 				return; //skip normal prop/object placement when in room mode
 			}
@@ -176,48 +222,22 @@ void EditorScene::handleInput(float dt)
 			if (Input::isLeftMousePressed())
 			{
 				midLightPlace = false;
-				placingRoom = false; //stop placing rooms after placing one
+				placeState = PlaceState::OBJECT; //stop placing rooms after placing one
 			}
 		}
 
 		return;
 	}
+		break;
 
-	// left click: select or add
-	if (Input::isLeftMousePressed())
-	{
-		selectObjectAt(mousePos);
-		if (selectedIndex == -1)
-		{
-			addObject(mousePos);
-		}
-	}
-	// left click and hold: drag
-	else if (Input::isLeftMouseDown() && selectedIndex != -1)
-	{
-		if (!dragging)
-		{
-			dragging = true;
-			dragOffset = objects[selectedIndex].obj.getPosition() - mousePos;
-		}
-	}
-	// right click and hold: rotate object
-	else if (Input::isRightMouseDown() && selectedIndex != -1)
-	{
-		const sf::Vector2f dir = mousePos - objects[selectedIndex].obj.getPosition();
-		objects[selectedIndex].obj.setRotation(Deg(VectorHelper::angle(dir)));
-	}
 
-	// drag selected object
-	if (dragging && selectedIndex != -1 && Input::isLeftMouseDown())
+	case PlaceState::CREATURE:
 	{
-		objects[selectedIndex].obj.setPosition(mousePos + dragOffset);
-	}
 
-	// release drag
-	if (dragging && !Input::isLeftMouseDown())
-	{
-		dragging = false;
+
+		return;
+	}
+		break;
 	}
 }
 
