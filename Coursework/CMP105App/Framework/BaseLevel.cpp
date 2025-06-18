@@ -16,19 +16,15 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	bgColor = sf::Color(130, 112, 148);
 
 	heartShader = AssetManager::registerNewShader("heart");
-	if (heartShader != nullptr) {
-		if (!heartShader->loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
-		{
-			std::cout << "Error loading healthbar shader";
-		}
+	if (!heartShader->loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
+	{
+		std::cout << "Error loading healthbar shader";
 	}
 	heartShader->setUniform("texture", sf::Shader::CurrentTexture);
 
 	hitFlashShader = AssetManager::registerNewShader("flash");
-	if (hitFlashShader != nullptr){
-		if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
-			std::cout << "Error loading hit flash shader";
-		}
+	if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
+		std::cout << "Error loading hit flash shader";
 	}
 	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
 

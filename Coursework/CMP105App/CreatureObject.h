@@ -16,6 +16,8 @@ public:
 
 	virtual void update(float dt) override;
 
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 	virtual void damage(float d) { health -= d; hitEffectTimer = hitEffectTimerMax;};
 	virtual float getHealth() { return health; };
 	virtual float getMaxHealth() { return maxHealth; };
@@ -33,7 +35,6 @@ public:
 	virtual float getHitTimer() { return hitEffectTimer; };
 	virtual float getHitTimerMax() { return hitEffectTimerMax; };
 	sf::Shader* getShader() { return hitFlash; };
-	sf::RenderStates* getState() { return &state; };
 
 	virtual void setLightAttackDamage(float d) { lightAttackDamage = d; };
 	virtual float getLightAttackDamage() { return lightAttackDamage; };
@@ -51,7 +52,6 @@ protected:
 	float lightAttackDamage, heavyAttackDamage;
 	float lightAttackRange, heavyAttackRange; //range is the coeficient of the size of the attack check box for melee attacks, the projectile range for ranged attacks
 	float hitEffectTimer, hitEffectTimerMax;
-	sf::RenderStates state;
 	sf::Shader* hitFlash;
 };
 

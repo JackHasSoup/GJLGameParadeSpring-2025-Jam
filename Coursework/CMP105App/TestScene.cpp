@@ -202,15 +202,13 @@ void TestScene::render()
 	for (auto& e : enemies)
 	{
 		if (e->isAlive()) {
-			AssetManager::getShader("flash")->setUniform("timer", e->getHitTimer()); 
-			lighter.draw(e, e->getState());
+			lighter.draw(e);
 		}
 	}
 
 	lighter.draw(&g1);
 	lighter.draw(&g2);
-	AssetManager::getShader("flash")->setUniform("timer", player.getHitTimer());
-	lighter.draw(&player, player.getState());
+	lighter.draw(&player);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());

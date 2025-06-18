@@ -250,7 +250,7 @@ void Player::damage(float d)
 	if (health < maxHealth / 3) howBloody = 2; //very bloody
 	else if (health < maxHealth / 2) howBloody = 1; //bloody
 	else howBloody = 0; //normal
-	std::cout << health << std::endl;
+	//std::cout << health << std::endl;
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
