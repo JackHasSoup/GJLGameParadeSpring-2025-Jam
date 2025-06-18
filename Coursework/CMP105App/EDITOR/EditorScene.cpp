@@ -460,11 +460,12 @@ void EditorScene::addObject(const sf::Vector2f &pos)
 
 		PlacedCreature placed;
 		placed.obj = paletteProps[0]; //use the square
+		placed.obj.setFillColor(sf::Color::White);
 		placed.obj.setCanMove(false);
-		placed.tex = selectedTex;
 		placed.obj.setPosition(pos);
 		placed.selected = true;
 		placed.roomIndex = activeRoomIndex;
+		placed.creatureType = currentCreatureType; // set the creature type based on the current selection
 
 		SceneDataLoader::setTexture(&placed.obj, creatureTexKeys[static_cast<int>(currentCreatureType)]); // set the texture based on the current creature type
 		//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
@@ -758,6 +759,24 @@ void EditorScene::saveToFile(const std::string& filename)
 
 		j["objects"].push_back(o);
 	}
+
+	//save creatures
+	for (const auto& creature : creatures)
+	{
+		json o;
+		if (creature.creatureType == EditorCreature::UNKNOWN)
+		{
+			std::cerr << "Error: Attempting to save a creature with UNKNOWN type!" << std::endl;
+			continue; // skip saving this creature
+		}
+		//creatures in editor are just pawn icons, they don't influence anything other than position and room when loaded into level
+		o["creatureType"] = static_cast<int>(creature.creatureType); // save creature type
+		o["position"] = SceneDataLoader::vecToJson(creature.obj.getPosition());
+		o["roomIndex"] = creature.roomIndex; // save room index for creatures
+
+		j["creatures"].push_back(o);
+	}
+
 	// save lights
 	for (const auto& l : placedLights) 
 	{
@@ -835,6 +854,25 @@ void EditorScene::loadFromFile(const std::string& filename)
 		//obj.roomIndex = o.value("roomIndex", -1); // load room index, default to -1 if not present (don't do this, only creatures are assigned to a room)
 		objects.push_back(obj);
 	}
+
+	//load creatures
+	creatures.clear();
+	for (const auto& c : j["creatures"])
+	{
+		PlacedCreature placed;
+		placed.obj = paletteProps[0]; //use the square
+		placed.obj.setFillColor(sf::Color::White);
+		placed.obj.setCanMove(false);
+		placed.obj.setPosition(SceneDataLoader::vecFromJson(c["position"]));
+		placed.selected = false;
+		placed.roomIndex = c.value("roomIndex", -1); // load room index, default to -1 if not present
+		placed.creatureType = static_cast<EditorCreature>(c["creatureType"].get<int>());
+		auto* t = AssetManager::getTex(creatureTexKeys[static_cast<int>(placed.creatureType)]);
+		if(t)placed.obj.setTexture(t);
+		SceneDataLoader::setTexture(&placed.obj, creatureTexKeys[static_cast<int>(placed.creatureType)]); // set the texture based on the current creature type
+		creatures.push_back(placed);
+	}
+
 	//load lights
 	for (const auto& lj : j["lights"]) 
 	{

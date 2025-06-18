@@ -32,15 +32,6 @@ enum class PlaceState{
 	CREATURE
 };
 
-enum class EditorCreature {//supports 10 creatures!!!!
-	UNKNOWN = -1, // used for unassigned creatures
-	PLAYER = 0,
-	CRAB = 1,
-	NARWHAL = 2,
-	JELLYFISH = 3,
-	WALRUS = 4
-};
-
 class EditorScene : public Scene
 {
 public:
