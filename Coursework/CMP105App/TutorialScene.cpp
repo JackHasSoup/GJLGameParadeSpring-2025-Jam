@@ -13,7 +13,7 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 
 	for (int i = 0; i < 2; i++) {
 		// Spawn two crabs in the room
-		auto* e = new Crab(sf::Vector2f{ (rooms[0].left + rooms[0].width*( 0.5f + (0.45f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.6f + (0.05f * ((i * -2.f) + 1.f))))}, // convoluted way of making two crabs at opposite ends of the room
+		auto* e = new Crab(sf::Vector2f{ (rooms[0].left + rooms[0].width*( 0.5f + (0.33f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.55f + (0.02f * ((i * -2.f) + 1.f))))}, // convoluted way of making two crabs at opposite ends of the room
 			{150.f, 75.f}, 
 			20.f, 
 			{ 1.f, (0.1f * ((i * 2.f) - 1.f))}); // slightly slant up or down
@@ -35,11 +35,21 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	// Position player outside the door
 	player.positionReset(door.getPosition() + sf::Vector2f{0.f, (door.getSize().y)});
 
+	cam.setCenter(player.getPosition());
+
 	spotlightTexture = AssetManager::registerNewTex("spotlight");
 	spotlightTexture->loadFromFile("gfx/materials/light.png");
 	spotlight.setTexture(spotlightTexture);
 
 	spotlight.setPosition(midWin - sf::Vector2f{700.f, 1350.f});
+	physMan.registerObj(&spotlight, true);
+
+	tube.setPosition(rooms[0].getCreatures().at(0)->getPosition() + sf::Vector2f{10.f,10.f});
+	tubeTexture = AssetManager::registerNewTex("tube");
+	tubeTexture->loadFromFile("gfx/materials/tube.png");
+	tube.setTexture(tubeTexture);
+	physMan.registerObj(&tube, true);
+
 
 	// Debug
 
@@ -101,6 +111,8 @@ void TutorialScene::render()
 	if (activeRoom) activeRoom->render(&lighter); // enemies inside room
 
 	lighter.draw(&player);
+
+	lighter.draw(&tube);
 
 	lighter.endDraw();
 

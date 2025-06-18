@@ -40,10 +40,12 @@ protected:
 
 	PhysicsObject door;
 	PhysicsObject spotlight;
+	PhysicsObject tube;
 
 	sf::Texture* floorTexture;
-	sf::Texture* spotlightTexture;
 	sf::Texture* doorTexture;
+	sf::Texture* spotlightTexture;
+	sf::Texture* tubeTexture;
 
 	int doorLightI;
 	Light doorLight;
