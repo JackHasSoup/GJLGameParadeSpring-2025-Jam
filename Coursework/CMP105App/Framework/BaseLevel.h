@@ -37,9 +37,12 @@ protected:
 	sf::Shader* hitFlashShader;
 
 	GameObject floor;
+
 	PhysicsObject door;
+	PhysicsObject spotlight;
 
 	sf::Texture* floorTexture;
+	sf::Texture* spotlightTexture;
 	sf::Texture* doorTexture;
 
 	int doorLightI;
@@ -49,10 +52,6 @@ protected:
 	DeferredIllumination lighter;
 
 	Player player;
-
-
-	int enemyCount; // how many enemies the player must kill to progress
-	int killCount;
 
 	// action buffer
 	std::vector<BufferedCommand*> availableActions;
