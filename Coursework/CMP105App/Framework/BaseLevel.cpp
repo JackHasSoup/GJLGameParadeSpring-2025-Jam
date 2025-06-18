@@ -24,9 +24,9 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	// Player
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
-	floor.setSize(sf::Vector2f{ window->getSize() });
+	floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
 	floor.setOrigin(floor.getSize() / 2.f);
-	floor.setPosition(midWin);
+	floor.setPosition(midWin - floor.getSize()/2.f);
 
 	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
 
@@ -125,22 +125,33 @@ void BaseLevel::loadLevel(std::string const& filename)
 	}
 }
 
+void BaseLevel::onEnter(Player* inputPlayer)
+{
+	// Once all levels are baseLevels, send the player data to the next level
+
+}
+
 void BaseLevel::render()
 {
 }
 
 void BaseLevel::doorCheck()
 {
-	if (killCount >= enemyCount) {
-		// change door light to green if enough enemies have been killed
-		std::get<0>(doorLight) = sf::Vector2f{ door.getPosition() - sf::Vector2f(-23.f, 70.f) };
-		std::get<1>(doorLight) = 100.f;
-		std::get<2>(doorLight) = sf::Color::Green;
-		lighter.setLight(doorLightI, doorLight);
-
-		if (Collision::checkBoundingBox(&player, &door)) {
-			GameState::incrementLevel();
+	for (int i = 0; i < rooms.size(); i++) {
+		if (!rooms[i].allCreaturesDead()) {
+			// If any room still have creatures then door is not oepn
+			return;
 		}
+	}
+
+	// change door light to green 
+	std::get<0>(doorLight) = sf::Vector2f{ door.getPosition() - sf::Vector2f(-23.f, 70.f) };
+	std::get<1>(doorLight) = 100.f;
+	std::get<2>(doorLight) = sf::Color::Green;
+	lighter.setLight(doorLightI, doorLight);
+
+	if (Collision::checkBoundingBox(&player, &door)) {
+		GameState::incrementLevel();
 	}
 
 }

@@ -205,12 +205,13 @@ int main(int argc, char *argv[])
 			case State::PAUSE:
 				pause.setPausedState(GameState::getLastState());
 				break;
-			case State::TUTORIAL: case State::TEST: // New levels added here
+			case State::TUTORIAL: case State::TEST: 
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
 					// Call update function for one frame to load in sprites etc.
 					UPDATE_SCENE(sceneTrans.getStartState(), deltaTime);
 					UPDATE_SCENE(sceneTrans.getEndState(), deltaTime);
+
 					GameState::setCurrentState(State::TRANSITION);
 				}
 			break;

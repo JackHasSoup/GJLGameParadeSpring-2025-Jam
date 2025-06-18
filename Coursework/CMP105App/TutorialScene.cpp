@@ -11,15 +11,16 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	floorTexture->setRepeated(true);
 	floor.setTexture(floorTexture);
 
+	BaseLevel::loadLevel("levels/tutorial.json");
+
 	doorTexture = AssetManager::registerNewTex("door");
 	doorTexture->loadFromFile("gfx/materials/door.png");
 	door.setTexture(doorTexture);
 
-	door.setPosition(midWin - sf::Vector2f{ 0,400 });
+	door.setPosition(midWin - sf::Vector2f{ 1000.f,1780.f });
 
-	lighter.addLight(midWin + sf::Vector2f(-125, 150), 600.f, sf::Color(193,240,244));
+	player.positionReset(door.getPosition() + sf::Vector2f{0.f, (door.getSize().y)});
 
-	//BaseLevel::loadLevel("levels/level.json");
 	commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.damage(0.5f); }));
 	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 }
