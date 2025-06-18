@@ -35,6 +35,16 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 		}
 	}
 
+	//icon textures for creatures
+	for (const auto& key : creatureTexKeys)
+	{
+		sf::Texture* tex = AssetManager::registerNewTex(key);
+		if (!tex->loadFromFile("gfx/editorIcons/" + key + ".png"))
+		{
+			std::cerr << "Failed to load creature icon texture: " << key.toAnsiString() << std::endl;
+		}
+	}
+
 	currentProp = paletteProps[0];
 
 	camera = Camera(midWin, winSize);
@@ -45,7 +55,7 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	//mode switching
 	commander.addPressed(sf::Keyboard::L, new GenericCommand([=] { placingLight ? placeState = PlaceState::OBJECT : placeState = PlaceState::LIGHT; }));
 	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom ? placeState = PlaceState::OBJECT : placeState = PlaceState::ROOM; }));
-	commander.addPressed(sf::Keyboard::C, new GenericCommand([=] { placingRoom ? placeState = PlaceState::OBJECT : placeState = PlaceState::CREATURE; }));
+	commander.addPressed(sf::Keyboard::C, new GenericCommand([=] { placingCreature ? placeState = PlaceState::OBJECT : placeState = PlaceState::CREATURE; }));
 	//for save load
 	commander.addPressed(sf::Keyboard::PageUp, new GenericCommand([=] { saveToFile("levels/level.json"); }));
 	commander.addPressed(sf::Keyboard::PageDown, new GenericCommand([=] { loadFromFile("levels/level.json"); }));
@@ -55,6 +65,12 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	//for scale
 	commander.addHeld(sf::Keyboard::Q, new GenericCommand([=] { objects[selectedIndex].obj.scale(1.1f, 1.1f); }));
 	commander.addHeld(sf::Keyboard::E, new GenericCommand([=] { objects[selectedIndex].obj.scale(1.f/1.1f, 1.f/1.1f); }));
+	//switch creature type being placed
+	commander.addPressed(sf::Keyboard::Num0, new GenericCommand([=] { currentCreatureType = EditorCreature::PLAYER; }));
+	commander.addPressed(sf::Keyboard::Num1, new GenericCommand([=] { currentCreatureType = EditorCreature::CRAB; }));
+	commander.addPressed(sf::Keyboard::Num2, new GenericCommand([=] { currentCreatureType = EditorCreature::NARWHAL; }));
+	commander.addPressed(sf::Keyboard::Num3, new GenericCommand([=] { currentCreatureType = EditorCreature::JELLYFISH; }));
+	commander.addPressed(sf::Keyboard::Num4, new GenericCommand([=] { currentCreatureType = EditorCreature::WALRUS; }));
 
 	lighting.setTarget(dynamic_cast<sf::RenderTexture *>(window));
 	lighting.create();
@@ -70,7 +86,8 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	pickerWin->setFramerateLimit(15);
 	texWin->setFramerateLimit(15);
 
-	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\nMODE SWITCHING:\nL: toggle between placing lights/objects\nR: toggle between rooms/objects\nC: toggle between creatures/objects\n\n\n";
+	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\nMODE SWITCHING:\nL: toggle between placing lights/objects\nR: toggle between rooms/objects\nC: toggle between creatures/objects\n\n";
+	std::cout << "PLACING CREATURES: nums 0-4 to switch between creatures: 0: player, 1: crab, 2: narwhal, 3: jellyfish, 4: walrus\n\n";
 	std::cout << "WARNING: placed creatures sizes are purely illustrative placeholders, their sizes in editor probably won't match their actual sizes in game.\n\n";
 }
 
@@ -436,13 +453,14 @@ void EditorScene::addObject(const sf::Vector2f &pos)
 	else if (placingCreature && activeRoomIndex != -1)
 	{
 		PlacedCreature placed;
-		placed.obj = currentProp;
+		placed.obj = paletteProps[0]; //use the square
 		placed.obj.setCanMove(false);
-		SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
 		placed.tex = selectedTex;
 		placed.obj.setPosition(pos);
 		placed.selected = true;
 		placed.roomIndex = activeRoomIndex;
+
+		SceneDataLoader::setTexture(&placed.obj, creatureTexKeys[static_cast<int>(currentCreatureType)]); // set the texture based on the current creature type
 		//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
 		creatures.push_back(placed);
 		selectedCreatureIndex = static_cast<int>(creatures.size()) - 1;

@@ -32,7 +32,7 @@ enum class PlaceState{
 	CREATURE
 };
 
-enum class EditorCreature {
+enum class EditorCreature {//supports 10 creatures!!!!
 	UNKNOWN = -1, // used for unassigned creatures
 	PLAYER = 0,
 	CRAB = 1,
@@ -82,8 +82,13 @@ private:
 
 	std::vector<PlacedObject> objects;
 	int selectedIndex = -1;
+
 	std::vector<PlacedCreature> creatures;
 	int selectedCreatureIndex = -1;
+	EditorCreature currentCreatureType = EditorCreature::UNKNOWN;
+	std::vector<sf::String> creatureTexKeys = {
+		"playerIconEditor", "crabIconEditor", "narwhalIconEditor", "jellyfishIconEditor", "walrusIconEditor"
+	};
 
 	bool dragging = false;
 	sf::Vector2f dragOffset;
