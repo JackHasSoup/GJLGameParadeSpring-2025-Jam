@@ -13,6 +13,25 @@
 #include "../nlohmann/json.hpp"
 using json = nlohmann::json;
 
+#ifndef placingLight
+
+#define placingLight placeState == PlaceState::LIGHT
+#define placingRoom placeState == PlaceState::ROOM
+#define placingObject placeState == PlaceState::OBJECT
+#define placingCreature placeState == PlaceState::CREATURE
+#define placeIndex ((placingObject) ? selectedIndex : selectedCreatureIndex)
+//#define placedVector ((placingObject) ? objects : creatures)
+
+#endif // !placingLight
+
+
+enum class PlaceState{
+	OBJECT,
+	LIGHT,
+	ROOM,
+	CREATURE
+};
+
 class EditorScene : public Scene
 {
 public:
@@ -44,8 +63,24 @@ private:
 		//int roomIndex = -1;
 	};
 
+	struct PlacedCreature : public PlacedObject
+	{
+		EditorCreature creatureType = EditorCreature::UNKNOWN;
+		int roomIndex = -1; // -1 means not assigned to a room
+	};
+
+	PlaceState placeState = PlaceState::OBJECT;
+
 	std::vector<PlacedObject> objects;
 	int selectedIndex = -1;
+
+	std::vector<PlacedCreature> creatures;
+	int selectedCreatureIndex = -1;
+	EditorCreature currentCreatureType = EditorCreature::UNKNOWN;
+	std::vector<sf::String> creatureTexKeys = {
+		"playerIconEditor", "crabIconEditor", "narwhalIconEditor", "jellyfishIconEditor", "walrusIconEditor"
+	};
+
 	bool dragging = false;
 	sf::Vector2f dragOffset;
 
@@ -60,7 +95,6 @@ private:
 	Commander commander;
 	DeferredIllumination lighting;
 
-	bool placingLight = false;
 	bool midLightPlace = false;
 	std::vector<std::tuple<sf::Vector2f, float, sf::Color>> placedLights;
 
@@ -75,7 +109,6 @@ private:
 	float scrollOffset = 0.f;
 
 	//rooms
-	bool placingRoom = false;
 	int activeRoomIndex = -1;
 	std::vector<sf::FloatRect> placedRooms;
 
