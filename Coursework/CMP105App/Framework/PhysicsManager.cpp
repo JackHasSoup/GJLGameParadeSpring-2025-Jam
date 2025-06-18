@@ -41,7 +41,7 @@ void PhysicsManager::update(float dt)
 	//move all dynamic objects
 	for (auto* d : dynamicObjects)
 	{
-		if(d->isAlive())d->update(dt);
+		if(d->isActive() && d->isAlive())d->update(dt);
 	}
 
 	//first test every dynamic object against eachother
@@ -49,7 +49,7 @@ void PhysicsManager::update(float dt)
 	{
 		for (int j = i + 1; j < dynamicObjects.size(); ++j)
 		{
-			if (!dynamicObjects[i]->isAlive() || !dynamicObjects[j]->isAlive()) continue; //skip if either object is not alive
+			if (!(dynamicObjects[i]->isAlive() && dynamicObjects[i]->isActive()) || !(dynamicObjects[j]->isAlive() && dynamicObjects[j]->isActive())) continue; //skip if either object is not alive
 			//dynamiuc collision uses SAT for more reliable collision detection
 			auto data = Collision::checkSAT(dynamicObjects[i], dynamicObjects[j]);
 			if (data.collision)

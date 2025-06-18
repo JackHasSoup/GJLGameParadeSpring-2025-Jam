@@ -216,10 +216,16 @@
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
     <ClCompile Include="Narwhal.cpp">
-		<Filter>Source Files\Gameobjects</Filter>
-	</ClCompile>
-	<ClCompile Include="HealthBar.cpp">
+     <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
       <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomTestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,10 +344,16 @@
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
     <ClInclude Include="Narwhal.h">
-		<Filter>Header Files\Gameobjects</Filter>
-	</ClInclude>
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
     <ClInclude Include="HealthBar.h">
       <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomTestScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

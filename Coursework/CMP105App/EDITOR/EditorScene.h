@@ -41,6 +41,7 @@ private:
 		PhysicsObject obj;
 		sf::String tex;
 		bool selected = false;
+		//int roomIndex = -1;
 	};
 
 	std::vector<PlacedObject> objects;
@@ -72,6 +73,11 @@ private:
 	sf::String selectedTex;
 	bool texChanged = false;
 	float scrollOffset = 0.f;
+
+	//rooms
+	bool placingRoom = false;
+	int activeRoomIndex = -1;
+	std::vector<sf::FloatRect> placedRooms;
 
 	sf::RenderWindow* paletteWin,* pickerWin, * texWin;
 };

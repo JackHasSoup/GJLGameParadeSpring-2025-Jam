@@ -4,11 +4,13 @@
 #include "MenuScene.h"
 #include "PauseScene.h"
 #include "EDITOR/EditorScene.h"
+#include "RoomTestScene.h"
 #include "Framework/SceneTransition.h"
 #include "Framework/Input.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
 #include <thread>
+#include "BaseEnemyTestScene.h"
 
 #ifndef FORCE_EDITOR
 #define FORCE_EDITOR false
@@ -66,8 +68,8 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
+	BaseEnemyTestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
-	TestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	PauseScene pause(&tex);

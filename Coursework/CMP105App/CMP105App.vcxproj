@@ -189,7 +189,10 @@
     <ClCompile Include="GenericCommand.cpp" />
     <ClCompile Include="Framework\BaseLevel.cpp" />
     <ClCompile Include="Framework\SceneTransition.cpp" />
+    <ClCompile Include="Jellyfish.cpp" />
     <ClCompile Include="Narwhal.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomTestScene.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -232,7 +235,10 @@
     <ClInclude Include="GenericCommand.h" />
     <ClInclude Include="Framework\BaseLevel.h" />
     <ClInclude Include="Framework\SceneTransition.h" />
+    <ClInclude Include="Jellyfish.h" />
     <ClInclude Include="Narwhal.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomTestScene.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="TutorialScene.h" />
     <ClInclude Include="MenuScene.h" />

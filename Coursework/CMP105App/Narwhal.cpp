@@ -173,6 +173,11 @@ void Narwhal::update(float dt)
 	}
 	case Action::HEAVY:
 		setTextureRect(heavy[howBloody].getCurrentFrame());
+
+		if (!heavyHit && VectorHelper::magnitudeSqrd(getPosition() - player->getPosition()) < getSize().x*getSize().x* heavyAttackRange* heavyAttackRange)
+		{
+			player->damage(heavyAttackDamage);
+		}
 		break;
 	default:
 		light[howBloody].setFrame(0); //regular narwhal
@@ -186,6 +191,7 @@ void Narwhal::update(float dt)
 void Narwhal::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt)
 {
 	BaseEnemy::trackPlayer(player, actionBuffer, dt);
+	this->player = player;
 	if (!isAlive()) return;
 
 	//look at player direction

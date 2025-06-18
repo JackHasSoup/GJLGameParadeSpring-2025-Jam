@@ -1,15 +1,15 @@
 #pragma once
 #include "Framework/Scene.h"
-#include "Framework/Button.h"
-#include "Framework/Collision.h"
-#include "Framework/PhysicsObject.h"
-#include "Framework/PhysicsManager.h"
 #include "StackedObject.h"
 #include "GenericCommand.h"
-#include "Framework/Camera.h"
-#include "Framework/DeferredIllumination.h"
+#include "BufferedCommand.h"
 #include "EDITOR/SceneDataLoader.h"
+#include "Player.h"
 #include "BaseEnemy.h"
+#include "Crab.h"
+#include "Narwhal.h"
+#include "Jellyfish.h"
+
 
 class BaseEnemyTestScene : public Scene
 {
@@ -43,9 +43,22 @@ protected:
 
 	sf::Texture* arrow;
 
-	BaseEnemy enemy;
-
 	float r = 0;
 	float mSpeed = 350.f;
 	float hue = 0.f;
+	Player player;
+	Crab crab;
+	Narwhal nar;
+	Jellyfish jellyfish;
+
+	std::vector<CreatureObject*> enemies;
+
+	//action buffer
+	std::vector<BufferedCommand*> availableActions;
+	std::vector<BufferedCommand*> actionBuffer;
+	int oldestAction = 0;
+	int maxActBufferSize = 8;
+
+	void executeAndTrack(BufferedCommand* b);
 };
+

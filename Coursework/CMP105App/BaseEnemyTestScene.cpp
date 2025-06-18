@@ -1,14 +1,14 @@
 #include "BaseEnemyTestScene.h"
-//#define DEBUG_COL_POINTS
+#define DEBUG_COL_POINTS
 
-BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
+BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 {
 	font = AssetManager::registerNewFont("arial");
 	font->loadFromFile("./font/arial.ttf");
-	button = Button(midWin, winSize * 0.2f, 24, font, "Hello", true);
+	/*button = Button(midWin, winSize * 0.2f, 24, font, "Hello", true);
 	button.body().setFillColor(sf::Color::Black);
 	button.msg().setFillColor(sf::Color::Cyan);
-	button.SUBSCRIBEA(BaseEnemyTestScene, changeText, sf::String("Hello World"));
+	button.SUBSCRIBEA(TestScene, changeText, sf::String("Hello World"));*/
 
 	c1 = sf::ConvexShape(3);
 	c1.setOrigin(25, 25);
@@ -31,33 +31,54 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	g2.setCollisionShape(c2);
 	g2.setRotationLock(false);
 
-	enemy = BaseEnemy(midWin * 1.2f, { 50, 50 }, 75);
-	enemy.setFillColor(sf::Color::Yellow);
-	enemy.setRotationLock(true);
-	enemy.setCollisionShape(c1);
+	//player setup
+	player = Player(midWin, { 75.f, 75.f }, 20.f);
+
+	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
+	//nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
+	//crab.setDrawType(drawType::BOTH_CR);
+	jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
+	//aajellyfish.setDrawType(drawType::BOTH_CR);
+
+	enemies.push_back(&crab);
+	enemies.push_back(&jellyfish);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
 	stackSprite.setSize({ 64.f,128.f });
 	stackSprite.setOrigin(stackSprite.getSize() / 2.f);
 
-	updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
-	commander.addPressed(sf::Keyboard::Space, updateText);
+	/*updateText = new GenericCommand(SUBOA(Button, checkInput, button, window));
+	commander.addPressed(sf::Keyboard::Space, updateText);*/
+	//buffer actions
+	availableActions = {
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->heavyAttack(creatures); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->dodge(); }),
+		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->parry(); }),
+	};
 
-	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {g1.accelerate({ 0,-mSpeed }); }));
-	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {g1.accelerate({ 0,mSpeed }); }));
-	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {g1.accelerate({ -mSpeed,0 }); }));
-	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {g1.accelerate({ mSpeed,0 }); }));
+	commander.addPressed(sf::Keyboard::Space, new GenericCommand(SUBA(BaseEnemyTestScene, executeAndTrack, availableActions[2])));
+	commander.addPressed(sf::Keyboard::Q, new GenericCommand(SUBA(BaseEnemyTestScene, executeAndTrack, availableActions[3])));
+
+	commander.addHeld(sf::Keyboard::W, new GenericCommand([=] {player.accelerate({ 0,-1 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::S, new GenericCommand([=] {player.accelerate({ 0,1 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::A, new GenericCommand([=] {player.accelerate({ -1,0 }, player.getSpeed()); }));
+	commander.addHeld(sf::Keyboard::D, new GenericCommand([=] {player.accelerate({ 1,0 }, player.getSpeed()); }));
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
-	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE); }));
 
 	cam = Camera(midWin, winSize);
-	cam.follow(&g1, 0.95f);
+	cam.follow(&player, 0.95f);
 
 	physMan.registerObj(&g1, false);
 	physMan.registerObj(&g2, false);
-	physMan.registerObj(&enemy, false);
+	physMan.registerObj(&player, false);
+	physMan.registerObj(&crab, false);
+	physMan.registerObj(&nar, false);
+	physMan.registerObj(&jellyfish, false);
 
 	lighter.setTarget(dynamic_cast<sf::RenderTexture*>(window));
 	lighter.create();
@@ -80,15 +101,30 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget* hwnd) : Scene(hwnd)
 	AudioManager::setMaxSoundVol(100.f);
 
 	auto data = SceneDataLoader::loadScene("levels/level.json");
-	sceneObjects = data.first;
+	sceneObjects = std::get<0>(data);
 	for (auto* obj : sceneObjects)
 	{
 		physMan.registerObj(obj, true);
 	}
-	for (auto const& light : data.second)
+	for (auto const& light : std::get<1>(data))
 	{
 		lighter.addLight(light);
 	}
+
+	//load some generic enemies around the screen
+	/*for (int i = 0; i < 5; ++i)
+	{
+		auto* e = new BaseEnemy(midWin + sf::Vector2f(rand() % 1000 - 500, rand() % 1000 - 500), { 50.f,50.f }, 20.f);
+		e->setFillColor(sf::Color::Red);
+		e->setCollisionShape(cR);
+		e->setRotationLock(true);
+		e->makeSquareCollisionShape();
+		e->setAlive(true);
+		enemies.push_back(e);
+		physMan.registerObj(e, false);
+	}*/
+	enemies.push_back(&crab);
+	enemies.push_back(&nar);
 }
 
 void BaseEnemyTestScene::update(float dt)
@@ -106,17 +142,35 @@ void BaseEnemyTestScene::update(float dt)
 
 	stackSprite.setRotation(r);
 
+	for (auto& e : enemies)
+	{
+		if (e->isAlive())
+		{
+			if (dynamic_cast<BaseEnemy*>(e))
+			{
+				dynamic_cast<BaseEnemy*>(e)->trackPlayer(&player, actionBuffer, dt);
+			}
+		}
+	}
+
 	physMan.update(dt);
 
 	cam.update(dt);
-
-	//enemy.trackPlayer(&g1, {}, dt);
-	//std::cout << enemy.getPosition().x << " ; " << enemy.getPosition().y << std::endl;
 }
 
 void BaseEnemyTestScene::handleInput(float dt)
 {
 	commander.handleInput();
+
+	if (Input::isLeftMousePressed())
+	{
+		executeAndTrack(availableActions[0]);
+	}
+	if (Input::isRightMousePressed())
+	{
+		executeAndTrack(availableActions[1]);
+	}
+
 	if (Input::isLeftMousePressed())
 	{
 		auto mp = window->mapPixelToCoords(sf::Vector2i(Input::getMousePos()));
@@ -137,18 +191,21 @@ void BaseEnemyTestScene::render()
 		lighter.draw(o);
 	}
 
+	//draw enemies with lighter
+	for (auto& e : enemies)
+	{
+		if (e->isAlive())lighter.draw(e);
+	}
+
 	lighter.draw(&g1);
 	lighter.draw(&g2);
-	lighter.draw(&enemy);
+	lighter.draw(&player);
 
 	window->draw(g1.getCollisionShape());
 	window->draw(g2.getCollisionShape());
 	window->draw(stackSprite);
-	
-
 
 	lighter.endDraw();
-
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
 #ifdef DEBUG_COL_POINTS
 	for (auto& o : sceneObjects)
@@ -159,7 +216,6 @@ void BaseEnemyTestScene::render()
 		c.setOutlineColor(sf::Color::Red);
 		c.setOutlineThickness(1.f);
 
-		auto transform = o->getTransform();
 		for (size_t i = 0; i < s.getPointCount(); ++i)
 		{
 			c.setPosition(o->getTransform().transformPoint(s.getPoint(i)) - sf::Vector2f(2.5f, 2.5f));
@@ -168,10 +224,45 @@ void BaseEnemyTestScene::render()
 
 		window->draw(s);
 	}
+	auto s = player.getBaseHull();
+	auto c = sf::CircleShape(5.f);
+	c.setFillColor(sf::Color::Transparent);
+	c.setOutlineColor(sf::Color::Red);
+	c.setOutlineThickness(1.f);
+
+	for (size_t i = 0; i < s.getPointCount(); ++i)
+	{
+		c.setPosition(player.getTransform().transformPoint(s.getPoint(i)) - sf::Vector2f(2.5f, 2.5f));
+		window->draw(c);
+	}
+
+	window->draw(s);
+
+	s = g1.getBaseHull();
+	for (size_t i = 0; i < s.getPointCount(); ++i)
+	{
+		c.setPosition(g1.getTransform().transformPoint(s.getPoint(i)) - sf::Vector2f(2.5f, 2.5f));
+		window->draw(c);
+	}
 #endif // DEBUG_COL_POINTS
 }
 
 void BaseEnemyTestScene::changeText(const sf::String& msg)
 {
 	button.setString(msg);
+}
+
+void BaseEnemyTestScene::executeAndTrack(BufferedCommand* b)
+{
+	if (!b) return; //if the command is null, do nothing
+	if (player.getCooldown() > 0.f) return; //if the player is on cooldown, do nothing
+
+	const int size = actionBuffer.size();
+	if (size < maxActBufferSize)
+		actionBuffer.push_back(b);
+	else
+		actionBuffer[oldestAction] = b;
+
+	oldestAction = oldestAction + 1 >= size ? 0 : oldestAction + 1;
+	b->execute(nullptr, enemies);
 }
