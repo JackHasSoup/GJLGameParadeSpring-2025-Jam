@@ -15,8 +15,8 @@ HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
 	maxHealth = player->getMaxHealth(); // This can be changed later if we want the player to gain more max health
 	currentHealth = player->getHealth();
 
-	//hitEffectTimer = 0.f;
-	//effectTimerMax = 0.125f;
+	hitEffectTimer = 0.f;
+	effectTimerMax = player->getHitTimerMax();
 
 	heartShader = AssetManager::getShader("heart");
 
@@ -56,7 +56,7 @@ void HealthBar::update(float dt)
 	if (hitEffectTimer > 0.f) {
 		for (int i = 0; i < hearts.size(); i++) {
 		// Heart shaking up and down effect
-		hearts[i].setPosition(hearts[i].getPosition() - sf::Vector2f{ 0.f, (cos(hitEffectTimer * TAU * 400.f) * 2.f) });
+		hearts[i].setPosition(hearts[i].getPosition() - sf::Vector2f{ 0.f, (cos(hitEffectTimer * 100.f * TAU) * 2.f) });
 		}
 	}
 	else if(hitEffectTimer < 0.f && hitEffectTimer > -effectTimerMax) {

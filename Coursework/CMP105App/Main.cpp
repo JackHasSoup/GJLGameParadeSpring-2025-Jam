@@ -84,6 +84,14 @@ int main(int argc, char *argv[])
 	case State::TEST: testScene.render(); break;\
 	}; 
 
+#define UPDATE_SCENE(inputState, dt)\
+	switch(inputState){\
+	case State::MENU: menu.update(dt); break;\
+	case State::PAUSE: pause.update(dt); break;\
+	case State::TUTORIAL: tutorialScene.update(dt); break;\
+	case State::TEST: testScene.update(dt); break;\
+	}; 
+
 
 	// Initialise objects for delta time
 	sf::Clock clock;
@@ -198,6 +206,9 @@ int main(int argc, char *argv[])
 			case State::TUTORIAL: case State::TEST: // New levels added here
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
+					// Call update function for one frame to load in sprites etc.
+					UPDATE_SCENE(sceneTrans.getStartState(), deltaTime);
+					UPDATE_SCENE(sceneTrans.getEndState(), deltaTime);
 					GameState::setCurrentState(State::TRANSITION);
 				}
 			break;
