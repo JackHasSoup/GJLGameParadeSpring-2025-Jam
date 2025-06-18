@@ -1,7 +1,7 @@
 #include "BaseEnemyTestScene.h"
 #define DEBUG_COL_POINTS
 
-BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
+BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : BaseLevel(hwnd)
 {
 	font = AssetManager::registerNewFont("arial");
 	font->loadFromFile("./font/arial.ttf");
@@ -9,6 +9,9 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 	button.body().setFillColor(sf::Color::Black);
 	button.msg().setFillColor(sf::Color::Cyan);
 	button.SUBSCRIBEA(TestScene, changeText, sf::String("Hello World"));*/
+
+	room = Room(0.f, 0.f, 3000.f, 3000.f, &player);
+	rooms.push_back(room);
 
 	c1 = sf::ConvexShape(3);
 	c1.setOrigin(25, 25);
@@ -38,10 +41,12 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 	//nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
 	//crab.setDrawType(drawType::BOTH_CR);
 	jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
-	//aajellyfish.setDrawType(drawType::BOTH_CR);
+	walrus = Walrus(midWin / 1.25f, { 400.f, 400.f }, 40.f);
+	//walrus.setDrawType(drawType::BOTH_CR);
 
 	enemies.push_back(&crab);
 	enemies.push_back(&jellyfish);
+	enemies.push_back(&walrus);
 
 	stackSprite = StackedObject("./gfx/StackedSpriteTest/cars-1.png", 3.f, { 15,32 });
 	stackSprite.setPosition(midWin);
@@ -79,6 +84,7 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 	physMan.registerObj(&crab, false);
 	physMan.registerObj(&nar, false);
 	physMan.registerObj(&jellyfish, false);
+	physMan.registerObj(&walrus, false);
 
 	lighter.setTarget(dynamic_cast<sf::RenderTexture*>(window));
 	lighter.create();

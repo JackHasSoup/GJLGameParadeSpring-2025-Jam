@@ -216,7 +216,7 @@
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
     <ClCompile Include="Narwhal.cpp">
-     <Filter>Source Files\Gameobjects</Filter>
+      <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
     <ClCompile Include="HealthBar.cpp">
       <Filter>Source Files\Gameobjects</Filter>
@@ -226,6 +226,12 @@
     </ClCompile>
     <ClCompile Include="RoomTestScene.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Jellyfish.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Walrus.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -354,6 +360,12 @@
     </ClInclude>
     <ClInclude Include="RoomTestScene.h">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Walrus.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Jellyfish.h">
+      <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
