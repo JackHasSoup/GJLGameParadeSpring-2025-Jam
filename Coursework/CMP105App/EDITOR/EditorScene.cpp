@@ -193,17 +193,18 @@ void EditorScene::handleInput(float dt)
 			{
 				if (placedRooms[i].contains(mousePos))
 				{
+					std::cout << "Dragging existing room at index: " << i << std::endl;
 					activeRoomIndex = static_cast<int>(i);
 					break;
 				}
 			}
+
 			if (activeRoomIndex != -1)
 			{
 				//drag existing room
 				if (!dragging)
 				{
 					dragging = true;
-					dragOffset = sf::Vector2f(placedRooms[activeRoomIndex].top, placedRooms[activeRoomIndex].left) - mousePos;
 				}
 				return; //skip normal prop/object placement when in room mode
 			}
@@ -222,8 +223,18 @@ void EditorScene::handleInput(float dt)
 			if (Input::isLeftMousePressed())
 			{
 				midLightPlace = false;
-				placeState = PlaceState::OBJECT; //stop placing rooms after placing one
 			}
+			return;
+		}
+
+		if (dragging && activeRoomIndex != -1 && Input::isLeftMouseDown() && !midLightPlace)
+		{
+			//dragging existing room
+			sf::FloatRect& room = placedRooms[activeRoomIndex];
+			sf::Vector2f newPos = mousePos - sf::Vector2f(room.width / 2.f, room.height / 2.f);
+			room.left = newPos.x;
+			room.top = newPos.y;
+			return;
 		}
 
 		return;
