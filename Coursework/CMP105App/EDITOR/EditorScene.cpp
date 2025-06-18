@@ -71,6 +71,7 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	texWin->setFramerateLimit(15);
 
 	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\nMODE SWITCHING:\nL: toggle between placing lights/objects\nR: toggle between rooms/objects\nC: toggle between creatures/objects\n\n\n";
+	std::cout << "WARNING: placed creatures sizes are purely illustrative placeholders, their sizes in editor probably won't match their actual sizes in game.\n\n";
 }
 
 void EditorScene::handleInput(float dt)

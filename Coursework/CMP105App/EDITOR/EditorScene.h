@@ -32,6 +32,15 @@ enum class PlaceState{
 	CREATURE
 };
 
+enum class EditorCreature {
+	UNKNOWN = -1, // used for unassigned creatures
+	PLAYER = 0,
+	CRAB = 1,
+	NARWHAL = 2,
+	JELLYFISH = 3,
+	WALRUS = 4
+};
+
 class EditorScene : public Scene
 {
 public:
@@ -65,6 +74,7 @@ private:
 
 	struct PlacedCreature : public PlacedObject
 	{
+		EditorCreature creatureType = EditorCreature::UNKNOWN;
 		int roomIndex = -1; // -1 means not assigned to a room
 	};
 
