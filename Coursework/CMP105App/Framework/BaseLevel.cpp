@@ -123,10 +123,10 @@ void BaseLevel::loadLevel(std::string const& filename)
 			newCreature = new Crab(position, { 300.f, 155.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
 			break;
 		case EditorCreature::NARWHAL:
-			newCreature = new Narwhal(position, { 100.f, 100.f }, 75.f);
+			newCreature = new Narwhal(position, { 200.f, 200.f }, 75.f);
 			break;
 		case EditorCreature::JELLYFISH:
-			newCreature = new Jellyfish(position, { 250.f, 250.f }, 20.f);
+			newCreature = new Jellyfish(position, { 300.f, 300.f }, 20.f);
 			break;
 		/*case EditorCreature::WALRUS:
 			newCreature = new Walrus(position);
