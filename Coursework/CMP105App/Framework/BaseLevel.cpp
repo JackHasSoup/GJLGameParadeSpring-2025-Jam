@@ -21,7 +21,7 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
 
 	// Player
-	player = Player(midWin, { 75.f, 75.f }, 20.f);
+	player = Player(midWin, { 125.f, 125.f }, 20.f);
 	physMan.registerObj(&player, false);
 
 	healthBar = HealthBar(window, &player);
@@ -120,7 +120,7 @@ void BaseLevel::loadLevel(std::string const& filename)
 			player.positionReset(position);
 			continue;
 		case EditorCreature::CRAB:
-			newCreature = new Crab(position, { 150.f, 75.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
+			newCreature = new Crab(position, { 300.f, 155.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
 			break;
 		case EditorCreature::NARWHAL:
 			newCreature = new Narwhal(position, { 100.f, 100.f }, 75.f);

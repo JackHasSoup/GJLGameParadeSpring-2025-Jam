@@ -25,7 +25,7 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	for (int i = 0; i < 2; i++) {
 		// Spawn two crabs in the room
 		auto* e = new Crab(sf::Vector2f{ (rooms[0].left + rooms[0].width*( 0.5f + (0.33f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.55f + (0.02f * ((i * -2.f) + 1.f))))}, // convoluted way of making two crabs at opposite ends of the room
-			{150.f, 75.f}, 
+			{300.f, 150.f}, 
 			20.f, 
 			{ 1.f, (0.1f * ((i * 2.f) - 1.f))}); // slightly slant up or down
 		e->setAlive(true);
@@ -113,6 +113,8 @@ void TutorialScene::render()
 	window->setView(window->getDefaultView());
 
 	healthBar.render();
+
+	window->setView(cam);
 
 
 }
