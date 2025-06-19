@@ -105,7 +105,7 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 		break;
 	}
 
-	movementVec += sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
+	//movementVec += sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
 	//std::cout << movementVec.x << " ; " << movementVec.y <<  std::endl;
 
 	vecToPlayer = player->getPosition() - getPosition();
@@ -160,21 +160,50 @@ void Walrus::lightAttack(std::vector<CreatureObject*> creatures)
 	sf::FloatRect attackBox;
 	if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
 	{
+		attackBox = sf::FloatRect(getPosition() - getOrigin(), sf::Vector2f(300, 200));
+
+		attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
+		if (crunch[animFrame].getFlipped()) //if the player is facing left
+		{
+			attackBox.left -= attackBox.width / 2.f;
+		}
+		else {
+			attackBox.left += attackBox.width / 2.f;
+		}
+
 		//check if the attack box intersects the creature's collision shape
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAttackRange)
+		if (player->getCollisionShape().getGlobalBounds().intersects(attackBox))
 		{
 			player->damage(lightAttackDamage);
-			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+			std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+			//std::cout << "plyr miss\n"; //missed
 		}
 	}
 	else {
 		//std::cout << "return\n";
 		return; //no valid frame, no attack
 	}
+//std::cout << "plyr light\n";
+	//if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
+	//{
+	//	//check if the attack box intersects the creature's collision shape
+	//	if (VectorHelper::magnitudeSqrd(vecToPlayer) < lightAttackRange)
+	//	{
+	//		player->damage(lightAttackDamage);
+	//		//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+	//		player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+	//	}
+	//	else {
+	//		std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+	//	}
+	//}
+	//else {
+	//	//std::cout << "return\n";
+	//	return; //no valid frame, no attack
+	//}
 	//std::cout << "plyr light\n";
 }
 
