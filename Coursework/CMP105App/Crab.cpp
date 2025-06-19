@@ -12,14 +12,14 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	movementAxis = direction;
 
 	rota1 = atan(direction.y / direction.x) * 180 / 3.1415926;
-	rota2 = (atan(direction.y / direction.x) + 3.1415926) * 180 / 3.1415926 ;
+	rota2 = (atan(direction.y / direction.x) + 3.1415926) * 180 / 3.1415926;
 
 	maxCooldown = 5.f;
 	cooldown = 5.f;
 	speed = 350.f;
 	health = 2.5f;
 	maxHealth = 2.5f;
-	
+
 	lightAttackDamage = 1.f;
 	heavyAttackDamage = 2.5f;
 	lightAttackRange = 3600.f;
@@ -27,14 +27,35 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 	heavyAtkMaxDuration = 0.5f;
 	heavyAtkDuration = 0.5f;
 
-	setDrawType(drawType::RECT);
+	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
-	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 20.f, 15.f });
-	cs.setPoint(1, { getSize().x - 20.f, 15.f });
-	cs.setPoint(2, { getSize().x - 20.f, getSize().y - 15.f });
-	cs.setPoint(3, { 20.f, getSize().y - 15.f });
-	setCollisionShape(cs);
+	auto cs = sf::ConvexShape(15);
+	std::vector<sf::Vector2f> p ={
+	{ 0.f,7.f },
+	{ 4.f, 7.f },
+	{ 7.f, 6.f },
+	{ 9.f, 5.f },
+	{ 13.f, 3.f },
+	{ 19.f, 0.f },
+	{ 14.f, -6.f },
+	{ 5.f, -6.f },
+	{ -5.f, -6.f },
+	{ -14.f, -6.f },
+	{ -19.f, 0.f },
+	{ -13.f, 3.f },
+	{ -9.f, 5.f },
+	{ -7.f, 6.f },
+	{ -4.f, 7.f },
+	};
+	collisionShape.setPointCount(p.size());
+	for (int i = 0; i < p.size(); i ++ )
+	{
+		collisionShape.setPoint(i, sf::Vector2f(
+			((float)p[i].x / 38.f) * size.x,
+			((float)p[i].y / 14.f) * -size.y //-y because the collision coords is upside down
+		) + getOrigin());
+	}
+	baseHull = collisionShape;
 
 	for (int i = 0; i < 4; i++)
 	{
