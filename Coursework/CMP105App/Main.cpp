@@ -11,9 +11,10 @@
 #include "Framework/GameState.h"
 #include <thread>
 #include "BaseEnemyTestScene.h"
+#include "LevelJack.h"
 
 #ifndef FORCE_EDITOR
-#define FORCE_EDITOR true
+#define FORCE_EDITOR false
 #endif // !FORCE_EDITOR
 
 int main(int argc, char *argv[])
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
 	Input::init();
 
 	TutorialScene tutorialScene(&tex);
-	BaseEnemyTestScene testScene(&tex);
+	LevelJack testScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	PauseScene pause(&tex);

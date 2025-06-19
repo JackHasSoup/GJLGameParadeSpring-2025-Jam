@@ -441,6 +441,7 @@ void EditorScene::addObject(const sf::Vector2f &pos)
 		placed.obj = currentProp;
 		placed.obj.setCanMove(false);
 		SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
+		SceneDataLoader::setTexture(&placed.obj, selectedTex);
 		placed.tex = selectedTex;
 		placed.obj.setPosition(pos);
 		placed.selected = true;
@@ -727,6 +728,7 @@ void EditorScene::runTextureWindow()
 
 void EditorScene::saveToFile(const std::string& filename)
 {
+	std::cout << "SAVING TO " << filename << "\n";
 	json j;
 	//save objects
 	for (auto& obj : objects)

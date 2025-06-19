@@ -6,6 +6,14 @@ LevelJack::LevelJack(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	floor.setTexture(floorTexture);
 
 	BaseLevel::loadLevel("levels/jack.json");
+
+	//give crabs their directions
+	dynamic_cast<Crab*>(rooms[0].getCreatures()[0])->setDirection({ 1.f,0.f });
+	dynamic_cast<Crab*>(rooms[0].getCreatures()[1])->setDirection({ 0.f,1.f });
+	dynamic_cast<Crab*>(rooms[0].getCreatures()[2])->setDirection(VectorHelper::normalise({ 1.f,-1.f }));
+	dynamic_cast<Crab*>(rooms[3].getCreatures()[2])->setDirection(VectorHelper::normalise({ 1.f,1.f }));
+
+
 	sceneObjects[0]->setDrawType(static_cast<drawType>(-1)); //NEVER RENDERERD
 
 	door.setPosition(sceneObjects[0]->getPosition()); //use first placed object to position door
@@ -76,7 +84,9 @@ void LevelJack::render()
 	// Above lighting pass
 
 	// HUD
-	window->setView(window->getDefaultView());
+	window->setView(window->getDefaultView()); //problem, update gets called after this function and the view is wrong for worldspace mouse calculations
 
 	healthBar.render();
+
+	window->setView(cam); //fix, set the camera back
 }
