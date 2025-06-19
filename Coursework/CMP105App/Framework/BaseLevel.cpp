@@ -113,7 +113,8 @@ void BaseLevel::loadLevel(std::string const& filename)
 		switch (creatureType)
 		{
 		case EditorCreature::PLAYER:
-			player.setPosition(position);
+			player.positionReset(position);
+			continue;
 			break;
 		case EditorCreature::CRAB:
 			newCreature = new Crab(position, { 150.f, 75.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
@@ -171,20 +172,6 @@ void BaseLevel::doorCheck()
 		if (Collision::checkBoundingBox(&player, &door)) {
 			GameState::incrementLevel();
 		}
-	}
-
-}
-
-		if (roomIndex >= 0 && roomIndex < rooms.size())
-		{
-			rooms[roomIndex].addCreature(newCreature);
-		}
-
-		if (newCreature)
-		{
-			physMan.registerObj(newCreature, false);
-		}
-	}
 }
 
 void BaseLevel::executeAndTrack(BufferedCommand* b)
