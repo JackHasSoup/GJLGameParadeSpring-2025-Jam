@@ -29,7 +29,6 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 
 	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
-	auto cs = sf::ConvexShape(15);
 	std::vector<sf::Vector2f> p ={
 	{ 0.f,7.f },
 	{ 4.f, 7.f },
