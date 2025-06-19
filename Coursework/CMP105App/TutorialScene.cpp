@@ -4,12 +4,23 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 {
 	bgColor = sf::Color(75, 108, 145);
 
+	// these textures only need to be loaded once ever
+
 	floorTexture = AssetManager::registerNewTex("floor");
 	floorTexture->loadFromFile("gfx/materials/floor.png");
-	floorTexture->setRepeated(true);
-	floor.setTexture(floorTexture);
+
+	doorTexture = AssetManager::registerNewTex("door"); 
+	doorTexture->loadFromFile("gfx/materials/door.png");
+
+	spotlightTexture = AssetManager::registerNewTex("spotlight");
+	spotlightTexture->loadFromFile("gfx/materials/light.png");
+
+	tubeTexture = AssetManager::registerNewTex("tube");
+	tubeTexture->loadFromFile("gfx/materials/tube.png");
 
 	BaseLevel::loadLevel("levels/tutorial.json");
+
+	// Manually placed objects
 
 	for (int i = 0; i < 2; i++) {
 		// Spawn two crabs in the room
@@ -23,33 +34,11 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 		physMan.registerObj(e, false);
 	}
 
-	doorTexture = AssetManager::registerNewTex("door");
-	doorTexture->loadFromFile("gfx/materials/door.png");
-	door.setPosition(midWin - sf::Vector2f{ 1000.f,1800.f });
-	door.setTexture(doorTexture);
-
-	// Door light position gets set after door position
-	doorLightI = lighter.addLight(door.getPosition() - sf::Vector2f(-23.f, 70.f), 100.f, sf::Color::Red);
-	doorLight = Light(door.getPosition() - sf::Vector2f(0, 40.f), 50.f, sf::Color::Red);
-
-	// Position player outside the door
-	player.positionReset(door.getPosition() + sf::Vector2f{0.f, (door.getSize().y)});
-
-	cam.setCenter(player.getPosition());
-
-	spotlightTexture = AssetManager::registerNewTex("spotlight");
-	spotlightTexture->loadFromFile("gfx/materials/light.png");
-	spotlight.setTexture(spotlightTexture);
-
 	spotlight.setPosition(midWin - sf::Vector2f{700.f, 1350.f});
 	physMan.registerObj(&spotlight, true);
 
 	tube.setPosition(rooms[0].getCreatures().at(0)->getPosition() + sf::Vector2f{10.f,10.f});
-	tubeTexture = AssetManager::registerNewTex("tube");
-	tubeTexture->loadFromFile("gfx/materials/tube.png");
-	tube.setTexture(tubeTexture);
 	physMan.registerObj(&tube, true);
-
 
 	// Debug
 

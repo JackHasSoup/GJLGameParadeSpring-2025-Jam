@@ -22,21 +22,33 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	// Player
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
+	physMan.registerObj(&player, false);
+
+	healthBar = HealthBar(window, &player);
+
+	// Floor
 
 	floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
 	floor.setOrigin(floor.getSize() / 2.f);
 	floor.setPosition(midWin - floor.getSize()/2.f);
-
 	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
 
+	//Door
+
+	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
+	door.setFillColor(sf::Color::White);
+	physMan.registerObj(&door, true);
+
+	// Light Objects
+
 	spotlight = PhysicsObject(midWin, sf::Vector2f{100.f,100.f}, 50);
-	spotlight.setFillColor(sf::Color::White);
 	sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.44f); // Circle collision shape referenced from seal player
 	sf::ConvexShape lightShape = sf::ConvexShape(c.getPointCount());
 	for (int i = 0; i < c.getPointCount(); i++)
 	{
 		lightShape.setPoint(i, c.getPoint(i) + sf::Vector2f(spotlight.getSize().x * 0.055f, spotlight.getSize().y * 0.052f));
 	}
+	spotlight.setFillColor(sf::Color::White);
 	spotlight.setCollisionShape(lightShape);
 	spotlight.setDrawType(drawType::RECT);
 
@@ -50,14 +62,6 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	tube.setFillColor(sf::Color::White);
 	tube.setCollisionShape(ovalShape);
 	tube.setDrawType(drawType::RECT_COL_LIGHTMASK);
-
-	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
-	door.setFillColor(sf::Color::White);
-
-	healthBar = HealthBar(window, &player);
-
-	physMan.registerObj(&player, false);
-	physMan.registerObj(&door, true);
 
 	availableActions = {
 		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
@@ -113,8 +117,8 @@ void BaseLevel::loadLevel(std::string const& filename)
 		switch (creatureType)
 		{
 		case EditorCreature::PLAYER:
-			player.setPosition(position);
-			break;
+			player.positionReset(position);
+			continue;
 		case EditorCreature::CRAB:
 			newCreature = new Crab(position, { 150.f, 75.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
 			break;
@@ -141,6 +145,22 @@ void BaseLevel::loadLevel(std::string const& filename)
 			physMan.registerObj(newCreature, false);
 		}
 	}
+
+	floor.setTexture(floorTexture);
+	floorTexture->setRepeated(true);
+
+	door.setPosition(player.getPosition() - sf::Vector2f{0.f,door.getSize().y * 1.25f});
+	door.setTexture(doorTexture);
+
+	doorLightI = lighter.addLight(door.getPosition() - sf::Vector2f(-23.f, 70.f), 100.f, sf::Color::Red);
+	doorLight = Light(door.getPosition() - sf::Vector2f(0, 40.f), 50.f, sf::Color::Red);
+
+	spotlight.setTexture(spotlightTexture);
+	tube.setTexture(tubeTexture);
+
+	cam.setCenter(door.getPosition());
+
+
 }
 
 void BaseLevel::onEnter(Player* inputPlayer)

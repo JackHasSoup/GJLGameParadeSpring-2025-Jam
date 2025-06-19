@@ -1,4 +1,14 @@
 {
+    "creatures": [
+        {
+            "creatureType": 0,
+            "position": {
+                "x": 286.1656188964844,
+                "y": -528.55859375
+            },
+            "roomIndex": 0
+        }
+    ],
     "lights": [
         {
             "colour": {
