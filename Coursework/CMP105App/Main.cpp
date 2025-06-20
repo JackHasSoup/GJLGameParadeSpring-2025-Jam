@@ -1,5 +1,6 @@
 #include <iostream>
 #include "TutorialScene.h"
+#include "JellyScene.h"
 #include "TestScene.h"
 #include "MenuScene.h"
 #include "GameOverWinScreen.h"
@@ -71,6 +72,7 @@ int main(int argc, char *argv[])
 	Input::init();
 
 	TutorialScene tutorialScene(&tex);
+	JellyScene jellyScene(&tex);
 	BaseEnemyTestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
@@ -87,6 +89,7 @@ int main(int argc, char *argv[])
 	case State::MENU: menu.render(); break;\
 	case State::PAUSE: pause.render(); break;\
 	case State::TUTORIAL: tutorialScene.render(); break;\
+	case State::JELLY: jellyScene.render(); break;\
 	case State::TEST: testScene.render(); break;\
 	case State::WIN: gameOverWinScreen.render(); break;\
 	case State::LOSE: gameOverLoseScreen.render(); break;\
@@ -97,6 +100,7 @@ int main(int argc, char *argv[])
 	case State::MENU: menu.update(dt); break;\
 	case State::PAUSE: pause.update(dt); break;\
 	case State::TUTORIAL: tutorialScene.update(dt); break;\
+	case State::JELLY: jellyScene.update(dt); break;\
 	case State::TEST: testScene.update(dt); break;\
 	case State::WIN: gameOverWinScreen.update(dt); break;\
 	case State::LOSE: gameOverLoseScreen.update(dt); break;\
@@ -196,6 +200,14 @@ int main(int argc, char *argv[])
 			window.display();
 			break;
 		}
+		case State::JELLY: {
+			jellyScene.handleInput(deltaTime);
+			jellyScene.update(deltaTime);
+			jellyScene.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
 		case State::TEST: {
 			testScene.handleInput(deltaTime);
 			testScene.update(deltaTime);
@@ -230,6 +242,7 @@ int main(int argc, char *argv[])
 			if (GameState::getLastState() == State::MENU || GameState::getLastState() == State::WIN || GameState::getLastState() == State::LOSE) {
 				// Reset levels if coming in from menu, win or lose
 				tutorialScene.reset();
+				jellyScene.reset();
 				testScene.reset();
 			}
 
@@ -237,7 +250,7 @@ int main(int argc, char *argv[])
 			case State::PAUSE:
 				pause.setPausedState(GameState::getLastState());
 				break;
-			case State::TUTORIAL: case State::TEST: case State::WIN: case State::LOSE:
+			case State::TUTORIAL: case State::JELLY: case State::TEST: case State::WIN: case State::LOSE:
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
 
