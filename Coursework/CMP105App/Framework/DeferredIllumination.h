@@ -52,6 +52,8 @@ public:
 	void setAmbientColour(const sf::Color& ambient);
 	void setAmbientLight(float const& strength); //0-1 darkness value
 
+	std::vector<sf::Vector2f> getLightPos() { return lightPos; };
+
 	GLuint uploadSegmentTex(const std::vector<sf::Glsl::Vec4>& edges);
 private:
 	//not exactly memory efficient, every object drawn without a state will reserve ~8 bytes of unused memory
