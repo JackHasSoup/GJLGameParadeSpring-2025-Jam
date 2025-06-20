@@ -22,6 +22,10 @@ public:
 	virtual void handleInput(float dt) override;
 	virtual void render() override;
 
+	void reset();
+
+	Player* getPlayer() { return &player; }
+
 	void changeText(const sf::String& msg);
 protected:
 	Button button;

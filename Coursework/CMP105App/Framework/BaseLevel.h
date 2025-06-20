@@ -19,6 +19,10 @@ public:
 	virtual void update(float dt) override = 0;
 	virtual void render() override = 0;
 
+	virtual void reset();
+
+	Player* getPlayer() { return &player; }
+
 	void loadLevel(std::string const& filename);
 
 protected:
@@ -38,7 +42,6 @@ protected:
 	DeferredIllumination lighter;
 
 	Player player;
-
 
 	int enemyCount; // how many enemies the player must kill to progress
 

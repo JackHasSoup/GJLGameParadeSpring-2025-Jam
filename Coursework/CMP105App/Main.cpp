@@ -98,6 +98,8 @@ int main(int argc, char *argv[])
 	case State::PAUSE: pause.update(dt); break;\
 	case State::TUTORIAL: tutorialScene.update(dt); break;\
 	case State::TEST: testScene.update(dt); break;\
+	case State::WIN: gameOverWinScreen.update(dt); break;\
+	case State::LOSE: gameOverLoseScreen.update(dt); break;\
 	}; 
 
 
@@ -224,13 +226,26 @@ int main(int argc, char *argv[])
 
 
 		if (GameState::getCurrentState() != GameState::getLastState()) { // Call once when a gamestate switches from one to the other
+
+			if (GameState::getLastState() == State::MENU || GameState::getLastState() == State::WIN || GameState::getLastState() == State::LOSE) {
+				// Reset levels if coming in from menu, win or lose
+				tutorialScene.reset();
+				testScene.reset();
+			}
+
 			switch (GameState::getCurrentState()) {
 			case State::PAUSE:
 				pause.setPausedState(GameState::getLastState());
 				break;
-			case State::TUTORIAL: case State::TEST: // New levels added here
+			case State::TUTORIAL: case State::TEST: case State::WIN: case State::LOSE:
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
+
+					if (GameState::getCurrentState() == State::TEST) {
+						// This can be replaced with a define that returns a BaseLevel pointer once all levels are baseLevels
+						testScene.getPlayer()->setHealth(tutorialScene.getPlayer()->getHealth());
+					}
+
 					// Call update function for one frame to load in sprites etc.
 					UPDATE_SCENE(sceneTrans.getStartState(), deltaTime);
 					UPDATE_SCENE(sceneTrans.getEndState(), deltaTime);

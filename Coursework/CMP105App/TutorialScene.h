@@ -9,6 +9,8 @@ public:
 	void update(float dt) override;
 	void render() override;
 
+	void reset() override;
+
 private:
 
 };

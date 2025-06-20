@@ -19,6 +19,7 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	virtual void damage(float d) { health -= d; hitEffectTimer = hitEffectTimerMax;};
+	virtual void setHealth(float d) { health = d; };
 	virtual float getHealth() { return health; };
 	virtual float getMaxHealth() { return maxHealth; };
 	virtual void restoreHealth() { health = maxHealth; };

@@ -12,6 +12,14 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 }
 
+void TutorialScene::reset()
+{
+	BaseLevel::reset();
+	player.positionReset(midWin);
+
+}
+
+
 void TutorialScene::handleInput(float dt)
 {
 	commander.handleInput();

@@ -52,6 +52,11 @@ void HealthBar::update(float dt)
 			hitEffectTimer = effectTimerMax;
 		}
 		currentHealth = player->getHealth();
+
+		if (currentHealth <= 0.f) {
+			GameState::setCurrentState(State::LOSE);
+		}
+
 	}
 	hitEffectTimer -= dt;
 	heartShader->setUniform("hitTimer", (player->getHitTimer() - (player->getHitTimerMax() / 2.f)));

@@ -70,6 +70,7 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	commander.addPressed(sf::Keyboard::LAlt, new GenericCommand([=] {GameState::incrementLevel(); }));
 	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE); }));
 
 	cam = Camera(midWin, winSize);
@@ -128,6 +129,25 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : Scene(hwnd)
 	enemies.push_back(&crab);
 	enemies.push_back(&nar);
 }
+
+
+void BaseEnemyTestScene::reset()
+{
+	player.restoreHealth();
+	player.positionReset(midWin);
+
+	enemies.clear();
+
+	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
+	jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
+
+	enemies.push_back(&crab);
+	enemies.push_back(&jellyfish);
+
+
+}
+
+
 
 void BaseEnemyTestScene::update(float dt)
 {

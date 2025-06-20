@@ -57,6 +57,14 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 }
 
+void BaseLevel::reset()
+{
+	player.restoreHealth();
+	cam.setCenter(player.getPosition());
+
+
+}
+
 void BaseLevel::loadLevel(std::string const& filename)
 {
 
