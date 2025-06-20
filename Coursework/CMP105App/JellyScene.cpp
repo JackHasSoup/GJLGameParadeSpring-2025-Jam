@@ -12,6 +12,23 @@ JellyScene::JellyScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 
 	BaseLevel::loadLevel("levels/jelly3.json");
 
+	for (int i = 0; i < lighter.getLightPos().size(); i++) {
+		if (i == doorLightI) { break; }
+		PhysicsObject* newLight = new PhysicsObject(sf::Vector2f{lighter.getLightPos().at(i)}, sf::Vector2f{75.f,75.f}, 10.f);
+		sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.3f);
+		sf::ConvexShape lightShape = sf::ConvexShape(c.getPointCount());
+		for (int i = 0; i < c.getPointCount(); i++)
+		{
+			lightShape.setPoint(i, c.getPoint(i));
+		}
+		newLight->setCollisionShape(lightShape);
+		newLight->setFillColor(sf::Color::White);
+		newLight->setTexture(spotlightTexture);
+		newLight->setDrawType(drawType::RECT);
+		spotlights.push_back(newLight);
+		physMan.registerObj(spotlights.back(), true);
+	}
+
 	commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.damage(0.5f); }));
 	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 }
@@ -77,6 +94,10 @@ void JellyScene::render()
 	lighter.draw(&player);
 
 	lighter.endDraw();
+
+	for (auto& s : spotlights) {
+		window->draw(*s);
+	}
 
 	// HUD
 	window->setView(window->getDefaultView());

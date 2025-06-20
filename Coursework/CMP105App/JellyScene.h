@@ -17,5 +17,6 @@ public:
 
 private:
 
+	std::vector<PhysicsObject*> spotlights;
 
 };

@@ -204,7 +204,7 @@ void Player::dodge()
 						(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
 						(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
 						(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));
-	accelerate(dir, (speed * speed * 0.7f));
+	accelerate(dir, (speed * speed * 0.5f));
 	lastAction = Action::DODGE;
 }
 
