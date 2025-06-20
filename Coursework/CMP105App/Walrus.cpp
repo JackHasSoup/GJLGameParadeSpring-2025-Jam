@@ -25,6 +25,10 @@ Walrus::Walrus(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(pos,
 	lightAttackRange = 7500.f;
 	heavyAttackRange = 12000.f;
 
+	lightAttackActive = false;
+	heavyAttackActive = false;
+	lightAttackMaxDuration, lightAttackDuration = 0.5f;
+	heavyAttackMaxDuration, heavyAttackDuration = 1.f;
 
 
 	//movementVec = sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
@@ -126,18 +130,56 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 	//	setRotation(rota2);
 	//}
 
-	if (vecToPlayer.x > 0) { crunch[animFrame].setFlipped(true); }
-	else if (vecToPlayer.x <= 0) { crunch[animFrame].setFlipped(false); };
+	if (vecToPlayer.x > 0) { 
+		crunch[animFrame].setFlipped(true); 
+	}
+	else if (vecToPlayer.x <= 0) { 
+		crunch[animFrame].setFlipped(false); 
+	}
+	
+	/*lightAttackBox = sf::FloatRect(getPosition() - getOrigin(), getSize() / 3.f);
+	if (player->getCollisionShape().getGlobalBounds().intersects(lightAttackBox))
+	{
+		std::cout << "in range" << std::endl;
+	}*/
 
-	if (heavyAtkActive == true) {
-		heavyAttackRange -= dt;
+	if (lightAttackActive == true) {
+		lightAttackBox = sf::FloatRect(getPosition() - getOrigin(), getSize() / 2.f);
+
+		if (lightAttackDuration <= 0) {
+			lightAttackActive = false;
+		}
+		else {
+			lightAttackDuration -= dt;
+		}
+
+		if (crunch[animFrame].getFlipped()) 
+		{
+			lightAttackBox.left = getPosition().x;
+		}
+		else {
+			lightAttackBox.left = getPosition().x - (getSize().x / 1.5f);
+		}
+
+		if (player->getCollisionShape().getGlobalBounds().intersects(lightAttackBox))
+		{
+			player->damage(lightAttackDamage);
+			std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+			lightAttackActive = false;
+		}
+		
+	}
+
+	if (heavyAttackActive == true) {
+		//heavyAttackRange -= dt;
 		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
 		{
 			player->damage(heavyAttackDamage);
 			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 
-			heavyAtkActive = false;
+			heavyAttackActive = false;
 		}
 	}
 
@@ -150,7 +192,6 @@ void Walrus::lightAttack(std::vector<CreatureObject*> creatures)
 {
 	if (cooldown > 0) return;
 
-	movementVec = { 0.f, 0.f };
 	cooldown = maxCooldown;
 	CreatureObject* player = creatures[0];
 	lastAction = Action::LIGHT;
@@ -158,34 +199,41 @@ void Walrus::lightAttack(std::vector<CreatureObject*> creatures)
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
 	//pinch[howBloody].setFrame(1);
 	sf::FloatRect attackBox;
-	if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
-	{
-		attackBox = sf::FloatRect(getPosition() - getOrigin(), sf::Vector2f(300, 200));
 
-		attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
-		if (crunch[animFrame].getFlipped()) //if the player is facing left
-		{
-			attackBox.left -= attackBox.width / 2.f;
-		}
-		else {
-			attackBox.left += attackBox.width / 2.f;
-		}
+	accelerate(VectorHelper::normalise(vecToPlayer) * speed * speed / 1.1f);
+	lightAttackActive = true;
+	//if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
+	//{
+	//	attackBox = sf::FloatRect(getPosition() - getOrigin(), getSize());
 
-		//check if the attack box intersects the creature's collision shape
-		if (player->getCollisionShape().getGlobalBounds().intersects(attackBox))
-		{
-			player->damage(lightAttackDamage);
-			std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
-			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-		}
-		else {
-			//std::cout << "plyr miss\n"; //missed
-		}
-	}
-	else {
-		//std::cout << "return\n";
-		return; //no valid frame, no attack
-	}
+	//	//attackBox.width *= lightAttackRange; //increase the width of the attack box for light attack
+	//	if (crunch[animFrame].getFlipped()) //if the player is facing left
+	//	{
+	//		attackBox.left += attackBox.width / 2.f;
+	//		std::cout << "og : " << attackBox.left << " ; new : " << getPosition().x << std::endl;
+	//	}
+	//	else {
+	//		attackBox.left -= attackBox.width / 2.f;
+	//		std::cout << "og : " << attackBox.left << " ; new : " << getPosition().x - getSize().x << std::endl;
+	//	}
+
+	//	//std::cout << " ahh : " << attackBox.left << std::endl;
+
+	//	//check if the attack box intersects the creature's collision shape
+	//	if (player->getCollisionShape().getGlobalBounds().intersects(attackBox))
+	//	{
+	//		player->damage(lightAttackDamage);
+	//		std::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+	//		player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+	//	}
+	//	else {
+	//		//std::cout << "plyr miss\n"; //missed
+	//	}
+	//}
+	//else {
+	//	//std::cout << "return\n";
+	//	return; //no valid frame, no attack
+	//}
 //std::cout << "plyr light\n";
 	//if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
 	//{
@@ -223,7 +271,7 @@ void Walrus::heavyAttack(std::vector<CreatureObject*> creatures)
 
 	//accelerate(VectorHelper::normalise(vecToPlayer) * speed * speed);
 
-	heavyAtkActive = true;
+	heavyAttackActive = true;
 
 	sf::FloatRect attackBox;
 	if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid

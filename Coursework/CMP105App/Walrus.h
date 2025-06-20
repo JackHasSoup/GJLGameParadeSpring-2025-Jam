@@ -20,9 +20,11 @@ public:
 private:
 	sf::Vector2f vecToPlayer, movementVec/*, vecToProjPointNorm, vecToProjPoint, movementAxis*/;
 	//double heightDiff, rota1, rota2;
-	bool heavyAtkActive = false;
+	bool lightAttackActive, heavyAttackActive;
 	int animFrame = 0;
 	float animTimeElapsed = 0.f;
+	sf::FloatRect lightAttackBox, heavyAttackBox;
+	float lightAttackMaxDuration, lightAttackDuration, heavyAttackMaxDuration, heavyAttackDuration;
 
 
 	//int howBloody = 0;
