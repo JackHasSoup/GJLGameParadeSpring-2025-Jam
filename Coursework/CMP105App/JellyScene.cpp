@@ -10,7 +10,7 @@ JellyScene::JellyScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	spotlightTexture = AssetManager::getTex("spotlight");
 	tubeTexture = AssetManager::getTex("tube");
 
-	BaseLevel::loadLevel("levels/tutorial.json");
+	BaseLevel::loadLevel("levels/jelly3.json");
 
 	commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.damage(0.5f); }));
 	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));

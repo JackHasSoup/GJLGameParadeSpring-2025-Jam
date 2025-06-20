@@ -30,7 +30,7 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
 	floor.setOrigin(floor.getSize() / 2.f);
-	floor.setPosition(midWin - floor.getSize()/2.f);
+	floor.setPosition(midWin);
 	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
 
 	//Door
