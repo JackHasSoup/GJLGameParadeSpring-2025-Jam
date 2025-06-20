@@ -17,7 +17,7 @@ RoomTestScene::RoomTestScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 		{
 			auto* e = new Narwhal(
 				sf::Vector2f(room.left + rand() % (int)room.width, room.top + rand() % (int)room.height),
-				sf::Vector2f(100.f, 100.f), 150.f);
+				sf::Vector2f(200.f, 200.f), 150.f);
 			e->setRotationLock(true);
 			e->setAlive(true);
 			e->setActive(true);

@@ -1,5 +1,8 @@
 #pragma once
 #include "Framework/BaseLevel.h"
+#include "GenericCommand.h"
+#include "BufferedCommand.h"
+#include "Player.h"
 
 class TutorialScene : public BaseLevel {
 public:

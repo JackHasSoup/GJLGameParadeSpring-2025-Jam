@@ -249,6 +249,7 @@ int main(int argc, char *argv[])
 					// Call update function for one frame to load in sprites etc.
 					UPDATE_SCENE(sceneTrans.getStartState(), deltaTime);
 					UPDATE_SCENE(sceneTrans.getEndState(), deltaTime);
+
 					GameState::setCurrentState(State::TRANSITION);
 				}
 			break;

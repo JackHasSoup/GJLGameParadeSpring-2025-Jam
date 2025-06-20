@@ -20,8 +20,10 @@ public:
 	virtual void render() override = 0;
 
 	virtual void reset();
-
+	virtual void onEnter(Player* inputPlayer);
 	Player* getPlayer() { return &player; }
+
+	void doorCheck();
 
 	void loadLevel(std::string const& filename);
 
@@ -36,14 +38,24 @@ protected:
 	HealthBar healthBar;
 	sf::Shader* hitFlashShader;
 
+	GameObject floor;
+
 	PhysicsObject door;
+	PhysicsObject spotlight;
+	PhysicsObject tube;
+
+	sf::Texture* floorTexture;
+	sf::Texture* doorTexture;
+	sf::Texture* spotlightTexture;
+	sf::Texture* tubeTexture;
+
+	int doorLightI;
+	Light doorLight;
 
 	sf::Color bgColor;
 	DeferredIllumination lighter;
 
 	Player player;
-
-	int enemyCount; // how many enemies the player must kill to progress
 
 	// action buffer
 	std::vector<BufferedCommand*> availableActions;

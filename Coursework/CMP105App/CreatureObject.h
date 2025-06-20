@@ -34,6 +34,7 @@ public:
 	virtual float getMaxCooldown() { return maxCooldown; };
 
 	virtual float getHitTimer() { return hitEffectTimer; };
+	virtual void setHitTimer(float t) { hitEffectTimer = t; }
 	virtual float getHitTimerMax() { return hitEffectTimerMax; };
 	sf::Shader* getShader() { return hitFlash; };
 

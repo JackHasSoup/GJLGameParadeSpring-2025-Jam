@@ -17,6 +17,7 @@ public:
 	virtual void parry() override;
 
 	virtual void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
+	virtual void restoreHealth() override { health = maxHealth; howBloody = 0; };
 	void damage(float d) override;
 protected:
 	sf::Vector2f direction, directionNorm;
