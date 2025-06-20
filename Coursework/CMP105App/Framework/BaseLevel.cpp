@@ -3,6 +3,7 @@
 BaseLevel::BaseLevel()
 {
 	window = nullptr;
+	hitFlashShader = nullptr;
 
 }
 
@@ -11,21 +12,56 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	auto* font = AssetManager::registerNewFont("arial");
 	font->loadFromFile("./font/arial.ttf");
 	// Variable initalisation
-	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);
 
-	// Player
-	player = Player(midWin, { 75.f, 75.f }, 20.f);
-
-	if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
-	{
-		std::cout << "Error loading healthbar shader";
+	hitFlashShader = AssetManager::registerNewShader("flash");
+	if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
+		std::cout << "Error loading hit flash shader";
 	}
-	heartShader.setUniform("texture", sf::Shader::CurrentTexture);
+	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
 
-	healthBar = HealthBar(window, &player, &heartShader);
-
+	// Player
+	player = Player(midWin, { 125.f, 125.f }, 20.f);
 	physMan.registerObj(&player, false);
+
+	healthBar = HealthBar(window, &player);
+
+	// Floor
+
+	floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
+	floor.setOrigin(floor.getSize() / 2.f);
+	floor.setPosition(midWin - floor.getSize()/2.f);
+	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
+
+	//Door
+
+	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
+	door.setFillColor(sf::Color::White);
+	physMan.registerObj(&door, true);
+
+	// Light Objects
+
+	spotlight = PhysicsObject(midWin, sf::Vector2f{100.f,100.f}, 50);
+	sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.44f); // Circle collision shape referenced from seal player
+	sf::ConvexShape lightShape = sf::ConvexShape(c.getPointCount());
+	for (int i = 0; i < c.getPointCount(); i++)
+	{
+		lightShape.setPoint(i, c.getPoint(i) + sf::Vector2f(spotlight.getSize().x * 0.055f, spotlight.getSize().y * 0.052f));
+	}
+	spotlight.setFillColor(sf::Color::White);
+	spotlight.setCollisionShape(lightShape);
+	spotlight.setDrawType(drawType::RECT);
+
+	tube = PhysicsObject(midWin, sf::Vector2f{ 175.f,437.5f }, 50.f);
+
+	sf::ConvexShape ovalShape = lightShape;
+	for (int i = 0; i < ovalShape.getPointCount(); i++)
+	{
+		ovalShape.setPoint(i, sf::Vector2f{ lightShape.getPoint(i).x * (tube.getSize().x / 100.f),lightShape.getPoint(i).y * (tube.getSize().y / 250.f) * 0.75f} + sf::Vector2f(0.f, tube.getSize().y * 0.7f));
+	}
+	tube.setFillColor(sf::Color::White);
+	tube.setCollisionShape(ovalShape);
+	tube.setDrawType(drawType::RECT_COL_LIGHTMASK);
 
 	availableActions = {
 		new BufferedCommand(&player, [](CreatureObject* target, std::vector<CreatureObject*> creatures) {target->lightAttack(creatures); }),
@@ -56,6 +92,31 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 }
 
+void BaseLevel::reset()
+{
+	player.restoreHealth();
+	player.positionReset(door.getPosition() + sf::Vector2f{ 0.f, door.getSize().y * 1.25f });
+	cam.setCenter(door.getPosition());
+
+	actionBuffer.clear();
+
+	for (int i = 0; i < rooms.size(); i++) {
+		rooms[i].setAllCreaturesDead(false);
+		for (int j = 0; j < rooms[i].getCreatures().size(); j++) {
+			// For all creatures in all rooms set alive and heal to full
+			rooms[i].getCreatures().at(j)->restoreHealth();
+			rooms[i].getCreatures().at(j)->setAlive(true);
+			rooms[i].getCreatures().at(j)->setHitTimer(0.f);
+		}
+	}
+
+	std::get<0>(doorLight) = sf::Vector2f{ door.getPosition() - sf::Vector2f(-23.f, 70.f) };
+	std::get<1>(doorLight) = 100.f;
+	std::get<2>(doorLight) = sf::Color::Red;
+	lighter.setLight(doorLightI, doorLight);
+
+}
+
 void BaseLevel::loadLevel(std::string const& filename)
 {
 
@@ -72,6 +133,89 @@ void BaseLevel::loadLevel(std::string const& filename)
 	for (auto const& room : std::get<2>(data))
 	{
 		rooms.push_back(Room(room, &player));
+	}
+	for (auto const& creature : std::get<3>(data))
+	{
+		auto [creatureType, position, roomIndex] = creature;
+
+		CreatureObject* newCreature = nullptr;
+		switch (creatureType)
+		{
+		case EditorCreature::PLAYER:
+			player.positionReset(position);
+			continue;
+		case EditorCreature::CRAB:
+			newCreature = new Crab(position, { 300.f, 155.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
+			break;
+		case EditorCreature::NARWHAL:
+			newCreature = new Narwhal(position, { 200.f, 200.f }, 75.f);
+			break;
+		case EditorCreature::JELLYFISH:
+			newCreature = new Jellyfish(position, { 300.f, 300.f }, 20.f);
+			break;
+		/*case EditorCreature::WALRUS:
+			newCreature = new Walrus(position);
+			break;*/
+		default:
+			continue; // skip unknown creature types
+		}
+
+		if (roomIndex >= 0 && roomIndex < rooms.size())
+		{
+			rooms[roomIndex].addCreature(newCreature);
+		}
+
+		if (newCreature)
+		{
+			physMan.registerObj(newCreature, false);
+		}
+	}
+
+	floor.setTexture(floorTexture);
+	floorTexture->setRepeated(true);
+
+	door.setPosition(player.getPosition() - sf::Vector2f{0.f,door.getSize().y * 1.25f});
+	door.setTexture(doorTexture);
+
+	doorLightI = lighter.addLight(door.getPosition() - sf::Vector2f(-23.f, 70.f), 100.f, sf::Color::Red);
+	doorLight = Light(door.getPosition() - sf::Vector2f(0, 40.f), 50.f, sf::Color::Red);
+
+	spotlight.setTexture(spotlightTexture);
+	tube.setTexture(tubeTexture);
+
+	cam.setCenter(door.getPosition());
+
+
+}
+
+void BaseLevel::onEnter(Player* inputPlayer)
+{
+	// Once all levels are baseLevels, send the player data to the next level
+
+}
+
+void BaseLevel::render()
+{
+}
+
+void BaseLevel::doorCheck()
+{
+
+	for (int i = 0; i < rooms.size(); i++) {
+		if (!rooms[i].allCreaturesDead()) {
+			// If any room still have creatures then door is not oepn
+			return;
+		}
+	}
+
+	// change door light to green 
+	std::get<0>(doorLight) = sf::Vector2f{ door.getPosition() - sf::Vector2f(-23.f, 70.f) };
+	std::get<1>(doorLight) = 100.f;
+	std::get<2>(doorLight) = sf::Color::Green;
+	lighter.setLight(doorLightI, doorLight);
+
+	if (Collision::checkBoundingBox(&player, &door)) {
+		GameState::incrementLevel();
 	}
 
 }

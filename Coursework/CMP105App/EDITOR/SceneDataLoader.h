@@ -10,8 +10,17 @@
 #include "../nlohmann/json.hpp"
 using json = nlohmann::json;
 
+enum class EditorCreature {//supports 10 creatures!!!!
+	UNKNOWN = -1, // used for unassigned creatures
+	PLAYER = 0,
+	CRAB = 1,
+	NARWHAL = 2,
+	JELLYFISH = 3,
+	WALRUS = 4
+};
+
 #ifndef SceneData
-#define SceneData std::tuple<std::vector<PhysicsObject*>, std::vector<Light>, std::vector<sf::FloatRect>>
+#define SceneData std::tuple<std::vector<PhysicsObject*>, std::vector<Light>, std::vector<sf::FloatRect>, std::vector<std::tuple<EditorCreature, sf::Vector2f, int>>>
 #endif // !SceneData
 
 

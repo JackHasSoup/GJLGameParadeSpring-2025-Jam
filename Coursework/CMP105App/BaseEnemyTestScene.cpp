@@ -1,5 +1,5 @@
 #include "BaseEnemyTestScene.h"
-#define DEBUG_COL_POINTS
+//#define DEBUG_COL_POINTS
 
 BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : BaseLevel(hwnd)
 {
@@ -37,6 +37,8 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : BaseLevel(hwnd
 	//player setup
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
+	healthBar = HealthBar(window, &player);
+
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
 	//nar = Narwhal(midWin / 1.3f, { 100.f, 100.f }, 75.f);
 	//crab.setDrawType(drawType::BOTH_CR);
@@ -73,6 +75,7 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : BaseLevel(hwnd
 	commander.addPressed(sf::Keyboard::LShift, new GenericCommand([=] {cam.shake(15.f, 0.75f); }));
 	commander.addHeld(sf::Keyboard::LControl, new GenericCommand([=] {cam.pan((window->mapPixelToCoords(Input::getIntMousePos()) - g1.getPosition()) * 0.35f); }));
 	//commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {commander.swapHeld(sf::Keyboard::W, sf::Keyboard::E); }));
+	commander.addPressed(sf::Keyboard::LAlt, new GenericCommand([=] {GameState::incrementLevel(); }));
 	commander.addPressed(sf::Keyboard::Escape, new GenericCommand([=] {GameState::setCurrentState(State::PAUSE); }));
 
 	cam = Camera(midWin, winSize);
@@ -133,6 +136,25 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : BaseLevel(hwnd
 	enemies.push_back(&nar);
 }
 
+
+void BaseEnemyTestScene::reset()
+{
+	player.restoreHealth();
+	player.positionReset(midWin);
+
+	enemies.clear();
+
+	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
+	jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
+
+	enemies.push_back(&crab);
+	enemies.push_back(&jellyfish);
+
+
+}
+
+
+
 void BaseEnemyTestScene::update(float dt)
 {
 	AudioManager::setListenerPos(g1.getPosition());
@@ -160,6 +182,8 @@ void BaseEnemyTestScene::update(float dt)
 	}
 
 	physMan.update(dt);
+
+	healthBar.update(dt);
 
 	cam.update(dt);
 }
@@ -212,6 +236,15 @@ void BaseEnemyTestScene::render()
 	window->draw(stackSprite);
 
 	lighter.endDraw();
+
+
+	// HUD
+	window->setView(window->getDefaultView());
+
+	healthBar.render();
+
+	window->setView(cam);
+
 	//for each sceneobject, get its collision shape then for each point in the collision shape, draw a circle at that point
 #ifdef DEBUG_COL_POINTS
 	for (auto& o : sceneObjects)

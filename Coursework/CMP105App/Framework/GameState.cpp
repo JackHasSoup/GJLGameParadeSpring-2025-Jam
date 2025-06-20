@@ -33,5 +33,8 @@ void GameState::incrementLevel()
 
 		GameState::currentState = static_cast<State>(static_cast<int>(GameState::currentState) + 1);
 
+	}else if (static_cast<int>(GameState::currentState) == (static_cast<int>(State::NUMSCENES) - 1)) {
+		GameState::currentState = State::WIN;
+
 	}
 }

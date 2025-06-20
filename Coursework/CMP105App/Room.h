@@ -29,6 +29,7 @@ public:
 	void updateCreatures(std::vector<BufferedCommand*> actionBuffer, float dt);
 	void render(DeferredIllumination* lighter);
 
+	void setAllCreaturesDead(bool status) { allDead = status; }
 	bool allCreaturesDead();
 private:
 	Player* player;

@@ -35,6 +35,16 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 		}
 	}
 
+	//icon textures for creatures
+	for (const auto& key : creatureTexKeys)
+	{
+		sf::Texture* tex = AssetManager::registerNewTex(key);
+		if (!tex->loadFromFile("gfx/editorIcons/" + key + ".png"))
+		{
+			std::cerr << "Failed to load creature icon texture: " << key.toAnsiString() << std::endl;
+		}
+	}
+
 	currentProp = paletteProps[0];
 
 	camera = Camera(midWin, winSize);
@@ -43,8 +53,9 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	commander.addHeld(sf::Keyboard::LShift, new GenericCommand([=]{ camera.pan(window->mapPixelToCoords(Input::getIntMousePos()) - camera.getCenter()); }));
 	commander.addPressed(sf::Keyboard::Delete, new GenericCommand([=]{ deleteSelectedObject(); }));
 	//mode switching
-	commander.addPressed(sf::Keyboard::L, new GenericCommand([=] { placingLight = !placingLight; }));
-	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom= !placingRoom; }));
+	commander.addPressed(sf::Keyboard::L, new GenericCommand([=] { placingLight ? placeState = PlaceState::OBJECT : placeState = PlaceState::LIGHT; }));
+	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom ? placeState = PlaceState::OBJECT : placeState = PlaceState::ROOM; }));
+	commander.addPressed(sf::Keyboard::C, new GenericCommand([=] { placingCreature ? placeState = PlaceState::OBJECT : placeState = PlaceState::CREATURE; }));
 	//for save load
 	commander.addPressed(sf::Keyboard::PageUp, new GenericCommand([=] { saveToFile("levels/level.json"); }));
 	commander.addPressed(sf::Keyboard::PageDown, new GenericCommand([=] { loadFromFile("levels/level.json"); }));
@@ -54,6 +65,12 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	//for scale
 	commander.addHeld(sf::Keyboard::Q, new GenericCommand([=] { objects[selectedIndex].obj.scale(1.1f, 1.1f); }));
 	commander.addHeld(sf::Keyboard::E, new GenericCommand([=] { objects[selectedIndex].obj.scale(1.f/1.1f, 1.f/1.1f); }));
+	//switch creature type being placed
+	commander.addPressed(sf::Keyboard::Num0, new GenericCommand([=] { currentCreatureType = EditorCreature::PLAYER; }));
+	commander.addPressed(sf::Keyboard::Num1, new GenericCommand([=] { currentCreatureType = EditorCreature::CRAB; }));
+	commander.addPressed(sf::Keyboard::Num2, new GenericCommand([=] { currentCreatureType = EditorCreature::NARWHAL; }));
+	commander.addPressed(sf::Keyboard::Num3, new GenericCommand([=] { currentCreatureType = EditorCreature::JELLYFISH; }));
+	commander.addPressed(sf::Keyboard::Num4, new GenericCommand([=] { currentCreatureType = EditorCreature::WALRUS; }));
 
 	lighting.setTarget(dynamic_cast<sf::RenderTexture *>(window));
 	lighting.create();
@@ -69,7 +86,9 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	pickerWin->setFramerateLimit(15);
 	texWin->setFramerateLimit(15);
 
-	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nL: toggle between placing lights/objects\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\n\n\n";
+	std::cout << "Welcome to the editor!\nWindows:\nColour picker: pick colours for lights/objects\nProp Palette: pick props to place\nTexture palette: pick textures to apply to props\n\n\nControls:\nLeft Click: place\nLeft Click Drag: move selected\nRight Click: rotate selected\nPgUp: Save\nPgDn: Load\nUp/Down: scroll texture palette\nQ/E: scale selected\n\nMODE SWITCHING:\nL: toggle between placing lights/objects\nR: toggle between rooms/objects\nC: toggle between creatures/objects\n\n";
+	std::cout << "PLACING CREATURES: nums 0-4 to switch between creatures: 0: player, 1: crab, 2: narwhal, 3: jellyfish, 4: walrus\n\n";
+	std::cout << "WARNING: placed creatures sizes are purely illustrative placeholders, their sizes in editor probably won't match their actual sizes in game.\n\n";
 }
 
 void EditorScene::handleInput(float dt)
@@ -83,7 +102,50 @@ void EditorScene::handleInput(float dt)
 
 	sf::Vector2f mousePos = window->mapPixelToCoords(Input::getIntMousePos());
 
-	if (placingLight)
+	switch (placeState)
+	{
+	case PlaceState::OBJECT:
+	{
+		// left click: select or add
+		if (Input::isLeftMousePressed())
+		{
+			selectObjectAt(mousePos);
+			if (selectedIndex == -1)
+			{
+				addObject(mousePos);
+			}
+		}
+		// left click and hold: drag
+		else if (Input::isLeftMouseDown() && selectedIndex != -1)
+		{
+			if (!dragging)
+			{
+				dragging = true;
+				dragOffset = objects[selectedIndex].obj.getPosition() - mousePos;
+			}
+		}
+		// right click and hold: rotate object
+		else if (Input::isRightMouseDown() && selectedIndex != -1)
+		{
+			const sf::Vector2f dir = mousePos - objects[selectedIndex].obj.getPosition();
+			objects[selectedIndex].obj.setRotation(Deg(VectorHelper::angle(dir)));
+		}
+
+		// drag selected object
+		if (dragging && selectedIndex != -1 && Input::isLeftMouseDown())
+		{
+			objects[selectedIndex].obj.setPosition(mousePos + dragOffset);
+		}
+
+		// release drag
+		if (dragging && !Input::isLeftMouseDown())
+		{
+			dragging = false;
+		}
+		break;
+	}
+
+	case PlaceState::LIGHT:
 	{
 		//drag existing light
 		if (draggingLight && selectedLightIndex != -1 && Input::isLeftMouseDown())
@@ -136,28 +198,32 @@ void EditorScene::handleInput(float dt)
 		}
 		return; //skip normal prop/object placement when in light mode
 	}
-	else if (placingRoom)
+		break;
+
+
+	case PlaceState::ROOM:
 	{
 		//just like light placing, first click is where the top left corner of the room is, second click is bottom right corner
 		if (Input::isLeftMousePressed() && !midLightPlace)
 		{
 			//check if clicking on an existing room
-			selectedIndex = -1;
+			activeRoomIndex = -1;
 			for (size_t i = 0; i < placedRooms.size(); ++i)
 			{
 				if (placedRooms[i].contains(mousePos))
 				{
-					selectedIndex = static_cast<int>(i);
+					std::cout << "Dragging existing room at index: " << i << std::endl;
+					activeRoomIndex = static_cast<int>(i);
 					break;
 				}
 			}
-			if (selectedIndex != -1)
+
+			if (activeRoomIndex != -1)
 			{
 				//drag existing room
 				if (!dragging)
 				{
 					dragging = true;
-					dragOffset = sf::Vector2f(placedRooms[selectedIndex].top, placedRooms[selectedIndex].left) - mousePos;
 				}
 				return; //skip normal prop/object placement when in room mode
 			}
@@ -176,48 +242,64 @@ void EditorScene::handleInput(float dt)
 			if (Input::isLeftMousePressed())
 			{
 				midLightPlace = false;
-				placingRoom = false; //stop placing rooms after placing one
 			}
+			return;
+		}
+
+		if (dragging && activeRoomIndex != -1 && Input::isLeftMouseDown() && !midLightPlace)
+		{
+			//dragging existing room
+			sf::FloatRect& room = placedRooms[activeRoomIndex];
+			sf::Vector2f newPos = mousePos - sf::Vector2f(room.width / 2.f, room.height / 2.f);
+			room.left = newPos.x;
+			room.top = newPos.y;
+			return;
 		}
 
 		return;
 	}
+		break;
 
-	// left click: select or add
-	if (Input::isLeftMousePressed())
+	case PlaceState::CREATURE:
 	{
-		selectObjectAt(mousePos);
-		if (selectedIndex == -1)
+		// left click: select or add
+		if (Input::isLeftMousePressed())
 		{
-			addObject(mousePos);
+			selectObjectAt(mousePos);
+			if (selectedCreatureIndex == -1)
+			{
+				addObject(mousePos);
+			}
 		}
-	}
-	// left click and hold: drag
-	else if (Input::isLeftMouseDown() && selectedIndex != -1)
-	{
-		if (!dragging)
+		// left click and hold: drag
+		else if (Input::isLeftMouseDown() && selectedCreatureIndex != -1)
 		{
-			dragging = true;
-			dragOffset = objects[selectedIndex].obj.getPosition() - mousePos;
+			if (!dragging)
+			{
+				dragging = true;
+				dragOffset = creatures[selectedCreatureIndex].obj.getPosition() - mousePos;
+			}
 		}
-	}
-	// right click and hold: rotate object
-	else if (Input::isRightMouseDown() && selectedIndex != -1)
-	{
-		const sf::Vector2f dir = mousePos - objects[selectedIndex].obj.getPosition();
-		objects[selectedIndex].obj.setRotation(Deg(VectorHelper::angle(dir)));
-	}
+		// right click and hold: rotate object
+		else if (Input::isRightMouseDown() && selectedCreatureIndex != -1)
+		{
+			const sf::Vector2f dir = mousePos - creatures[selectedCreatureIndex].obj.getPosition();
+			creatures[selectedCreatureIndex].obj.setRotation(Deg(VectorHelper::angle(dir)));
+		}
 
-	// drag selected object
-	if (dragging && selectedIndex != -1 && Input::isLeftMouseDown())
-	{
-		objects[selectedIndex].obj.setPosition(mousePos + dragOffset);
-	}
+		// drag selected object
+		if (dragging && selectedCreatureIndex != -1 && Input::isLeftMouseDown())
+		{
+			creatures[selectedCreatureIndex].obj.setPosition(mousePos + dragOffset);
+		}
 
-	// release drag
-	if (dragging && !Input::isLeftMouseDown())
-	{
-		dragging = false;
+		// release drag
+		if (dragging && !Input::isLeftMouseDown())
+		{
+			dragging = false;
+		}
+		break;
+	}
 	}
 }
 
@@ -274,6 +356,15 @@ void EditorScene::render()
 			SceneDataLoader::setOutlineColour(&placed.obj, sf::Color::Black, 2.f);
 	   lighting.draw(&placed.obj);
 	}
+
+	for (auto& placed : creatures)
+	{
+		if (placed.selected)
+			SceneDataLoader::setOutlineColour(&placed.obj, sf::Color::Yellow, 2.f);
+		else
+			SceneDataLoader::setOutlineColour(&placed.obj, sf::Color::Black, 2.f);
+		lighting.draw(&placed.obj);
+	}
 	lighting.endDraw();
 
 	// Draw placed lights as circles for visualization
@@ -307,25 +398,34 @@ void EditorScene::render()
 
 void EditorScene::selectObjectAt(const sf::Vector2f &pos)
 {
-	selectedIndex = -1;
-	for (size_t i = 0; i < objects.size(); ++i)
+	if (placingObject)
 	{
-		/*sf::FloatRect bounds(
-			objects[i].obj.getPosition() - objects[i].obj.getSize() / 2.f,
-			objects[i].obj.getSize());
-		if (bounds.contains(pos))
+		selectedIndex = -1;
+		for (size_t i = 0; i < objects.size(); ++i)
 		{
-			selectedIndex = static_cast<int>(i);
-			break;
-		}*/
-		if (objects[i].obj.getGlobalBounds().contains(pos))
-		{
-			selectedIndex = static_cast<int>(i);
-			break;
+			if (objects[i].obj.getGlobalBounds().contains(pos))
+			{
+				selectedIndex = static_cast<int>(i);
+				break;
+			}
 		}
+		for (size_t i = 0; i < objects.size(); ++i)
+			objects[i].selected = (i == selectedIndex);
 	}
-	for (size_t i = 0; i < objects.size(); ++i)
-		objects[i].selected = (i == selectedIndex);
+	else if (placingCreature)
+	{
+		selectedCreatureIndex = -1;
+		for (size_t i = 0; i < creatures.size(); ++i)
+		{
+			if (creatures[i].obj.getGlobalBounds().contains(pos))
+			{
+				selectedCreatureIndex = static_cast<int>(i);
+				break;
+			}
+		}
+		for (size_t i = 0; i < creatures.size(); ++i)
+			creatures[i].selected = (i == selectedCreatureIndex);
+	}
 }
 
 void EditorScene::setCurrentProp(const PhysicsObject &prop)
@@ -335,26 +435,63 @@ void EditorScene::setCurrentProp(const PhysicsObject &prop)
 
 void EditorScene::addObject(const sf::Vector2f &pos)
 {
-	PlacedObject placed;
-	placed.obj = currentProp;
-	placed.obj.setCanMove(false);
-	SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
-	placed.tex = selectedTex;
-	placed.obj.setPosition(pos);
-	placed.selected = true;
-	//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
-	objects.push_back(placed);
-	selectedIndex = static_cast<int>(objects.size()) - 1;
-	for (size_t i = 0; i < objects.size(); ++i)
-		objects[i].selected = (i == selectedIndex);
+	if (placingObject)
+	{
+		PlacedObject placed;
+		placed.obj = currentProp;
+		placed.obj.setCanMove(false);
+		SceneDataLoader::setColour(&placed.obj, currentColour); // set the colour of the object
+		placed.tex = selectedTex;
+		placed.obj.setPosition(pos);
+		placed.selected = true;
+		//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
+		objects.push_back(placed);
+		selectedIndex = static_cast<int>(objects.size()) - 1;
+		for (size_t i = 0; i < objects.size(); ++i)
+			objects[i].selected = (i == selectedIndex);
+	}
+	else if (placingCreature && activeRoomIndex != -1 && currentCreatureType != EditorCreature::UNKNOWN)
+	{
+		if (!placedRooms[activeRoomIndex].contains(pos))
+		{
+			std::cout << "Cannot place creature outside of the active room!" << std::endl;
+			return; // don't place creature outside of the active room
+		}
+
+		PlacedCreature placed;
+		placed.obj = paletteProps[0]; //use the square
+		placed.obj.setFillColor(sf::Color::White);
+		placed.obj.setCanMove(false);
+		placed.obj.setPosition(pos);
+		placed.selected = true;
+		placed.roomIndex = activeRoomIndex;
+		placed.creatureType = currentCreatureType; // set the creature type based on the current selection
+
+		SceneDataLoader::setTexture(&placed.obj, creatureTexKeys[static_cast<int>(currentCreatureType)]); // set the texture based on the current creature type
+		//placed.roomIndex = activeRoomIndex; // set the room index to the currently active room (don't do this, only creatures added to rooms not props)
+		creatures.push_back(placed);
+		selectedCreatureIndex = static_cast<int>(creatures.size()) - 1;
+		for (size_t i = 0; i < creatures.size(); ++i)
+			creatures[i].selected = (i == selectedCreatureIndex);
+	}
 }
 
 void EditorScene::deleteSelectedObject()
 {
-	if (selectedIndex >= 0 && selectedIndex < static_cast<int>(objects.size()))
+	if (placingObject)
 	{
-		objects.erase(objects.begin() + selectedIndex);
-		selectedIndex = -1;
+		if (selectedIndex >= 0 && selectedIndex < static_cast<int>(objects.size()))
+		{
+			objects.erase(objects.begin() + selectedIndex);
+			selectedIndex = -1;
+		}
+	}
+	else {
+		if (selectedCreatureIndex >= 0 && selectedCreatureIndex < static_cast<int>(creatures.size()))
+		{
+			creatures.erase(creatures.begin() + selectedCreatureIndex);
+			selectedCreatureIndex = -1;
+		}
 	}
 }
 
@@ -622,6 +759,24 @@ void EditorScene::saveToFile(const std::string& filename)
 
 		j["objects"].push_back(o);
 	}
+
+	//save creatures
+	for (const auto& creature : creatures)
+	{
+		json o;
+		if (creature.creatureType == EditorCreature::UNKNOWN)
+		{
+			std::cerr << "Error: Attempting to save a creature with UNKNOWN type!" << std::endl;
+			continue; // skip saving this creature
+		}
+		//creatures in editor are just pawn icons, they don't influence anything other than position and room when loaded into level
+		o["creatureType"] = static_cast<int>(creature.creatureType); // save creature type
+		o["position"] = SceneDataLoader::vecToJson(creature.obj.getPosition());
+		o["roomIndex"] = creature.roomIndex; // save room index for creatures
+
+		j["creatures"].push_back(o);
+	}
+
 	// save lights
 	for (const auto& l : placedLights) 
 	{
@@ -699,6 +854,25 @@ void EditorScene::loadFromFile(const std::string& filename)
 		//obj.roomIndex = o.value("roomIndex", -1); // load room index, default to -1 if not present (don't do this, only creatures are assigned to a room)
 		objects.push_back(obj);
 	}
+
+	//load creatures
+	creatures.clear();
+	for (const auto& c : j["creatures"])
+	{
+		PlacedCreature placed;
+		placed.obj = paletteProps[0]; //use the square
+		placed.obj.setFillColor(sf::Color::White);
+		placed.obj.setCanMove(false);
+		placed.obj.setPosition(SceneDataLoader::vecFromJson(c["position"]));
+		placed.selected = false;
+		placed.roomIndex = c.value("roomIndex", -1); // load room index, default to -1 if not present
+		placed.creatureType = static_cast<EditorCreature>(c["creatureType"].get<int>());
+		auto* t = AssetManager::getTex(creatureTexKeys[static_cast<int>(placed.creatureType)]);
+		if(t)placed.obj.setTexture(t);
+		SceneDataLoader::setTexture(&placed.obj, creatureTexKeys[static_cast<int>(placed.creatureType)]); // set the texture based on the current creature type
+		creatures.push_back(placed);
+	}
+
 	//load lights
 	for (const auto& lj : j["lights"]) 
 	{

@@ -13,7 +13,7 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 
 	maxCooldown = 0.75f;
 	cooldown = 0.f;
-	speed = 350.f;
+	speed = 600.f;
 	health = 10.f;
 	maxHealth = 10.f;
 	lightAttackDamage = 0.5f;
@@ -204,7 +204,7 @@ void Player::dodge()
 						(sf::Vector2f(0, -1) * (float)Input::isKeyDown(sf::Keyboard::W)) +
 						(sf::Vector2f(-1, 0) * (float)Input::isKeyDown(sf::Keyboard::A)) +
 						(sf::Vector2f(1, 0) * (float)Input::isKeyDown(sf::Keyboard::D));
-	accelerate(dir, speed * speed);
+	accelerate(dir, (speed * speed * 0.7f));
 	lastAction = Action::DODGE;
 }
 
@@ -245,7 +245,7 @@ void Player::jumpAnim(float dt)
 void Player::damage(float d)
 {
 	if (invincibleTime > 0) return; //if the player is invincible, don't take damage
-	health -= d;
+	CreatureObject::damage(d);
 	if (health < 0) health = 0;
 	if (health < maxHealth / 3) howBloody = 2; //very bloody
 	else if (health < maxHealth / 2) howBloody = 1; //bloody

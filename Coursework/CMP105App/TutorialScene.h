@@ -1,5 +1,8 @@
 #pragma once
 #include "Framework/BaseLevel.h"
+#include "GenericCommand.h"
+#include "BufferedCommand.h"
+#include "Player.h"
 
 class TutorialScene : public BaseLevel {
 public:
@@ -8,6 +11,8 @@ public:
 	void handleInput(float dt) override;
 	void update(float dt) override;
 	void render() override;
+
+	void reset() override;
 
 private:
 

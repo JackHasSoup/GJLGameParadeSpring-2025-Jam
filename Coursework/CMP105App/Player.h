@@ -27,6 +27,8 @@ public:
 	void attack3();*/
 	//probably add more attacks and rename them
 	virtual void damage(float d) override;
+	virtual void restoreHealth() override { health = maxHealth; howBloody = 0; };
+	
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 protected:
 	sf::RectangleShape jumpClone;

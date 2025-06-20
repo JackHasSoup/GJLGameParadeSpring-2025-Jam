@@ -9,6 +9,7 @@
 #include "Crab.h"
 #include "Narwhal.h"
 #include "Jellyfish.h"
+#include "HealthBar.h"
 #include "Walrus.h"
 #include "Framework/BaseLevel.h"
 
@@ -22,6 +23,10 @@ public:
 	virtual void update(float dt) override;
 	virtual void handleInput(float dt) override;
 	virtual void render() override;
+
+	void reset();
+
+	Player* getPlayer() { return &player; }
 
 	void changeText(const sf::String& msg);
 protected:
@@ -38,6 +43,8 @@ protected:
 	PhysicsManager physMan;
 	PhysicsObject g1, g2, rock;
 	sf::ConvexShape c1, c2, cR;
+
+	HealthBar healthBar;
 
 	DeferredIllumination lighter;
 	int movingLightI;
