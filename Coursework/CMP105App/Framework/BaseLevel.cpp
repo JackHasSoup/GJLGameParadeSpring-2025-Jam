@@ -98,6 +98,8 @@ void BaseLevel::reset()
 	player.positionReset(door.getPosition() + sf::Vector2f{ 0.f, door.getSize().y * 1.25f });
 	cam.setCenter(door.getPosition());
 
+	actionBuffer.clear();
+
 	for (int i = 0; i < rooms.size(); i++) {
 		rooms[i].setAllCreaturesDead(false);
 		for (int j = 0; j < rooms[i].getCreatures().size(); j++) {
@@ -201,13 +203,10 @@ void BaseLevel::doorCheck()
 
 	for (int i = 0; i < rooms.size(); i++) {
 		if (!rooms[i].allCreaturesDead()) {
-			std::cout << "none" << std::endl;
 			// If any room still have creatures then door is not oepn
 			return;
 		}
 	}
-
-	std::cout << "all" << std::endl;
 
 	// change door light to green 
 	std::get<0>(doorLight) = sf::Vector2f{ door.getPosition() - sf::Vector2f(-23.f, 70.f) };
