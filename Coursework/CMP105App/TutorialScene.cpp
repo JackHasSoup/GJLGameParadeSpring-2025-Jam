@@ -52,7 +52,7 @@ void TutorialScene::reset()
 
 	for (int i = 0; i < 2; i++) {
 		// Reset position of enemies
-		rooms[0].getCreatures().at(i)->setPosition(sf::Vector2f{ (rooms[0].left + rooms[0].width * (0.5f + (0.33f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.55f + (0.02f * ((i * -2.f) + 1.f)))) });
+		rooms[0].getCreatures().at(i)->positionReset(sf::Vector2f{ (rooms[0].left + rooms[0].width * (0.5f + (0.33f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.55f + (0.02f * ((i * -2.f) + 1.f)))) });
 	}
 
 }
