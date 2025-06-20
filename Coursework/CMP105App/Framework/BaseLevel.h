@@ -6,6 +6,9 @@
 #include "../EDITOR/SceneDataLoader.h"
 #include "../BufferedCommand.h"
 #include "../Room.h" 
+#include "../Crab.h"
+#include "../Narwhal.h" 
+#include "../Jellyfish.h"
 
 class BaseLevel : public Scene {
 public:
@@ -27,7 +30,7 @@ protected:
 	PhysicsManager physMan;
 
 	HealthBar healthBar;
-	sf::Shader heartShader;
+	sf::Shader* hitFlashShader;
 
 	PhysicsObject door;
 

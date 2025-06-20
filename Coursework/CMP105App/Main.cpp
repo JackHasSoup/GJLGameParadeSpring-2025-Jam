@@ -1,6 +1,6 @@
 #include <iostream>
-#include "TestScene.h"
 #include "TutorialScene.h"
+#include "TestScene.h"
 #include "MenuScene.h"
 #include "GameOverWinScreen.h"
 #include "GameOverLoseScreen.h"
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 	AudioManager::init();
 	Input::init();
 
-	BaseEnemyTestScene testScene(&tex);
 	TutorialScene tutorialScene(&tex);
+	BaseEnemyTestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
 	GameOverWinScreen gameOverWinScreen(&tex, &window);
@@ -90,6 +90,14 @@ int main(int argc, char *argv[])
 	case State::TEST: testScene.render(); break;\
 	case State::WIN: gameOverWinScreen.render(); break;\
 	case State::LOSE: gameOverLoseScreen.render(); break;\
+	}; 
+
+#define UPDATE_SCENE(inputState, dt)\
+	switch(inputState){\
+	case State::MENU: menu.update(dt); break;\
+	case State::PAUSE: pause.update(dt); break;\
+	case State::TUTORIAL: tutorialScene.update(dt); break;\
+	case State::TEST: testScene.update(dt); break;\
 	}; 
 
 
@@ -223,6 +231,9 @@ int main(int argc, char *argv[])
 			case State::TUTORIAL: case State::TEST: // New levels added here
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
+					// Call update function for one frame to load in sprites etc.
+					UPDATE_SCENE(sceneTrans.getStartState(), deltaTime);
+					UPDATE_SCENE(sceneTrans.getEndState(), deltaTime);
 					GameState::setCurrentState(State::TRANSITION);
 				}
 			break;

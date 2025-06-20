@@ -27,14 +27,44 @@ Jellyfish::Jellyfish(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnem
 
 	movementVec = sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
 
-	setDrawType(drawType::RECT);
+	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
-	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 95.f, 70.f });
-	cs.setPoint(1, { getSize().x - 90.f, 60.f });
-	cs.setPoint(2, { getSize().x - 90.f, getSize().y - 120.f });
-	cs.setPoint(3, { 95.f, getSize().y - 120.f });
-	setCollisionShape(cs);
+	std::vector<sf::Vector2i> p = {
+		{0,11},
+		{6,10},
+		{10,7},
+		{14,3},
+		{14,1},
+		{12,-2},
+		{12,-8},
+		{11,-11},
+		{8,-8},
+		{6,-10},
+		{4,-10},
+		{3,-6},
+		{2,-10},
+		{0,-10},
+		{-1,-8},
+		{-3,-10},
+		{-4,-10},
+		{-6,-7},
+		{-10,-11},
+		{-12,-10},
+		{-11,1},
+		{-12,5},
+		{-7,9},
+		{-4,10},
+	};
+
+	collisionShape.setPointCount(p.size());
+	for (int i = 0; i < p.size(); i++)
+	{
+		collisionShape.setPoint(i, sf::Vector2f(
+			((float)p[i].x / 28.f) * size.x * 0.32f,
+			((float)p[i].y / 22.f) * -size.y * 0.32f //-y because the collision coords is upside down
+		) + sf::Vector2f(getOrigin().x, getOrigin().y * 0.80f));
+	}
+	baseHull = collisionShape;
 
 	for (int i = 0; i < 2; i++) {
 		zap[i].addFrame({ 600 * i, 1200, 600, 600 });

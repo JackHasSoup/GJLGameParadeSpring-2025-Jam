@@ -9,6 +9,7 @@
 #include "Crab.h"
 #include "Narwhal.h"
 #include "Jellyfish.h"
+#include "HealthBar.h"
 
 
 class BaseEnemyTestScene : public Scene
@@ -36,6 +37,8 @@ protected:
 	PhysicsManager physMan;
 	PhysicsObject g1, g2, rock;
 	sf::ConvexShape c1, c2, cR;
+
+	HealthBar healthBar;
 
 	DeferredIllumination lighter;
 	int movingLightI;

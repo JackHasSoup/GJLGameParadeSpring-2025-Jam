@@ -7,7 +7,7 @@ HealthBar::HealthBar()
 	heartShader = nullptr;
 }
 
-HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer, sf::Shader* inputShader)
+HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer)
 {
 	window = hwnd;
 
@@ -16,9 +16,13 @@ HealthBar::HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer, sf::Shader* in
 	currentHealth = player->getHealth();
 
 	hitEffectTimer = 0.f;
-	effectTimerMax = 0.125f;
+	effectTimerMax = player->getHitTimerMax();
 
-	heartShader = inputShader;
+	heartShader = AssetManager::registerNewShader("heart");
+	if (!heartShader->loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment)){
+		std::cout << "Error loading healthbar shader";
+	}
+	heartShader->setUniform("texture", sf::Shader::CurrentTexture);
 
 	startPos = sf::Vector2f{ 50.f,50.f };
 	sf::Vector2f size = sf::Vector2f{ 100,100.f };
@@ -50,23 +54,16 @@ void HealthBar::update(float dt)
 		currentHealth = player->getHealth();
 	}
 	hitEffectTimer -= dt;
-	heartShader->setUniform("hitTimer", hitEffectTimer);
+	heartShader->setUniform("hitTimer", (player->getHitTimer() - (player->getHitTimerMax() / 2.f)));
 	heartShader->setUniform("currentHealth", currentHealth);
 
 	if (hitEffectTimer > 0.f) {
-
-		// Red seal when hit
-		player->setFillColor(sf::Color(255, 0, 0, (hitEffectTimer/effectTimerMax)*255));
-
 		for (int i = 0; i < hearts.size(); i++) {
 		// Heart shaking up and down effect
-		hearts[i].setPosition(hearts[i].getPosition() - sf::Vector2f{ 0.f, (cos(hitEffectTimer * TAU * 400.f) * 2.f) });
+		hearts[i].setPosition(hearts[i].getPosition() - sf::Vector2f{ 0.f, (cos(hitEffectTimer * 100.f * TAU) * 2.f) });
 		}
 	}
 	else if(hitEffectTimer < 0.f && hitEffectTimer > -effectTimerMax) {
-		// Reset the effects of being hit right after they're finished
-		player->setFillColor(sf::Color::White);
-
 		for (int i = 0; i < hearts.size(); i++) {
 			hearts[i].setPosition(startPos + sf::Vector2f{ i * hearts[i].getSize().x, 0.f });
 		}

@@ -245,7 +245,7 @@ void Player::jumpAnim(float dt)
 void Player::damage(float d)
 {
 	if (invincibleTime > 0) return; //if the player is invincible, don't take damage
-	health -= d;
+	CreatureObject::damage(d);
 	if (health < 0) health = 0;
 	if (health < maxHealth / 3) howBloody = 2; //very bloody
 	else if (health < maxHealth / 2) howBloody = 1; //bloody

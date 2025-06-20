@@ -3,6 +3,7 @@
 BaseLevel::BaseLevel()
 {
 	window = nullptr;
+	hitFlashShader = nullptr;
 
 }
 
@@ -14,16 +15,16 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	enemyCount = 0;
 	bgColor = sf::Color(130, 112, 148);
 
+	hitFlashShader = AssetManager::registerNewShader("flash");
+	if (!hitFlashShader->loadFromFile("shaders/hitFlash.frag", sf::Shader::Type::Fragment)) {
+		std::cout << "Error loading hit flash shader";
+	}
+	hitFlashShader->setUniform("texture", sf::Shader::CurrentTexture);
+
 	// Player
 	player = Player(midWin, { 75.f, 75.f }, 20.f);
 
-	if (!heartShader.loadFromFile("shaders/heart.frag", sf::Shader::Type::Fragment))
-	{
-		std::cout << "Error loading healthbar shader";
-	}
-	heartShader.setUniform("texture", sf::Shader::CurrentTexture);
-
-	healthBar = HealthBar(window, &player, &heartShader);
+	healthBar = HealthBar(window, &player);
 
 	physMan.registerObj(&player, false);
 
@@ -73,7 +74,42 @@ void BaseLevel::loadLevel(std::string const& filename)
 	{
 		rooms.push_back(Room(room, &player));
 	}
+	for (auto const& creature : std::get<3>(data))
+	{
+		auto [creatureType, position, roomIndex] = creature;
 
+		CreatureObject* newCreature = nullptr;
+		switch (creatureType)
+		{
+		case EditorCreature::PLAYER:
+			player.setPosition(position);
+			break;
+		case EditorCreature::CRAB:
+			newCreature = new Crab(position, { 150.f, 75.f }, 20.f, { 0.f,1.f }); //MAKE SURE YOU EDIT THE CRABS DIRECTION MANUALLY!!!!!!!!
+			break;
+		case EditorCreature::NARWHAL:
+			newCreature = new Narwhal(position, { 100.f, 100.f }, 75.f);
+			break;
+		case EditorCreature::JELLYFISH:
+			newCreature = new Jellyfish(position, { 250.f, 250.f }, 20.f);
+			break;
+		/*case EditorCreature::WALRUS:
+			newCreature = new Walrus(position);
+			break;*/
+		default:
+			continue; // skip unknown creature types
+		}
+
+		if (roomIndex >= 0 && roomIndex < rooms.size())
+		{
+			rooms[roomIndex].addCreature(newCreature);
+		}
+
+		if (newCreature)
+		{
+			physMan.registerObj(newCreature, false);
+		}
+	}
 }
 
 void BaseLevel::executeAndTrack(BufferedCommand* b)

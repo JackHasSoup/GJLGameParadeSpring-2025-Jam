@@ -8,7 +8,7 @@
 class HealthBar : public GameObject {
 public:
 	HealthBar();
-	HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer, sf::Shader* inputShader);
+	HealthBar(sf::RenderTarget* hwnd, Player* inputPlayer);
 
 	void update(float dt);
 	void render();
