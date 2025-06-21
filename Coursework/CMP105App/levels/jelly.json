@@ -7,6 +7,62 @@
                 "y": -367.55865478515625
             },
             "roomIndex": 0
+        },
+        {
+            "creatureType": 3,
+            "position": {
+                "x": -196.20147705078125,
+                "y": -267.0050354003906
+            },
+            "roomIndex": 3
+        },
+        {
+            "creatureType": 3,
+            "position": {
+                "x": 959.7520751953125,
+                "y": -18.88323974609375
+            },
+            "roomIndex": 3
+        },
+        {
+            "creatureType": 3,
+            "position": {
+                "x": -1713.2635498046875,
+                "y": 530.654052734375
+            },
+            "roomIndex": 0
+        },
+        {
+            "creatureType": 2,
+            "position": {
+                "x": -2286.12548828125,
+                "y": 645.1609497070313
+            },
+            "roomIndex": 0
+        },
+        {
+            "creatureType": 2,
+            "position": {
+                "x": 2866.2265625,
+                "y": 660.0853881835938
+            },
+            "roomIndex": 2
+        },
+        {
+            "creatureType": 3,
+            "position": {
+                "x": 2106.36181640625,
+                "y": 646.2398071289063
+            },
+            "roomIndex": 2
+        },
+        {
+            "creatureType": 1,
+            "position": {
+                "x": 67.91858673095703,
+                "y": 1161.6085205078125
+            },
+            "roomIndex": 1
         }
     ],
     "lights": [

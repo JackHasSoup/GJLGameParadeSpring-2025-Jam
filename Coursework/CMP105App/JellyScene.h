@@ -18,5 +18,5 @@ public:
 private:
 
 	std::vector<PhysicsObject*> spotlights;
-
+	std::vector<PhysicsObject*> tubes;
 };

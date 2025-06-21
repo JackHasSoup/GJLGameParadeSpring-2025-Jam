@@ -17,6 +17,8 @@ public :
 	virtual void heavyAttack(std::vector<CreatureObject*> creatures) override;
 	virtual void dodge() override;
 	virtual void parry() override;
+
+	void setDirection(sf::Vector2f d);
 private : 
 	sf::Vector2f vecToPlayer, vecToProjPointNorm, vecToProjPoint, movementAxis;
 	double heightDiff, rota1, rota2;

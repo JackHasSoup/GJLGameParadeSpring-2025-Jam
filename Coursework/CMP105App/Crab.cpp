@@ -219,3 +219,15 @@ void Crab::parry()
 	//std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;
 }
+
+
+void Crab::setDirection(sf::Vector2f d)
+{
+	(d.x == 0) ? heightDiff = 1 : heightDiff = getPosition().y - (getPosition().x * (d.y / d.x));
+
+	vecToProjPointNorm = VectorHelper::normalise(d); 
+	movementAxis = d;
+
+	rota1 = atan(d.y / d.x) * 180 / 3.1415926;
+	rota2 = (atan(d.y / d.x) + 3.1415926) * 180 / 3.1415926;
+}
