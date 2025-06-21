@@ -100,7 +100,10 @@ void TutorialScene::render()
 
 	lighter.beginDraw(bgColor);
 
-	lighter.draw(&floor);
+	for (auto& f : floors)
+	{
+		lighter.draw(f);
+	}
 
 	for (auto& o : sceneObjects)
 	{

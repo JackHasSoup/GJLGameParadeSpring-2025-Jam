@@ -39,6 +39,7 @@ protected:
 	sf::Shader* hitFlashShader;
 
 	GameObject floor;
+	std::vector<GameObject*> floors;
 
 	PhysicsObject door;
 	PhysicsObject spotlight;

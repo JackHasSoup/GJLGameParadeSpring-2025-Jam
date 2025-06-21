@@ -28,10 +28,10 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	// Floor
 
-	floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
-	floor.setOrigin(floor.getSize() / 2.f);
-	floor.setPosition(midWin);
-	floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
+	//floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
+	//floor.setOrigin(floor.getSize() / 2.f);
+	//floor.setPosition(midWin);
+	//floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
 
 	//Door
 
@@ -171,8 +171,17 @@ void BaseLevel::loadLevel(std::string const& filename)
 		}
 	}
 
-	floor.setTexture(floorTexture);
 	floorTexture->setRepeated(true);
+
+	for (int i = 0; i < rooms.size(); i++) {
+		GameObject* newFloor = new GameObject();
+		newFloor->setSize(sf::Vector2f{ rooms[i].width, rooms[i].height });
+		newFloor->setOrigin(newFloor->getSize() / 2.f);
+		newFloor->setPosition(sf::Vector2f{ (rooms[i].left + (rooms[i].width / 2.f)), (rooms[i].top + (rooms[i].height / 2.f)) });
+		newFloor->setTexture(floorTexture);
+		newFloor->setTextureRect(sf::IntRect(0, 0, newFloor->getSize().x, newFloor->getSize().y));
+		floors.push_back(newFloor);
+	}
 
 	door.setPosition(player.getPosition() - sf::Vector2f{0.f,door.getSize().y * 1.25f});
 	door.setTexture(doorTexture);
