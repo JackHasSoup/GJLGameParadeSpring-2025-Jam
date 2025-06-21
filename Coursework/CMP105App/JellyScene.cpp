@@ -3,19 +3,20 @@
 JellyScene::JellyScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 {
 
-	bgColor = sf::Color(95, 81, 133);
+	bgColor = sf::Color(0, 0, 0);
 
 	floorTexture = AssetManager::getTex("floor");
 	doorTexture = AssetManager::getTex("door");
 	spotlightTexture = AssetManager::getTex("spotlight");
 	tubeTexture = AssetManager::getTex("tube");
 
-	BaseLevel::loadLevel("levels/jelly3.json");
+	BaseLevel::loadLevel("levels/jelly.json");
 
 	for (int i = 0; i < lighter.getLightPos().size(); i++) {
+		// Place a spotlight in the centre of every light except door light
 		if (i == doorLightI) { break; }
-		PhysicsObject* newLight = new PhysicsObject(sf::Vector2f{lighter.getLightPos().at(i)}, sf::Vector2f{75.f,75.f}, 10.f);
-		sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.3f);
+		PhysicsObject* newLight = new PhysicsObject(sf::Vector2f{lighter.getLightPos().at(i)}, sf::Vector2f{65.f,65.f}, 10.f);
+		sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.33f, 9U);
 		sf::ConvexShape lightShape = sf::ConvexShape(c.getPointCount());
 		for (int i = 0; i < c.getPointCount(); i++)
 		{

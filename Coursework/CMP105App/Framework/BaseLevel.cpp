@@ -26,13 +26,6 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 
 	healthBar = HealthBar(window, &player);
 
-	// Floor
-
-	//floor.setSize(sf::Vector2f{ window->getSize().x * 10.f, window->getSize().y * 10.f});
-	//floor.setOrigin(floor.getSize() / 2.f);
-	//floor.setPosition(midWin);
-	//floor.setTextureRect(sf::IntRect(0, 0, floor.getSize().x, floor.getSize().y));
-
 	//Door
 
 	door = PhysicsObject((midWin - sf::Vector2f{ 0,400 }), sf::Vector2f{ 200.f,300.f }, 100);
@@ -42,7 +35,7 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 	// Light Objects
 
 	spotlight = PhysicsObject(midWin, sf::Vector2f{100.f,100.f}, 50);
-	sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.44f); // Circle collision shape referenced from seal player
+	sf::CircleShape c = sf::CircleShape(spotlight.getSize().x * 0.44f, 9U); // Circle collision shape referenced from seal player
 	sf::ConvexShape lightShape = sf::ConvexShape(c.getPointCount());
 	for (int i = 0; i < c.getPointCount(); i++)
 	{

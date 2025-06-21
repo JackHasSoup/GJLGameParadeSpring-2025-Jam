@@ -2,7 +2,7 @@
 
 TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 {
-	bgColor = sf::Color(75, 108, 145);
+	bgColor = sf::Color(0, 0, 0);
 
 	// these textures only need to be loaded once ever
 
