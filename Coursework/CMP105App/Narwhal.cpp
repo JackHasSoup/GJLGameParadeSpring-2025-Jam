@@ -152,7 +152,7 @@ void Narwhal::update(float dt)
 {
 	BaseEnemy::update(dt);
 
-	if (cooldown <= 0) //not on cooldown, action not being performed
+	if (cooldown <= 0.f) //not on cooldown, action not being performed
 	{
 		lastAction = Action::NONE;
 	}

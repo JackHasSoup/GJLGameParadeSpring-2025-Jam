@@ -179,7 +179,7 @@ void Jellyfish::lightAttack(std::vector<CreatureObject*> creatures)
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 		}
 		else {
-			std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+			//std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
 		}
 	}
 	else {

@@ -5,6 +5,8 @@ CreatureObject::CreatureObject(sf::Vector2f pos, sf::Vector2f size, float mass) 
 	hitEffectTimerMax = 0.225f;
 	hitEffectTimer = 0.f;
 
+	basePosition = pos;
+
 	hitFlash = AssetManager::getShader("flash");
 	hitFlash->setUniform("timerMax", hitEffectTimerMax);
 

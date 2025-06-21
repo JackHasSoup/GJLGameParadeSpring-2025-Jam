@@ -38,6 +38,9 @@ public:
 	virtual float getHitTimerMax() { return hitEffectTimerMax; };
 	sf::Shader* getShader() { return hitFlash; };
 
+	virtual sf::Vector2f getBasePos() { return basePosition; };
+	virtual void setBasePos(sf::Vector2f p) { basePosition = p; }
+
 	virtual void setLightAttackDamage(float d) { lightAttackDamage = d; };
 	virtual float getLightAttackDamage() { return lightAttackDamage; };
 	virtual void setHeavyAttackDamage(float d) { heavyAttackDamage = d; };
@@ -48,6 +51,7 @@ public:
 	virtual float getHeavyAttackRange() { return heavyAttackRange; };
 
 protected:
+	sf::Vector2f basePosition;
 	float health, maxHealth;
 	float speed;
 	float cooldown, maxCooldown;

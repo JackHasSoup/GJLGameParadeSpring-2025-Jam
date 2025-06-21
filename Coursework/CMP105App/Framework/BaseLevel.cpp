@@ -89,6 +89,7 @@ void BaseLevel::reset()
 {
 	player.restoreHealth();
 	player.positionReset(door.getPosition() + sf::Vector2f{ 0.f, door.getSize().y * 1.25f });
+	player.setHitTimer(0.f);
 	cam.setCenter(door.getPosition());
 
 	actionBuffer.clear();
@@ -98,8 +99,12 @@ void BaseLevel::reset()
 		for (int j = 0; j < rooms[i].getCreatures().size(); j++) {
 			// For all creatures in all rooms set alive and heal to full
 			rooms[i].getCreatures().at(j)->restoreHealth();
+			rooms[i].getCreatures().at(j)->positionReset(rooms[i].getCreatures().at(j)->getBasePos()); // reset position to what it was set to
 			rooms[i].getCreatures().at(j)->setAlive(true);
 			rooms[i].getCreatures().at(j)->setHitTimer(0.f);
+			rooms[i].getCreatures().at(j)->setCooldown(rooms[i].getCreatures().at(j)->getMaxCooldown());
+			dynamic_cast<BaseEnemy*>(rooms[i].getCreatures().at(j))->resetBuffer();
+			dynamic_cast<CreatureObject*>(rooms[i].getCreatures().at(j));
 		}
 	}
 
@@ -174,6 +179,17 @@ void BaseLevel::loadLevel(std::string const& filename)
 		newFloor->setTexture(floorTexture);
 		newFloor->setTextureRect(sf::IntRect(0, 0, newFloor->getSize().x, newFloor->getSize().y));
 		floors.push_back(newFloor);
+	}
+
+	for (int i = 0; i < rooms.size(); i++) {
+		// For each room have a black rectangle that blocks it out when not active
+		GameObject* rect = new GameObject();
+		rect->setSize(floors[i]->getSize());
+		rect->setOrigin(floors[i]->getOrigin());
+		rect->setPosition(floors[i]->getPosition());
+		rect->setTexture(fogTexture);
+		rect->setFillColor(sf::Color::White);
+		roomFog.push_back(rect);
 	}
 
 	door.setPosition(player.getPosition() - sf::Vector2f{0.f,door.getSize().y * 1.25f});

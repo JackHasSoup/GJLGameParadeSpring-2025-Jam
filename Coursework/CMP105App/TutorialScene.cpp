@@ -9,6 +9,9 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	floorTexture = AssetManager::registerNewTex("floor");
 	floorTexture->loadFromFile("gfx/materials/floor.png");
 
+	fogTexture = AssetManager::registerNewTex("fog");
+	fogTexture->loadFromFile("gfx/materials/roomfog.png");
+
 	doorTexture = AssetManager::registerNewTex("door"); 
 	doorTexture->loadFromFile("gfx/materials/door.png");
 
@@ -50,10 +53,10 @@ void TutorialScene::reset()
 {
 	BaseLevel::reset();
 
-	for (int i = 0; i < 2; i++) {
-		// Reset position of enemies
-		rooms[0].getCreatures().at(i)->positionReset(sf::Vector2f{ (rooms[0].left + rooms[0].width * (0.5f + (0.33f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.55f + (0.02f * ((i * -2.f) + 1.f)))) });
-	}
+	//for (int i = 0; i < 2; i++) {
+	//	// Reset position of enemies
+	//	rooms[0].getCreatures().at(i)->positionReset(sf::Vector2f{ (rooms[0].left + rooms[0].width * (0.5f + (0.33f * ((i * 2.f) - 1.f)))), (rooms[0].top + rooms[0].height * (0.55f + (0.02f * ((i * -2.f) + 1.f)))) });
+	//}
 
 }
 

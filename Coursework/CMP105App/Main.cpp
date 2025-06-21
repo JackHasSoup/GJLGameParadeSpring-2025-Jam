@@ -254,9 +254,12 @@ int main(int argc, char *argv[])
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
 
+					if (GameState::getCurrentState() == State::JELLY) {
+						jellyScene.getPlayer()->setHealth(tutorialScene.getPlayer()->getHealth());
+					}
 					if (GameState::getCurrentState() == State::TEST) {
 						// This can be replaced with a define that returns a BaseLevel pointer once all levels are baseLevels
-						testScene.getPlayer()->setHealth(tutorialScene.getPlayer()->getHealth());
+						testScene.getPlayer()->setHealth(jellyScene.getPlayer()->getHealth());
 					}
 
 					// Call update function for one frame to load in sprites etc.

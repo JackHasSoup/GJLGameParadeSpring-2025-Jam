@@ -18,6 +18,7 @@ public:
 
 	virtual void trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt);
 	virtual void restoreHealth() override { health = maxHealth; howBloody = 0; };
+	virtual void resetBuffer() { lastAction = Action::NONE; actionBufferIndex = 0; };
 	void damage(float d) override;
 protected:
 	sf::Vector2f direction, directionNorm;

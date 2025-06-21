@@ -41,6 +41,9 @@ protected:
 	GameObject floor;
 	std::vector<GameObject*> floors;
 
+	std::vector<GameObject*> roomFog;
+	sf::Texture* fogTexture;
+
 	PhysicsObject door;
 	PhysicsObject spotlight;
 	PhysicsObject tube;

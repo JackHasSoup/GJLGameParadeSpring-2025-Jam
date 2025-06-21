@@ -6,6 +6,7 @@ JellyScene::JellyScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 	bgColor = sf::Color(0, 0, 0);
 
 	floorTexture = AssetManager::getTex("floor");
+	fogTexture = AssetManager::getTex("fog");
 	doorTexture = AssetManager::getTex("door");
 	spotlightTexture = AssetManager::getTex("spotlight");
 	tubeTexture = AssetManager::getTex("tube");
@@ -89,11 +90,17 @@ void JellyScene::handleInput(float dt)
 
 void JellyScene::update(float dt)
 {
-	for (auto& room : rooms)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		if (room.checkForPlayer(&player, &room == activeRoom)) // check if player is in the room
+		if (rooms[i].checkForPlayer(&player, &rooms[i] == activeRoom)) // check if player is in the room
 		{
-			activeRoom = &room; // set the active room to the one the player is in
+			activeRoom = &rooms[i]; // set the active room to the one the player is in
+
+
+			for (int j = 0; j < roomFog.size(); j++) {
+				roomFog[j]->setFillColor(sf::Color(255,255,255,200));
+			}
+			roomFog[i]->setFillColor(sf::Color::Transparent);
 		}
 	}
 	if (activeRoom) activeRoom->updateCreatures(actionBuffer, dt); // update creatures in the active room
@@ -138,6 +145,10 @@ void JellyScene::render()
 
 	for (auto& s : spotlights) {
 		window->draw(*s);
+	}
+
+	for (int i = 0; i < roomFog.size(); i++) {
+		window->draw(*roomFog[i]);
 	}
 
 	// HUD
