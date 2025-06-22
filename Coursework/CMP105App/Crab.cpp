@@ -63,6 +63,10 @@ Crab::Crab(sf::Vector2f pos, sf::Vector2f size, float mass, sf::Vector2f directi
 		pinch[2].addFrame({ 600, 150 * i, 300, 150 });
 	}
 	//pinch[0].setFrame(0);
+	AudioManager::createSound("crabLight", "sfx/crabLight", 1.0f, false);
+	AudioManager::createSound("crabHeavy", "sfx/crabHeavy", 1.0f, false);
+	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
+
 }
 
 void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
@@ -145,6 +149,8 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 
 void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("crabLight")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 	cooldown = maxCooldown;
 	CreatureObject* player = creatures[0];
@@ -175,6 +181,8 @@ void Crab::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("crabHeavy")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 	cooldown = maxCooldown * 2.5f;
 
@@ -208,6 +216,8 @@ void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Crab::dodge()
 {
+	AudioManager::getSound("dodge")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 	cooldown = maxCooldown * 1.15f;
 

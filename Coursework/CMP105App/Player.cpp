@@ -43,7 +43,10 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 
 	AudioManager::createSound("damageTaken", "sfx/ouch2", 1.0f, false);
 	AudioManager::createSound("slapSound", "sfx/slap", 1.0f, false);
-	AudioManager::setMaxSoundVol(100.f);
+	AudioManager::createSound("jumpAttack", "sfx/sealJumpAttack3.wav", 0.02f, false);
+	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
+
+	AudioManager::setMaxSoundVol(1000.f);
 }
 
 Player::~Player()
@@ -175,6 +178,8 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("jumpAttack")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	setCooldown(maxCooldown * 1.5f);//longer cooldown for heavy attack
 
@@ -187,6 +192,7 @@ void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
 {
+
 	for (auto const& c : creatures)
 	{
 		if (VectorHelper::magnitudeSqrd(c->getPosition() - getPosition()) < heavyAttackRange * heavyAttackRange * getSize().x * getSize().y) //check if the creature is within the heavy attack range
@@ -203,6 +209,8 @@ void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
 
 void Player::dodge()
 {
+	AudioManager::getSound("dodge")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	setCooldown(maxCooldown * 0.75f); //shorter cooldown for dodge
 

@@ -107,7 +107,7 @@ BaseEnemyTestScene::BaseEnemyTestScene(sf::RenderTarget * hwnd) : BaseLevel(hwnd
 	g1.setTexture(arrow);
 
 	AudioManager::createSound("glass", "sfx/Glass_BreakMONO.ogg", 1.0f, false);
-	AudioManager::setMaxSoundVol(100.f);
+	//AudioManager::setMaxSoundVol(100.f);
 
 	auto data = SceneDataLoader::loadScene("levels/level.json");
 	sceneObjects = std::get<0>(data);
