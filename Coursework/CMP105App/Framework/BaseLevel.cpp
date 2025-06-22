@@ -153,9 +153,9 @@ void BaseLevel::loadLevel(std::string const& filename)
 		case EditorCreature::JELLYFISH:
 			newCreature = new Jellyfish(position, { 300.f, 300.f }, 20.f);
 			break;
-		/*case EditorCreature::WALRUS:
-			newCreature = new Walrus(position);
-			break;*/
+		case EditorCreature::WALRUS:
+			newCreature = new Walrus(position, { 400.f, 400.f }, 40.f);
+			break;
 		default:
 			continue; // skip unknown creature types
 		}

@@ -1,6 +1,6 @@
 #include "BossScene.h"
 
-BossScene::BossScene(sf::RenderTarget* hwnd)
+BossScene::BossScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 {
 	bgColor = sf::Color(30, 30, 50);
 
@@ -10,7 +10,7 @@ BossScene::BossScene(sf::RenderTarget* hwnd)
 	spotlightTexture = AssetManager::getTex("spotlight");
 	tubeTexture = AssetManager::getTex("tube");
 
-	BaseLevel::loadLevel("levels/jelly.json");
+	BaseLevel::loadLevel("levels/boss.json");
 
 
 }

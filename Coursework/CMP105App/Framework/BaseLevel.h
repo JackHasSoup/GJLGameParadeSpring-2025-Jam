@@ -9,6 +9,7 @@
 #include "../Crab.h"
 #include "../Narwhal.h" 
 #include "../Jellyfish.h"
+#include "../Walrus.h"
 
 class BaseLevel : public Scene {
 public:

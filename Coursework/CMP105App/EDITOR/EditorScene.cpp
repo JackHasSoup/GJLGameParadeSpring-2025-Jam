@@ -57,8 +57,8 @@ EditorScene::EditorScene(sf::RenderTarget *hwnd) : Scene(hwnd)
 	commander.addPressed(sf::Keyboard::R, new GenericCommand([=] { placingRoom ? placeState = PlaceState::OBJECT : placeState = PlaceState::ROOM; }));
 	commander.addPressed(sf::Keyboard::C, new GenericCommand([=] { placingCreature ? placeState = PlaceState::OBJECT : placeState = PlaceState::CREATURE; }));
 	//for save load
-	commander.addPressed(sf::Keyboard::PageUp, new GenericCommand([=] { saveToFile("levels/level.json"); }));
-	commander.addPressed(sf::Keyboard::PageDown, new GenericCommand([=] { loadFromFile("levels/level.json"); }));
+	commander.addPressed(sf::Keyboard::RBracket, new GenericCommand([=] { saveToFile("levels/boss.json"); }));
+	commander.addPressed(sf::Keyboard::LBracket, new GenericCommand([=] { loadFromFile("levels/boss.json"); }));
 	//for scroll
 	commander.addHeld(sf::Keyboard::Up, new GenericCommand([=] { scrollOffset += 1.f; }));
 	commander.addHeld(sf::Keyboard::Down, new GenericCommand([=] { scrollOffset -= 1.f;}));
