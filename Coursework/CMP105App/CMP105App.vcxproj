@@ -206,6 +206,7 @@
     <ClCompile Include="StackedObject.cpp" />
     <ClCompile Include="StoredMoveBufferTestScene.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Walrus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferedCommand.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="StackedObject.h" />
     <ClInclude Include="StoredMoveBufferTestScene.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Walrus.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\heart.frag" />

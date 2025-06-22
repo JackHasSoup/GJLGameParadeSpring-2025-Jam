@@ -17,6 +17,7 @@
 class Room : public sf::FloatRect
 {
 public:
+	Room() {};
 	Room(sf::FloatRect rect, Player* player);
 	Room(float left, float top, float width, float height, Player* player);
 	bool checkForPlayer(Player* p, bool amCurrent);

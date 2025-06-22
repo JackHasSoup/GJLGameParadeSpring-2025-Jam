@@ -69,6 +69,8 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	//CreatureObject::update(dt);
 	BaseEnemy::trackPlayer(player, actionBuffer, dt);
 
+	float p = cooldown / maxCooldown;
+
 	//std::cout << howBloody << std::endl;
 	if (cooldown <= 0) //not on cooldown, action not being performed
 	{
@@ -84,6 +86,7 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 	break;
 	case Action::HEAVY:
 		pinch[howBloody].setFrame(2);
+		if (p < 0.75f) { pinch[howBloody].setFrame(0); };
 		break;
 	case Action::DODGE:
 		pinch[howBloody].setFrame(0);
@@ -132,10 +135,10 @@ void Crab::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> act
 		}
 	}
 	accelerate(VectorHelper::normalise(vecToProjPoint) * speed);
-	if (cooldown >= maxCooldown/15.f) {
-		// regular crab sprite if not able to attack
-		pinch[howBloody].setFrame(0);
-	}
+	//if (cooldown >= maxCooldown/15.f) {
+	//	// regular crab sprite if not able to attack
+	//	pinch[howBloody].setFrame(0);
+	//}
 	setTextureRect(pinch[howBloody].getCurrentFrame());
 	//std::cout << heightDiff << std::endl;
 }
@@ -180,9 +183,10 @@ void Crab::heavyAttack(std::vector<CreatureObject*> creatures)
 	lastAction = Action::HEAVY;
 	update(0.f); //update to set the correct frame for the attack
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-	pinch[howBloody].setFrame(2);
-
+	
 	accelerate(VectorHelper::normalise(vecToPlayer) * speed * speed);
+
+	pinch[howBloody].setFrame(2);
 
 	heavyAtkActive = true;
 

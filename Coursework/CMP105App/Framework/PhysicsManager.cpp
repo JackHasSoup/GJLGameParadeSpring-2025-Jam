@@ -68,7 +68,7 @@ void PhysicsManager::update(float dt)
 		for (auto* s : staticObjects)
 		{
 			//static collision uses edge collision for convex geometry support
-			auto data = Collision::checkEdgeCollision(d, s);
+			auto data = Collision::checkSAT(d, s);
 			if (data.collision)
 			{
 				d->setPosition(d->lastPos);
