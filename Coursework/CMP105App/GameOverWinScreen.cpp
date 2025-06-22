@@ -15,21 +15,21 @@ GameOverWinScreen::GameOverWinScreen(sf::RenderTarget* hwnd, sf::RenderWindow* s
 
 	buttons.resize(3);
 
-	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.125f, 56, font, "Play Again", true);
+	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.125f, 48, font, "Play Again", true);
 	buttons[ButtonIndex::Play].body().setFillColor(sf::Color::Black);
 	buttons[ButtonIndex::Play].body().setOutlineColor(sf::Color::White);
 	buttons[ButtonIndex::Play].body().setOutlineThickness(5.f);
 	buttons[ButtonIndex::Play].msg().setFillColor(sf::Color::White);
 	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::TUTORIAL); });
 
-	buttons[ButtonIndex::Menu] = Button(midWin + sf::Vector2f{ 0,winSize.y * 0.15f }, winSize * 0.125f, 56, font, "Menu", true);
+	buttons[ButtonIndex::Menu] = Button(midWin + sf::Vector2f{ 0,winSize.y * 0.15f }, winSize * 0.125f, 48, font, "Menu", true);
 	buttons[ButtonIndex::Menu].body().setFillColor(sf::Color::Black);
 	buttons[ButtonIndex::Menu].body().setOutlineColor(sf::Color::White);
 	buttons[ButtonIndex::Menu].body().setOutlineThickness(5.f);
 	buttons[ButtonIndex::Menu].msg().setFillColor(sf::Color::White);
 	buttons[ButtonIndex::Menu].subscribe([=] { GameState::setCurrentState(State::MENU); });
 
-	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{ 0,winSize.y * 0.3f }, winSize * 0.125f, 56, font, "Exit", true);
+	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{ 0,winSize.y * 0.3f }, winSize * 0.125f, 48, font, "Exit", true);
 	buttons[ButtonIndex::Exit].body().setFillColor(sf::Color::Black);
 	buttons[ButtonIndex::Exit].body().setOutlineColor(sf::Color::White);
 	buttons[ButtonIndex::Exit].body().setOutlineThickness(5.f);

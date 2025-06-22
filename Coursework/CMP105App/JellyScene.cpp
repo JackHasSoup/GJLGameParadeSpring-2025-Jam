@@ -98,7 +98,7 @@ void JellyScene::update(float dt)
 
 
 			for (int j = 0; j < roomFog.size(); j++) {
-				roomFog[j]->setFillColor(sf::Color(255,255,255,200));
+				roomFog[j]->setFillColor(sf::Color(255,255,255,180));
 			}
 			roomFog[i]->setFillColor(sf::Color::Transparent);
 		}
