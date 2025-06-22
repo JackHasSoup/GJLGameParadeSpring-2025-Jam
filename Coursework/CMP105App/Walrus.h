@@ -24,7 +24,7 @@ private:
 	int animFrame = 0;
 	float animTimeElapsed = 0.f;
 	sf::FloatRect lightAttackBox, heavyAttackBox;
-	float lightAttackMaxDuration, lightAttackDuration, heavyAttackMaxDuration, heavyAttackDuration;
+	float lightAttackMaxDuration, lightAttackDuration, heavyAttackMaxDuration, heavyAttackDuration, heavyAttackSpeedMult;
 
 
 	//int howBloody = 0;

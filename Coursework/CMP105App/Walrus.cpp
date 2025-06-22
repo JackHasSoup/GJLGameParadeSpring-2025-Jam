@@ -3,7 +3,7 @@
 Walrus::Walrus(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(pos, size, mass)
 {
 	AssetManager::registerNewTex("WalrusSheet");
-	AssetManager::getTex("WalrusSheet")->loadFromFile("gfx/Walrus/WalrusSheet.png");
+	AssetManager::getTex("WalrusSheet")->loadFromFile("gfx/Walrus/WalrusSheetFinal.png");
 	setTexture(AssetManager::getTex("WalrusSheet"));
 	setFillColor(sf::Color::White);
 
@@ -17,16 +17,16 @@ Walrus::Walrus(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(pos,
 	maxCooldown = 3.f;
 	cooldown = 3.f;
 	speed = 200.f;
-	health = 1.f;
-	maxHealth = 1.f;
+	health = 15.f;
+	maxHealth = 15.f;
 
 	lightAttackDamage = 2.f;
 	heavyAttackDamage = 3.5f;
 	lightAttackRange = 7500.f;
-	heavyAttackRange = 12000.f;
+	heavyAttackRange = 40000.f;
+	heavyAttackSpeedMult = 10.f;
 
-	lightAttackActive = false;
-	heavyAttackActive = false;
+	lightAttackActive, heavyAttackActive = false;
 	lightAttackMaxDuration, lightAttackDuration = 0.5f;
 	heavyAttackMaxDuration, heavyAttackDuration = 1.f;
 
@@ -46,7 +46,8 @@ Walrus::Walrus(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(pos,
 		crunch[i].addFrame({ 200 * i, 0, 200, 200 });
 		crunch[i].addFrame({ 200 * i, 200, 200, 200 });
 		crunch[i].addFrame({ 200 * i, 400, 200, 200 });
-		//crunch[i].addFrame({ 600, 200 * i, 200, 200 });
+		crunch[i].addFrame({ 200 * i, 600, 200, 200 });
+		crunch[i].addFrame({ 200 * i, 800, 200, 200 });
 	}
 
 	//pinch[0].setFrame(0);
@@ -57,7 +58,13 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 	BaseEnemy::trackPlayer(player, actionBuffer, dt);
 	//std::cout << howBloody << std::endl;
 
-	animTimeElapsed += dt * 7.5f;
+	if (heavyAttackActive) {
+		animTimeElapsed += dt * 15.f;
+	}
+	else {
+		animTimeElapsed += dt * 7.5f;
+	}
+	
 	if (sin(animTimeElapsed) <= -0.7f) {
 		animFrame = 0;
 	}
@@ -74,6 +81,7 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 	crunch[animFrame].setFrame(0);
 	setTextureRect(crunch[animFrame].getCurrentFrame());
 	//std::cout << animFrame << std::endl;
+	//}
 
 	float p = cooldown / maxCooldown;
 
@@ -93,16 +101,18 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 	}
 	break;
 	case Action::HEAVY:
-		if (p < 0.75f) { crunch[animFrame].setFrame(0); }
-		else { crunch[animFrame].setFrame(2); };
+		if (p < 0.75f) { crunch[animFrame].setFrame(0); heavyAttackActive = false; }
+		else { crunch[animFrame].setFrame(3); };
 		setTextureRect(crunch[animFrame].getCurrentFrame());
 		break;
 	case Action::DODGE:
 		crunch[animFrame].setFrame(0);
+		setTextureRect(crunch[animFrame].getCurrentFrame());
 		break;
 	case Action::PARRY:
-		crunch[animFrame].setFrame(3);
+		crunch[animFrame].setFrame(4);
 		std::cout << "parried" << std::endl;
+		setTextureRect(crunch[animFrame].getCurrentFrame());
 		break;
 	default:
 		crunch[animFrame].setFrame(0); //regular crab
@@ -144,7 +154,7 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 	}*/
 
 	if (lightAttackActive == true) {
-		lightAttackBox = sf::FloatRect(getPosition() - getOrigin(), getSize() / 2.f);
+		lightAttackBox = sf::FloatRect(getPosition() - getOrigin(), sf::Vector2f(getSize().x / 2.f, getSize().y / 1.5f));
 
 		if (lightAttackDuration <= 0) {
 			lightAttackActive = false;
@@ -155,7 +165,7 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 
 		if (crunch[animFrame].getFlipped()) 
 		{
-			lightAttackBox.left = getPosition().x;
+			lightAttackBox.left = getPosition().x + (100 / 400.f) * getSize().x;
 		}
 		else {
 			lightAttackBox.left = getPosition().x - (getSize().x / 1.5f);
@@ -168,19 +178,22 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 			lightAttackActive = false;
 		}
-		
 	}
 
 	if (heavyAttackActive == true) {
 		//heavyAttackRange -= dt;
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
+		if (VectorHelper::magnitudeSqrd(vecToPlayer) < (heavyAttackRange * getSize().x) / 400.f)
 		{
 			player->damage(heavyAttackDamage);
 			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
 			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
 
 			heavyAttackActive = false;
+			speed /= heavyAttackSpeedMult;
 		}
+	}
+	if (heavyAttackActive == false && speed > 200.f) {
+		speed /= heavyAttackSpeedMult;
 	}
 
 	accelerate(VectorHelper::normalise(vecToPlayer) * speed);
@@ -259,7 +272,7 @@ void Walrus::heavyAttack(std::vector<CreatureObject*> creatures)
 {
 	if (cooldown > 0) return;
 
-	movementVec = { 0.f, 0.f };
+	//movementVec = { 0.f, 0.f };
 	cooldown = maxCooldown * 2.5f;
 
 	CreatureObject* player = creatures[0];
@@ -267,36 +280,37 @@ void Walrus::heavyAttack(std::vector<CreatureObject*> creatures)
 	lastAction = Action::HEAVY;
 	update(0.f); //update to set the correct frame for the attack
 	//check if the creature intersects a box sent out from players look direction on attack (look direction being the direction the player is facing like in update getting the frame for slap)
-	crunch[animFrame].setFrame(2);
+	//crunch[animFrame].setFrame(2);
 
 	//accelerate(VectorHelper::normalise(vecToPlayer) * speed * speed);
 
 	heavyAttackActive = true;
+	speed *= heavyAttackSpeedMult;
 
-	sf::FloatRect attackBox;
-	if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
-	{
-		//check if the attack box intersects the creature's collision shape
-		if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
-		{
-			player->damage(heavyAttackDamage);
-			//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
-			player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
-		}
-		else {
-			std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
-		}
-	}
+	//sf::FloatRect attackBox;
+	//if (crunch[animFrame].getCurrentFrame().width != 0) //if the frame is valid
+	//{
+	//	//check if the attack box intersects the creature's collision shape
+	//	if (VectorHelper::magnitudeSqrd(vecToPlayer) < heavyAttackRange)
+	//	{
+	//		player->damage(heavyAttackDamage);
+	//		//d::cout << "plyr hit " << player->getPosition().x << ", " << player->getPosition().y << "\n";
+	//		player->setCooldown(player->getMaxCooldown()); //reset the cooldown of the creature, to stun it
+	//	}
+	//	else {
+	//		std::cout << VectorHelper::magnitudeSqrd(vecToPlayer) << std::endl; //missed
+	//	}
+	//}
 }
 
 void Walrus::dodge()
 {
 	if (cooldown > 0) return;
 
-	movementVec = { 0.f, 0.f };
-	//cooldown = maxCooldown * 1.15f;
+	//movementVec = { 0.f, 0.f };
+	cooldown = maxCooldown * 1.15f;
 
-	//accelerate(VectorHelper::normalise(vecToProjPoint) * speed * speed);
+	accelerate(VectorHelper::normalise(vecToPlayer) * speed * speed);
 	lastAction = Action::DODGE;
 	//std::cout << "dodge" << std::endl;
 }
@@ -305,7 +319,7 @@ void Walrus::parry()
 {
 	if (cooldown > 0) return;
 
-	movementVec = { 0.f, 0.f };
+	//movementVec = { 0.f, 0.f };
 	//cooldown = maxCooldown * 0.25f;
 	//std::cout << "plyr parry\n";
 	lastAction = Action::PARRY;

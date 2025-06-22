@@ -77,23 +77,23 @@ void JellyScene::render()
 {
 	window->setView(cam);
 
-	lighter.beginDraw(bgColor);
+	//lighter.beginDraw(bgColor);
 
-	lighter.draw(&floor);
+	window->draw(floor);
 
 
 	for (auto& o : sceneObjects)
 	{
-		lighter.draw(o);
+		window->draw(*o);
 	}
 
-	lighter.draw(&door);
+	window->draw(door);
 
-	if (activeRoom) activeRoom->render(&lighter); // enemies inside room
+	//if (activeRoom) activeRoom->render(&lighter); // enemies inside room
 
-	lighter.draw(&player);
+	window->draw(player);
 
-	lighter.endDraw();
+	//lighter.endDraw();
 
 	for (auto& s : spotlights) {
 		window->draw(*s);

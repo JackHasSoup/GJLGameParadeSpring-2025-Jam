@@ -146,10 +146,11 @@ void BaseEnemyTestScene::reset()
 
 	crab = Crab(midWin * 1.2f, { 150.f, 75.f }, 20.f, { 2.f, 4.f });
 	jellyfish = Jellyfish(midWin / 1.1f, { 250.f, 250.f }, 20.f);
+	walrus = Walrus(midWin / 1.25f, { 400.f, 400.f }, 40.f);
 
 	enemies.push_back(&crab);
 	enemies.push_back(&jellyfish);
-
+	enemies.push_back(&walrus);
 
 }
 
@@ -186,6 +187,10 @@ void BaseEnemyTestScene::update(float dt)
 	healthBar.update(dt);
 
 	cam.update(dt);
+
+	std::cout << enemies.size() << std::endl;
+
+	//std::cout << "henlo" << std::endl;
 }
 
 void BaseEnemyTestScene::handleInput(float dt)
