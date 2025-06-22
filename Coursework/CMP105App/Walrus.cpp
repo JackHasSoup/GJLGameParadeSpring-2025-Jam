@@ -30,15 +30,12 @@ Walrus::Walrus(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(pos,
 	lightAttackMaxDuration, lightAttackDuration = 0.5f;
 	heavyAttackMaxDuration, heavyAttackDuration = 1.f;
 
-
-	//movementVec = sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1);
-
-	setDrawType(drawType::RECT);
+	setDrawType(drawType::RECT_COL_LIGHTMASK);
 
 	auto cs = sf::ConvexShape(4);
-	cs.setPoint(0, { 95.f, 90.f });
+	cs.setPoint(0, { 110.f, 180.f });
 	cs.setPoint(1, { getSize().x - 110.f, 200.f });
-	cs.setPoint(2, { getSize().x - 110.f, getSize().y - 140.f });
+	cs.setPoint(2, { getSize().x - 110.f, getSize().y - 120.f });
 	cs.setPoint(3, { 95.f, getSize().y - 120.f });
 	setCollisionShape(cs);
 

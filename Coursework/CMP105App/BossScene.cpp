@@ -2,7 +2,7 @@
 
 BossScene::BossScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 {
-	bgColor = sf::Color(30, 30, 50);
+	bgColor = sf::Color(0, 0, 0);
 
 	floorTexture = AssetManager::getTex("floor");
 	fogTexture = AssetManager::getTex("fog");
@@ -39,7 +39,7 @@ BossScene::BossScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 		ovalShape.setPoint(i, sf::Vector2f{ lightShape.getPoint(i).x * (tube.getSize().x * 0.014f),lightShape.getPoint(i).y * (tube.getSize().y * 0.0055f) * 0.75f } + sf::Vector2f(0.f, tube.getSize().y * 0.72f));
 	}
 
-	tube = PhysicsObject(sf::Vector2f{ rooms[0].left + (rooms[0].width / 2.f), rooms[0].top + (rooms[0].height / 2.f) },
+	tube = PhysicsObject(sf::Vector2f{ rooms[0].left + (rooms[0].width / 2.f), rooms[0].top + (rooms[0].height / 2.f) + 475.f },
 		sf::Vector2f{ 175.f,437.5f },
 		50.f);
 	tube.setFillColor(sf::Color::White);

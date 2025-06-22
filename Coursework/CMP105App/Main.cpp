@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	if (!FORCE_EDITOR)
 		mode = sf::VideoMode::getDesktopMode();
 
-	sf::RenderWindow window(mode, "[WHIMSY ENGINE - GAME]");
+	sf::RenderWindow window(mode, "SEALED FATE");
 	window.setFramerateLimit(120);
 	window.setActive(true);
 
