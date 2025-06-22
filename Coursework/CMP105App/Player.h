@@ -29,6 +29,9 @@ public:
 	virtual void damage(float d) override;
 	virtual void restoreHealth() override { health = maxHealth; howBloody = 0; };
 	virtual void setJumpTime(float t) { jumpTime = t; };
+
+	virtual void setHowBloody(int h) { howBloody = h; };
+	virtual int getHowBloody() { return howBloody; };
 	
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 protected:

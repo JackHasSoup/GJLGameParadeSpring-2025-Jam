@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
 	case State::PAUSE: pause.render(); break;\
 	case State::TUTORIAL: tutorialScene.render(); break;\
 	case State::JELLY: jellyScene.render(); break;\
+	case State::BOSS: bossScene.render(); break;\
 	case State::TEST: testScene.render(); break;\
 	case State::WIN: gameOverWinScreen.render(); break;\
 	case State::LOSE: gameOverLoseScreen.render(); break;\
@@ -107,6 +108,7 @@ int main(int argc, char *argv[])
 	case State::PAUSE: pause.update(dt); break;\
 	case State::TUTORIAL: tutorialScene.update(dt); break;\
 	case State::JELLY: jellyScene.update(dt); break;\
+	case State::BOSS: bossScene.update(dt); break;\
 	case State::TEST: testScene.update(dt); break;\
 	case State::WIN: gameOverWinScreen.update(dt); break;\
 	case State::LOSE: gameOverLoseScreen.update(dt); break;\
@@ -279,13 +281,11 @@ int main(int argc, char *argv[])
 
 					if (GameState::getCurrentState() == State::JELLY) {
 						jellyScene.getPlayer()->setHealth(tutorialScene.getPlayer()->getHealth());
+						jellyScene.getPlayer()->setHowBloody(tutorialScene.getPlayer()->getHowBloody());
 					}
 					if (GameState::getCurrentState() == State::BOSS) {
 						bossScene.getPlayer()->setHealth(jellyScene.getPlayer()->getHealth());
-					}
-					if (GameState::getCurrentState() == State::TEST) {
-						// This can be replaced with a define that returns a BaseLevel pointer once all levels are baseLevels
-						testScene.getPlayer()->setHealth(bossScene.getPlayer()->getHealth());
+						bossScene.getPlayer()->setHowBloody(jellyScene.getPlayer()->getHowBloody());
 					}
 
 					// Call update function for one frame to load in sprites etc.

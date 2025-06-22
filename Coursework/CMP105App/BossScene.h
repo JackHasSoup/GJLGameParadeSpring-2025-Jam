@@ -16,5 +16,5 @@ public:
 	void reset() override;
 
 private:
-
+	std::vector<PhysicsObject*> spotlights;
 };
