@@ -118,7 +118,7 @@ void JellyScene::render()
 {
 	window->setView(cam);
 
-	//lighter.beginDraw(bgColor);
+	lighter.beginDraw(bgColor);
 
 	for (auto& f : floors)
 	{
@@ -127,14 +127,14 @@ void JellyScene::render()
 
 	for (auto& o : sceneObjects)
 	{
-		window->draw(*o);
+		lighter.draw(o);
 	}
 
-	window->draw(door);
+	lighter.draw(&door);
 
-	//if (activeRoom) activeRoom->render(&lighter); // enemies inside room
+	if (activeRoom) activeRoom->render(&lighter); // enemies inside room
 
-	window->draw(player);
+	lighter.draw(&player);
 
 	for (auto& t : tubes)
 	{
