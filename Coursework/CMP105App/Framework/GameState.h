@@ -6,7 +6,7 @@
 
 
 // Possible states. This enum can be modified to add additional states as required.
-enum class State : int { MENU, PAUSE, INTRO, TRANSITION, WIN, LOSE, TUTORIAL, JELLY, TEST, NUMSCENES}; // Everything after LOSE is a level, everything before it is UI. Levels are stored in the order they appear in-game
+enum class State : int { MENU, PAUSE, INTRO, TRANSITION, WIN, LOSE, TUTORIAL, JELLY, BOSS, TEST, NUMSCENES}; // Everything after LOSE is a level, everything before it is UI. Levels are stored in the order they appear in-game
 
 struct CollisionData {
 	bool collision = false;

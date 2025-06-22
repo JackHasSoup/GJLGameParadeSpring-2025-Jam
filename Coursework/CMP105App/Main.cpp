@@ -1,6 +1,7 @@
 #include <iostream>
 #include "TutorialScene.h"
 #include "JellyScene.h"
+#include "BossScene.h"
 #include "TestScene.h"
 #include "MenuScene.h"
 #include "IntroScene.h"
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
 
 	TutorialScene tutorialScene(&tex);
 	JellyScene jellyScene(&tex);
+	BossScene bossScene(&tex);
 	BaseEnemyTestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
@@ -220,6 +222,14 @@ int main(int argc, char *argv[])
 			window.display();
 			break;
 		}
+		case State::BOSS: {
+			bossScene.handleInput(deltaTime);
+			bossScene.update(deltaTime);
+			bossScene.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
 		case State::TEST: {
 			testScene.handleInput(deltaTime);
 			testScene.update(deltaTime);
@@ -255,6 +265,7 @@ int main(int argc, char *argv[])
 				// Reset levels if coming in from menu, win or lose
 				tutorialScene.reset();
 				jellyScene.reset();
+				bossScene.reset();
 				testScene.reset();
 			}
 
@@ -262,16 +273,19 @@ int main(int argc, char *argv[])
 			case State::PAUSE:
 				pause.setPausedState(GameState::getLastState());
 				break;
-			case State::TUTORIAL: case State::JELLY: case State::TEST: case State::WIN: case State::LOSE:
+			case State::TUTORIAL: case State::JELLY: case State::BOSS: case State::TEST: case State::WIN: case State::LOSE:
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
 
 					if (GameState::getCurrentState() == State::JELLY) {
 						jellyScene.getPlayer()->setHealth(tutorialScene.getPlayer()->getHealth());
 					}
+					if (GameState::getCurrentState() == State::BOSS) {
+						bossScene.getPlayer()->setHealth(jellyScene.getPlayer()->getHealth());
+					}
 					if (GameState::getCurrentState() == State::TEST) {
 						// This can be replaced with a define that returns a BaseLevel pointer once all levels are baseLevels
-						testScene.getPlayer()->setHealth(jellyScene.getPlayer()->getHealth());
+						testScene.getPlayer()->setHealth(bossScene.getPlayer()->getHealth());
 					}
 
 					// Call update function for one frame to load in sprites etc.
