@@ -13,7 +13,7 @@ PauseScene::PauseScene(sf::RenderTarget* hwnd) : UIScene(hwnd)
 	titleText.setFillColor(sf::Color::White);
 	titleText.setPosition(midWin - sf::Vector2f{ titleText.getLocalBounds().width / 2.f, winSize.y * 0.3f });
 
-	controlsText.setCharacterSize(56);
+	controlsText.setCharacterSize(48);
 	controlsText.setFont(*font);
 	controlsText.setString("CONTROLS\n\nWASD - Directional Movement\nLeft Mouse Click - Light Attack\nRight Mouse Click - Heavy Attack\nSpacebar - Dodge\nQ - Parry");
 	controlsText.setFillColor(sf::Color::White);

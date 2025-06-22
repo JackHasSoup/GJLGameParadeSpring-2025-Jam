@@ -15,13 +15,13 @@ IntroScene::IntroScene(sf::RenderTarget* hwnd) : UIScene(hwnd)
 	buttons[ButtonIndex::Play].msg().setFillColor(sf::Color::White);
 	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::TUTORIAL); });
 
-	storyText.setCharacterSize(56);
+	storyText.setCharacterSize(48);
 	storyText.setFont(*font);
 	storyText.setString("As the last living creature in this facility, you must defeat the counterfeit creatures to escape!\nThey look like animals, and bleed motor oil, but as robots, all they can do is copy what they see.\nUsing your moves will cause the creatures to mimic them back at you.");
 	storyText.setFillColor(sf::Color::White);
 	storyText.setPosition(midWin - sf::Vector2f{ storyText.getLocalBounds().width/2.f, winSize.y * 0.4f});
 
-	controlsText.setCharacterSize(72);
+	controlsText.setCharacterSize(48);
 	controlsText.setFont(*font);
 	controlsText.setString("CONTROLS\n\nWASD - Directional Movement\nLeft Mouse Click - Light Attack\nRight Mouse Click - Heavy Attack\nSpacebar - Dodge\nQ - Parry");
 	controlsText.setFillColor(sf::Color::White);

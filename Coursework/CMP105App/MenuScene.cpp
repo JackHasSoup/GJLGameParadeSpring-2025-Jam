@@ -11,7 +11,7 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIS
 	titleTexture = AssetManager::registerNewTex("title");
 	titleTexture->loadFromFile("gfx/ui/title.png");
 	title.setTexture(titleTexture);
-	title.setSize(sf::Vector2f{400, 300} * 2.2f);
+	title.setSize(winSize * 0.35f);
 	title.setPosition(midWin - sf::Vector2f{ title.getLocalBounds().width / 2.f, winSize.y * 0.45f });
 
 	bg.setTexture(bgTexture);
