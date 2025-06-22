@@ -245,9 +245,12 @@
     <ClCompile Include="IntroScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-	  <ClCompile Include="JellyScene.cpp">
-		  <Filter>Source Files\Scenes</Filter>
-	  </ClCompile>
+    <ClCompile Include="JellyScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="BossScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -391,14 +394,15 @@
     <ClInclude Include="Jellyfish.h">
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
-      <Filter>Header Files\Gameobjects</Filter>
-    </ClInclude>
     <ClInclude Include="IntroScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-	  <ClInclude Include="JellyScene.h">
-		  <Filter>Header Files\Scenes</Filter>
-	  </ClInclude>
+    <ClInclude Include="JellyScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BossScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shadowCaster.frag">
