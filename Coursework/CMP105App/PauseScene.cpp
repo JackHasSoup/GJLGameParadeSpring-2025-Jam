@@ -13,6 +13,12 @@ PauseScene::PauseScene(sf::RenderTarget* hwnd) : UIScene(hwnd)
 	titleText.setFillColor(sf::Color::White);
 	titleText.setPosition(midWin - sf::Vector2f{ titleText.getLocalBounds().width / 2.f, winSize.y * 0.3f });
 
+	controlsText.setCharacterSize(56);
+	controlsText.setFont(*font);
+	controlsText.setString("CONTROLS\n\nWASD - Directional Movement\nLeft Mouse Click - Light Attack\nRight Mouse Click - Heavy Attack\nSpacebar - Dodge\nQ - Parry");
+	controlsText.setFillColor(sf::Color::White);
+	controlsText.setPosition(sf::Vector2f{ controlsText.getLocalBounds().width / 4.f, titleText.getPosition().y});
+
 	buttons.resize(2);
 
 	buttons[ButtonIndex::Resume] = Button(midWin, winSize * 0.125f, 56, font, "Resume", true);
@@ -47,6 +53,8 @@ void PauseScene::render()
 	UIScene::renderButtons();
 
 	window->draw(titleText);
+
+	window->draw(controlsText);
 }
 
 void PauseScene::setPausedState(State inputState)
