@@ -51,7 +51,7 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 	cooldown = 0.f;
 	maxCooldown = 2.5f;
 	lightAttackDamage = 0.5f;
-	heavyAttackDamage = 3.5f;
+	heavyAttackDamage = 2.5f;
 	lightAttackRange = 0.5f; //50% of the size of the attack check box
 	heavyAttackRange = 1.0f; //100% of the size of the attack check box
 
@@ -124,6 +124,7 @@ void Narwhal::heavyAttack(std::vector<CreatureObject*> creatures)
 	update(0.f); //update to set the correct frame for the attack
 
 	accelerate((creatures[0]->getPosition() - getPosition()) * speed * 2.f); //charge towards the player
+	lastAction = Action::NONE;
 }
 
 void Narwhal::dodge()
