@@ -187,10 +187,6 @@ void BaseEnemyTestScene::update(float dt)
 	healthBar.update(dt);
 
 	cam.update(dt);
-
-	std::cout << enemies.size() << std::endl;
-
-	//std::cout << "henlo" << std::endl;
 }
 
 void BaseEnemyTestScene::handleInput(float dt)

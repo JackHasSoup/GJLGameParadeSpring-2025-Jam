@@ -76,12 +76,6 @@ void BossScene::update(float dt)
 		if (rooms[i].checkForPlayer(&player, &rooms[i] == activeRoom)) // check if player is in the room
 		{
 			activeRoom = &rooms[i]; // set the active room to the one the player is in
-
-
-			for (int j = 0; j < roomFog.size(); j++) {
-				roomFog[j]->setFillColor(sf::Color(255, 255, 255, 200));
-			}
-			roomFog[i]->setFillColor(sf::Color::Transparent);
 		}
 	}
 	if (activeRoom) activeRoom->updateCreatures(actionBuffer, dt); // update creatures in the active room
@@ -123,10 +117,6 @@ void BossScene::render()
 
 	for (auto& s : spotlights) {
 		window->draw(*s);
-	}
-
-	for (int i = 0; i < roomFog.size(); i++) {
-		window->draw(*roomFog[i]);
 	}
 
 	// HUD

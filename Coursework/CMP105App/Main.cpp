@@ -96,7 +96,6 @@ int main(int argc, char *argv[])
 	case State::TUTORIAL: tutorialScene.render(); break;\
 	case State::JELLY: jellyScene.render(); break;\
 	case State::BOSS: bossScene.render(); break;\
-	case State::TEST: testScene.render(); break;\
 	case State::WIN: gameOverWinScreen.render(); break;\
 	case State::LOSE: gameOverLoseScreen.render(); break;\
 	}; 
@@ -109,7 +108,6 @@ int main(int argc, char *argv[])
 	case State::TUTORIAL: tutorialScene.update(dt); break;\
 	case State::JELLY: jellyScene.update(dt); break;\
 	case State::BOSS: bossScene.update(dt); break;\
-	case State::TEST: testScene.update(dt); break;\
 	case State::WIN: gameOverWinScreen.update(dt); break;\
 	case State::LOSE: gameOverLoseScreen.update(dt); break;\
 	}; 
@@ -232,14 +230,6 @@ int main(int argc, char *argv[])
 			window.display();
 			break;
 		}
-		case State::TEST: {
-			testScene.handleInput(deltaTime);
-			testScene.update(deltaTime);
-			testScene.render();
-			window.draw(sprite);//USEASCII ? window.draw(sprite, &ascii) : window.draw(sprite);
-			window.display();
-			break;
-		}
 		case State::TRANSITION: {
 			if (sceneTrans.getInTimer() >= 0.f) { // If in the first half of fading
 				RENDER_SCENE(sceneTrans.getStartState());
@@ -275,7 +265,7 @@ int main(int argc, char *argv[])
 			case State::PAUSE:
 				pause.setPausedState(GameState::getLastState());
 				break;
-			case State::TUTORIAL: case State::JELLY: case State::BOSS: case State::TEST: case State::WIN: case State::LOSE:
+			case State::TUTORIAL: case State::JELLY: case State::BOSS: case State::WIN: case State::LOSE:
 				if (GameState::getLastState() != State::PAUSE) {
 					sceneTrans.setTransition(GameState::getLastState(), GameState::getCurrentState()); // FROM scene TO other scene
 

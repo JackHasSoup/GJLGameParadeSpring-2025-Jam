@@ -21,7 +21,6 @@ public:
 	virtual void render() override = 0;
 
 	virtual void reset();
-	virtual void onEnter(Player* inputPlayer);
 	Player* getPlayer() { return &player; }
 
 	void doorCheck();
