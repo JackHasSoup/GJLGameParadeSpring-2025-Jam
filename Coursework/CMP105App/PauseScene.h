@@ -16,6 +16,8 @@ private:
 
 	enum ButtonIndex { Resume, MainMenu }; // enum for ease of referring to specific button indexes
 
+	sf::Text controlsText;
+
 	State pausedState; // The state the game was on before pausing
 
 };

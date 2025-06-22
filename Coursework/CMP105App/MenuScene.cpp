@@ -4,21 +4,31 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIS
 {
 	screenWindow = screenHwnd;
 
-	titleText.setCharacterSize(56);
-	titleText.setFont(*font);
-	titleText.setString("Seal Evil AI Game Title Pending");
-	titleText.setFillColor(sf::Color::White);
-	titleText.setPosition(midWin - sf::Vector2f{titleText.getLocalBounds().width/2.f, winSize.y * 0.3f});
+	bgTexture = AssetManager::registerNewTex("bgTile");
+	bgTexture->loadFromFile("gfx/ui/bgtile.png");
+	bgTexture->setRepeated(true);
+
+	titleTexture = AssetManager::registerNewTex("title");
+	titleTexture->loadFromFile("gfx/ui/title.png");
+	title.setTexture(titleTexture);
+	title.setSize(sf::Vector2f{400, 300} * 2.2f);
+	title.setPosition(midWin - sf::Vector2f{ title.getLocalBounds().width / 2.f, winSize.y * 0.45f });
+
+	bg.setTexture(bgTexture);
 
 	buttons.resize(2);
 
-	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.2f, 36, font, "Start", true);
+	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.125f, 56, font, "Start", true);
 	buttons[ButtonIndex::Play].body().setFillColor(sf::Color::Black);
+	buttons[ButtonIndex::Play].body().setOutlineColor(sf::Color::White);
+	buttons[ButtonIndex::Play].body().setOutlineThickness(5.f);
 	buttons[ButtonIndex::Play].msg().setFillColor(sf::Color::White);
-	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::TUTORIAL); });
+	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::INTRO); });
 
-	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{0,winSize.y * 0.3f}, winSize * 0.2f, 36, font, "Exit", true);
+	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{0,winSize.y * 0.2f}, winSize * 0.125f, 56, font, "Exit", true);
 	buttons[ButtonIndex::Exit].body().setFillColor(sf::Color::Black);
+	buttons[ButtonIndex::Exit].body().setOutlineColor(sf::Color::White);
+	buttons[ButtonIndex::Exit].body().setOutlineThickness(5.f);
 	buttons[ButtonIndex::Exit].msg().setFillColor(sf::Color::White);
 	buttons[ButtonIndex::Exit].subscribe( [=] { screenWindow->close(); });
 
@@ -39,5 +49,7 @@ void MenuScene::render()
 	UIScene::render();
 
 	window->draw(titleText);
+
+	window->draw(title);
 
 }

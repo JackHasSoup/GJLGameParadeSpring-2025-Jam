@@ -6,6 +6,9 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 
 	// these textures only need to be loaded once ever
 
+	font = AssetManager::registerNewFont("scribble");
+	font->loadFromFile("font/friendlyscribbles.ttf");
+
 	floorTexture = AssetManager::registerNewTex("floor");
 	floorTexture->loadFromFile("gfx/materials/floor.png");
 

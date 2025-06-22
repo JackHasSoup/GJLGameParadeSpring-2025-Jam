@@ -236,9 +236,12 @@
     <ClCompile Include="GameOverWinScreen.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="JellyScene.cpp">
+    <ClCompile Include="IntroScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+	  <ClCompile Include="JellyScene.cpp">
+		  <Filter>Source Files\Scenes</Filter>
+	  </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\VectorHelper.h">
@@ -376,9 +379,12 @@
     <ClInclude Include="Jellyfish.h">
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
-    <ClInclude Include="JellyScene.h">
+    <ClInclude Include="IntroScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+	  <ClInclude Include="JellyScene.h">
+		  <Filter>Header Files\Scenes</Filter>
+	  </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shadowCaster.frag">

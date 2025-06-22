@@ -88,6 +88,8 @@ BaseLevel::BaseLevel(sf::RenderTarget* hwnd) : Scene(hwnd)
 void BaseLevel::reset()
 {
 	player.restoreHealth();
+	player.setHitTimer(0.f);
+	player.setJumpTime(0.f);
 	player.positionReset(door.getPosition() + sf::Vector2f{ 0.f, door.getSize().y * 1.25f });
 	player.setHitTimer(0.f);
 	cam.setCenter(door.getPosition());

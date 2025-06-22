@@ -11,7 +11,8 @@ public:
 private:
 	enum ButtonIndex { Play, Exit }; // enum for ease of referring to specific button indexes
 
-	sf::Text titleText;
+	sf::RectangleShape title;
+	sf::Texture* titleTexture;
 
 	sf::RenderWindow* screenWindow; // menu needs to have the direct window because a rendertarget can't be closed
 };

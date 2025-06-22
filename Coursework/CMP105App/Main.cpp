@@ -3,6 +3,7 @@
 #include "JellyScene.h"
 #include "TestScene.h"
 #include "MenuScene.h"
+#include "IntroScene.h"
 #include "GameOverWinScreen.h"
 #include "GameOverLoseScreen.h"
 #include "PauseScene.h"
@@ -76,6 +77,7 @@ int main(int argc, char *argv[])
 	BaseEnemyTestScene testScene(&tex);
 
 	MenuScene menu(&tex, &window);
+	IntroScene intro(&tex);
 	GameOverWinScreen gameOverWinScreen(&tex, &window);
 	GameOverLoseScreen gameOverLoseScreen(&tex, &window);
 	PauseScene pause(&tex);
@@ -87,6 +89,7 @@ int main(int argc, char *argv[])
 	#define RENDER_SCENE(inputState)\
 	switch(inputState){\
 	case State::MENU: menu.render(); break;\
+	case State::INTRO: intro.render(); break;\
 	case State::PAUSE: pause.render(); break;\
 	case State::TUTORIAL: tutorialScene.render(); break;\
 	case State::JELLY: jellyScene.render(); break;\
@@ -98,6 +101,7 @@ int main(int argc, char *argv[])
 #define UPDATE_SCENE(inputState, dt)\
 	switch(inputState){\
 	case State::MENU: menu.update(dt); break;\
+	case State::INTRO: intro.update(dt); break;\
 	case State::PAUSE: pause.update(dt); break;\
 	case State::TUTORIAL: tutorialScene.update(dt); break;\
 	case State::JELLY: jellyScene.update(dt); break;\
@@ -160,6 +164,14 @@ int main(int argc, char *argv[])
 			menu.handleInput(deltaTime);
 			menu.update(deltaTime);
 			menu.render();
+			window.draw(sprite);
+			window.display();
+			break;
+		}
+		case State::INTRO: {
+			intro.handleInput(deltaTime);
+			intro.update(deltaTime);
+			intro.render();
 			window.draw(sprite);
 			window.display();
 			break;
@@ -239,7 +251,7 @@ int main(int argc, char *argv[])
 
 		if (GameState::getCurrentState() != GameState::getLastState()) { // Call once when a gamestate switches from one to the other
 
-			if (GameState::getLastState() == State::MENU || GameState::getLastState() == State::WIN || GameState::getLastState() == State::LOSE) {
+			if (GameState::getLastState() == State::INTRO || GameState::getLastState() == State::WIN || GameState::getLastState() == State::LOSE) {
 				// Reset levels if coming in from menu, win or lose
 				tutorialScene.reset();
 				jellyScene.reset();

@@ -8,7 +8,10 @@ UIScene::UIScene()
 UIScene::UIScene(sf::RenderTarget* hwnd)
 {
 	window = hwnd;
-	font = AssetManager::getFont("arial");
+	font = AssetManager::getFont("scribble");
+
+	bg.setSize(sf::Vector2f{ window->getSize() });
+	bg.setTextureRect(sf::IntRect(0, 0, bg.getSize().x, bg.getSize().y));
 }
 
 void UIScene::handleInput(float dt)
@@ -27,6 +30,8 @@ void UIScene::update(float dt)
 void UIScene::render()
 {
 	window->clear(sf::Color(38,60,82));
+
+	window->draw(bg);
 
 	renderButtons();
 
