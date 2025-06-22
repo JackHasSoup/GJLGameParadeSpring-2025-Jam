@@ -103,7 +103,7 @@ void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 	}
 	break;
 	case Action::HEAVY:
-		if (p < 0.75f) { zap[animFrame].setFrame(0); }
+		if (p < 0.75f) { zap[animFrame].setFrame(0); heavyAtkActive = false; }
 		else { zap[animFrame].setFrame(2); };
 		setTextureRect(zap[animFrame].getCurrentFrame());
 		break;

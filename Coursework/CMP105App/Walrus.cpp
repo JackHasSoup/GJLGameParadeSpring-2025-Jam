@@ -270,7 +270,7 @@ void Walrus::heavyAttack(std::vector<CreatureObject*> creatures)
 	if (cooldown > 0) return;
 
 	//movementVec = { 0.f, 0.f };
-	cooldown = maxCooldown * 2.5f;
+	cooldown = maxCooldown;
 
 	CreatureObject* player = creatures[0];
 
