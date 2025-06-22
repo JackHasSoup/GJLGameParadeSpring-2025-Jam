@@ -64,8 +64,8 @@ JellyScene::JellyScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 
 	dynamic_cast<Crab*>(rooms[1].getCreatures()[0])->setDirection({ 0.3f,1.f });
 
-	commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.damage(0.5f); }));
-	commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
+	//commander.addPressed(sf::Keyboard::N, new GenericCommand([=] {player.damage(0.5f); }));
+	//commander.addPressed(sf::Keyboard::M, new GenericCommand([=] {player.restoreHealth(); }));
 }
 
 void JellyScene::reset()

@@ -7,7 +7,6 @@ BaseEnemy::BaseEnemy(sf::Vector2f pos, sf::Vector2f size, float mass) : Creature
 
 void BaseEnemy::lightAttack(std::vector<CreatureObject*> creatures)
 {
-	std::cout << "Enemy light attack\n";
 }
 
 void BaseEnemy::heavyAttack(std::vector<CreatureObject*> creatures)
@@ -52,6 +51,5 @@ void BaseEnemy::damage(float d)
 	{
 		setAlive(false);
 	}
-	//std::cout << health << std::endl;
 }
 

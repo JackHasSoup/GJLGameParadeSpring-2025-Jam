@@ -112,7 +112,7 @@ void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 		break;
 	case Action::PARRY:
 		zap[animFrame].setFrame(3);
-		std::cout << "parried" << std::endl;
+		//std::cout << "parried" << std::endl;
 		break;
 	default:
 		zap[animFrame].setFrame(0); //regular crab
