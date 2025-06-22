@@ -8,13 +8,13 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIS
 	bgTexture->loadFromFile("gfx/ui/bgtile.png");
 	bgTexture->setRepeated(true);
 
-	bg.setTexture(bgTexture);
+	titleTexture = AssetManager::registerNewTex("title");
+	titleTexture->loadFromFile("gfx/ui/title.png");
+	title.setTexture(titleTexture);
+	title.setSize(sf::Vector2f{400, 300} * 2.2f);
+	title.setPosition(midWin - sf::Vector2f{ title.getLocalBounds().width / 2.f, winSize.y * 0.45f });
 
-	titleText.setCharacterSize(72);
-	titleText.setFont(*font);
-	titleText.setString("Seal Evil AI Game Title Pending");
-	titleText.setFillColor(sf::Color::White);
-	titleText.setPosition(midWin - sf::Vector2f{titleText.getLocalBounds().width/2.f, winSize.y * 0.3f});
+	bg.setTexture(bgTexture);
 
 	buttons.resize(2);
 
@@ -49,5 +49,7 @@ void MenuScene::render()
 	UIScene::render();
 
 	window->draw(titleText);
+
+	window->draw(title);
 
 }
