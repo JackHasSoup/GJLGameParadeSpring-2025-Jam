@@ -48,6 +48,9 @@ Walrus::Walrus(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(pos,
 	}
 
 	//pinch[0].setFrame(0);
+	AudioManager::createSound("walrusBite", "sfx/bite", 1.0f, false);
+	AudioManager::createSound("walrusSpin", "sfx/walrusSpin", 1.0f, false);
+	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
 }
 
 void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
@@ -200,6 +203,8 @@ void Walrus::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> a
 
 void Walrus::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("walrusBite")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 
 	cooldown = maxCooldown;
@@ -267,6 +272,8 @@ void Walrus::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Walrus::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("walrusSpin")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 
 	//movementVec = { 0.f, 0.f };
@@ -302,6 +309,8 @@ void Walrus::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Walrus::dodge()
 {
+	AudioManager::getSound("dodge")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 
 	//movementVec = { 0.f, 0.f };
