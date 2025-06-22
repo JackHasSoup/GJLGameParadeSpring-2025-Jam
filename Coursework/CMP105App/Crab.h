@@ -2,7 +2,7 @@
 #include "BaseEnemy.h"
 #include "Framework/Animation.h"
 #include "Framework/AssetManager.h"
-
+#include "Framework/AudioManager.h"
 
 class Crab : public BaseEnemy
 {

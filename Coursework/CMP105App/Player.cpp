@@ -40,6 +40,17 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 
 	jumpClone = *dynamic_cast<sf::RectangleShape*>(this); //clone the player for jump animation, so it can be rotated without affecting the player
 	jumpClone.setOrigin(getOrigin());
+
+	AudioManager::createSound("damageTaken", "sfx/ouch2", 1.0f, false);
+	AudioManager::createSound("slapSound", "sfx/slap", 1.0f, false);
+	AudioManager::createSound("jumpAttack", "sfx/sealJumpAttack3.wav", 0.02f, false);
+	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
+
+	AudioManager::playMusic("sfx/SealGameBackgroundNoise.wav", true);
+	AudioManager::setmaxMusicVol(1000.f);
+
+	AudioManager::setMaxSoundVol(1000.f);
+
 }
 
 Player::~Player()
@@ -110,6 +121,8 @@ void Player::update(float dt)
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("slapSound")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	lastAction = Action::LIGHT;
 	setCooldown(maxCooldown);
@@ -169,6 +182,8 @@ void Player::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("jumpAttack")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	setCooldown(maxCooldown * 1.5f);//longer cooldown for heavy attack
 
@@ -181,6 +196,7 @@ void Player::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
 {
+
 	for (auto const& c : creatures)
 	{
 		if (VectorHelper::magnitudeSqrd(c->getPosition() - getPosition()) < heavyAttackRange * heavyAttackRange * getSize().x * getSize().y) //check if the creature is within the heavy attack range
@@ -197,6 +213,8 @@ void Player::actualHeavyAttack(std::vector<CreatureObject*> creatures)
 
 void Player::dodge()
 {
+	AudioManager::getSound("dodge")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	setCooldown(maxCooldown * 0.75f); //shorter cooldown for dodge
 
@@ -251,6 +269,7 @@ void Player::damage(float d)
 	else if (health < maxHealth / 2) howBloody = 1; //bloody
 	else howBloody = 0; //normal
 	//std::cout << health << std::endl;
+	AudioManager::getSound("damageTaken")->playAt(getPosition());
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const

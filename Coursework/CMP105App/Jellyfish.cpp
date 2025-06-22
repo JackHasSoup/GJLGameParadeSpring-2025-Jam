@@ -73,6 +73,13 @@ Jellyfish::Jellyfish(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnem
 	}
 	
 	//pinch[0].setFrame(0);
+
+	AudioManager::createSound("jellyfishLight", "sfx/jellyfish", 1.0f, false);
+	AudioManager::createSound("jellyfishHeavy", "sfx/jellyfishExtra", 1.0f, false);
+	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
+
+
+
 }
 
 void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*> actionBuffer, float dt) {
@@ -159,6 +166,8 @@ void Jellyfish::trackPlayer(CreatureObject* player, std::vector<BufferedCommand*
 
 void Jellyfish::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("jellyfishLight")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 	
 	movementVec = { 0.f, 0.f };
@@ -191,6 +200,9 @@ void Jellyfish::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Jellyfish::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("jellyfishLight")->playAt(getPosition()); //These are both meant to be here, not just the heavy one
+	AudioManager::getSound("jellyfishHeavy")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 
 	movementVec = { 0.f, 0.f };
@@ -225,6 +237,8 @@ void Jellyfish::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Jellyfish::dodge()
 {
+	AudioManager::getSound("dodge")->playAt(getPosition());
+
 	if (cooldown > 0) return;
 
 	movementVec = { 0.f, 0.f };
