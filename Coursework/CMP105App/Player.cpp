@@ -46,7 +46,10 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 	AudioManager::createSound("jumpAttack", "sfx/sealJumpAttack3.wav", 0.02f, false);
 	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
 
+	
+
 	AudioManager::setMaxSoundVol(1000.f);
+
 }
 
 Player::~Player()

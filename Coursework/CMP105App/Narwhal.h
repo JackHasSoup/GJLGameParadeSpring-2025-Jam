@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseEnemy.h"
+#include "Framework/AudioManager.h"
 
 class Narwhal : public BaseEnemy
 {

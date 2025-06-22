@@ -70,10 +70,18 @@ Narwhal::Narwhal(sf::Vector2f pos, sf::Vector2f size, float mass) : BaseEnemy(po
 	}
 	light[howBloody].setFrame(0);
 	setTextureRect(light[howBloody].getCurrentFrame());
+
+
+	AudioManager::createSound("narwhalLight", "sfx/Narwhal", 1.0f, false);
+	AudioManager::createSound("narwhalHeavy", "sfx/narwhalCharge", 1.0f, false);
+	AudioManager::createSound("dodge", "sfx/sealDodge", 1.0f, false);
+
 }
 
 void Narwhal::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("narwhalLight")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
 	setTexture(AssetManager::getTex("NarwhalLight"));
 	lastAction = Action::LIGHT;
@@ -117,6 +125,8 @@ void Narwhal::lightAttack(std::vector<CreatureObject*> creatures)
 
 void Narwhal::heavyAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("narwhalHeavy")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
 	setTexture(AssetManager::getTex("NarwhalHeavy"));
 	lastAction = Action::HEAVY;
@@ -129,6 +139,8 @@ void Narwhal::heavyAttack(std::vector<CreatureObject*> creatures)
 
 void Narwhal::dodge()
 {
+	AudioManager::getSound("dodge")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the narwhal is on cooldown, don't attack
 	setTexture(AssetManager::getTex("NarwhalHeavy"));
 	lastAction = Action::DODGE;
