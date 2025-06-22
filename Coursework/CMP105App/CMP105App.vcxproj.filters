@@ -230,6 +230,12 @@
     <ClCompile Include="Jellyfish.cpp">
       <Filter>Source Files\Gameobjects</Filter>
     </ClCompile>
+    <ClCompile Include="Jellyfish.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Walrus.cpp">
+      <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
     <ClCompile Include="GameOverLoseScreen.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
@@ -377,6 +383,14 @@
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Jellyfish.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Walrus.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Jellyfish.h">
+      <Filter>Header Files\Gameobjects</Filter>
+    </ClInclude>
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
     <ClInclude Include="IntroScene.h">

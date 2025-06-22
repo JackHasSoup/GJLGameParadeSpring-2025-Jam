@@ -10,9 +10,11 @@
 #include "Narwhal.h"
 #include "Jellyfish.h"
 #include "HealthBar.h"
+#include "Walrus.h"
+#include "Framework/BaseLevel.h"
 
 
-class BaseEnemyTestScene : public Scene
+class BaseEnemyTestScene : public BaseLevel
 {
 public:
 	BaseEnemyTestScene(sf::RenderTarget* hwnd);
@@ -57,6 +59,11 @@ protected:
 	Crab crab;
 	Narwhal nar;
 	Jellyfish jellyfish;
+	Walrus walrus;
+
+	Room room;
+	
+	
 
 	std::vector<CreatureObject*> enemies;
 

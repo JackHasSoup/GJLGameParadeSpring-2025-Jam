@@ -40,7 +40,7 @@ TutorialScene::TutorialScene(sf::RenderTarget* hwnd) : BaseLevel(hwnd)
 		physMan.registerObj(e, false);
 	}
 
-	spotlight.setPosition(midWin - sf::Vector2f{700.f, 1350.f});
+	spotlight.setPosition(lighter.getLightPos().at(0));
 	physMan.registerObj(&spotlight, true);
 
 	tube.setPosition(rooms[0].getCreatures().at(0)->getPosition() + sf::Vector2f{10.f,10.f});
