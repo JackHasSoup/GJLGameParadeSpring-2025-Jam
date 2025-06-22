@@ -23,4 +23,9 @@ protected:
 
 	Commander commander;
 
+	sf::Text titleText;
+
+	sf::Texture* bgTexture;
+	sf::RectangleShape bg;
+
 };

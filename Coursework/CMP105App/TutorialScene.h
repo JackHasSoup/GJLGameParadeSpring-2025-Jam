@@ -15,5 +15,5 @@ public:
 	void reset() override;
 
 private:
-
+	sf::Font* font;
 };

@@ -4,7 +4,13 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIS
 {
 	screenWindow = screenHwnd;
 
-	titleText.setCharacterSize(56);
+	bgTexture = AssetManager::registerNewTex("bgTile");
+	bgTexture->loadFromFile("gfx/ui/bgtile.png");
+	bgTexture->setRepeated(true);
+
+	bg.setTexture(bgTexture);
+
+	titleText.setCharacterSize(72);
 	titleText.setFont(*font);
 	titleText.setString("Seal Evil AI Game Title Pending");
 	titleText.setFillColor(sf::Color::White);
@@ -12,13 +18,17 @@ MenuScene::MenuScene(sf::RenderTarget* hwnd, sf::RenderWindow* screenHwnd) : UIS
 
 	buttons.resize(2);
 
-	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.2f, 36, font, "Start", true);
+	buttons[ButtonIndex::Play] = Button(midWin, winSize * 0.125f, 56, font, "Start", true);
 	buttons[ButtonIndex::Play].body().setFillColor(sf::Color::Black);
+	buttons[ButtonIndex::Play].body().setOutlineColor(sf::Color::White);
+	buttons[ButtonIndex::Play].body().setOutlineThickness(5.f);
 	buttons[ButtonIndex::Play].msg().setFillColor(sf::Color::White);
 	buttons[ButtonIndex::Play].subscribe([=] { GameState::setCurrentState(State::TUTORIAL); });
 
-	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{0,winSize.y * 0.3f}, winSize * 0.2f, 36, font, "Exit", true);
+	buttons[ButtonIndex::Exit] = Button(midWin + sf::Vector2f{0,winSize.y * 0.2f}, winSize * 0.125f, 56, font, "Exit", true);
 	buttons[ButtonIndex::Exit].body().setFillColor(sf::Color::Black);
+	buttons[ButtonIndex::Exit].body().setOutlineColor(sf::Color::White);
+	buttons[ButtonIndex::Exit].body().setOutlineThickness(5.f);
 	buttons[ButtonIndex::Exit].msg().setFillColor(sf::Color::White);
 	buttons[ButtonIndex::Exit].subscribe( [=] { screenWindow->close(); });
 
