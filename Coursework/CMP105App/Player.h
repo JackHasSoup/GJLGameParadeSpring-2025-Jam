@@ -2,6 +2,7 @@
 #include "CreatureObject.h"
 #include "Framework/Animation.h"
 #include "Framework/AssetManager.h"
+#include "Framework/AudioManager.h"
 
 class Player : public CreatureObject
 {

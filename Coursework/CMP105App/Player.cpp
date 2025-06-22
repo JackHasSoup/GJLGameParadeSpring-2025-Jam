@@ -40,6 +40,9 @@ Player::Player(sf::Vector2f pos, sf::Vector2f size, float mass) : CreatureObject
 
 	jumpClone = *dynamic_cast<sf::RectangleShape*>(this); //clone the player for jump animation, so it can be rotated without affecting the player
 	jumpClone.setOrigin(getOrigin());
+
+	AudioManager::createSound("damageTaken", "sfx/ouch2.wav", 1.0f, false);
+	AudioManager::setMaxSoundVol(100.f);
 }
 
 Player::~Player()
@@ -110,6 +113,8 @@ void Player::update(float dt)
 
 void Player::lightAttack(std::vector<CreatureObject*> creatures)
 {
+	AudioManager::getSound("slap")->playAt(getPosition());
+
 	if (cooldown > 0) return; //if the player is on cooldown, don't attack
 	lastAction = Action::LIGHT;
 	setCooldown(maxCooldown);
@@ -251,6 +256,7 @@ void Player::damage(float d)
 	else if (health < maxHealth / 2) howBloody = 1; //bloody
 	else howBloody = 0; //normal
 	//std::cout << health << std::endl;
+	//hereeeeee
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
